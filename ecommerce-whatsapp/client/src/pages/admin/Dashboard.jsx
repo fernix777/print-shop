@@ -1,10 +1,50 @@
+import { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import { supabase } from '../../config/supabase'
 import './Dashboard.css'
 
 export default function Dashboard() {
     const { user, signOut } = useAuth()
     const navigate = useNavigate()
+    const [stats, setStats] = useState({
+        products: 0,
+        categories: 0,
+        orders: 0,
+        sales: 0
+    })
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        fetchStats()
+    }, [])
+
+    const fetchStats = async () => {
+        try {
+            setLoading(true)
+
+            // Fetch products count
+            const { count: productsCount } = await supabase
+                .from('products')
+                .select('*', { count: 'exact', head: true })
+
+            // Fetch categories count
+            const { count: categoriesCount } = await supabase
+                .from('categories')
+                .select('*', { count: 'exact', head: true })
+
+            setStats({
+                products: productsCount || 0,
+                categories: categoriesCount || 0,
+                orders: 0, // TODO: Implement when orders table exists
+                sales: 0   // TODO: Implement when orders table exists
+            })
+        } catch (error) {
+            console.error('Error fetching stats:', error)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     const handleLogout = async () => {
         await signOut()
@@ -64,7 +104,7 @@ export default function Dashboard() {
                         </div>
                         <div className="stat-content">
                             <h3>Productos</h3>
-                            <p className="stat-value">0</p>
+                            <p className="stat-value">{loading ? '...' : stats.products}</p>
                             <span className="stat-label">Total de productos</span>
                         </div>
                     </div>
@@ -75,7 +115,7 @@ export default function Dashboard() {
                         </div>
                         <div className="stat-content">
                             <h3>Categorías</h3>
-                            <p className="stat-value">0</p>
+                            <p className="stat-value">{loading ? '...' : stats.categories}</p>
                             <span className="stat-label">Total de categorías</span>
                         </div>
                     </div>
@@ -86,7 +126,7 @@ export default function Dashboard() {
                         </div>
                         <div className="stat-content">
                             <h3>Pedidos</h3>
-                            <p className="stat-value">0</p>
+                            <p className="stat-value">{loading ? '...' : stats.orders}</p>
                             <span className="stat-label">Pedidos pendientes</span>
                         </div>
                     </div>
@@ -97,7 +137,7 @@ export default function Dashboard() {
                         </div>
                         <div className="stat-content">
                             <h3>Ventas</h3>
-                            <p className="stat-value">$0</p>
+                            <p className="stat-value">{loading ? '...' : `$${stats.sales}`}</p>
                             <span className="stat-label">Este mes</span>
                         </div>
                     </div>

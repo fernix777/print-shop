@@ -81,7 +81,7 @@ export default function ContactPage() {
                         <div className="info-card">
                             <div className="info-icon">📍</div>
                             <h3>Ubicación</h3>
-                            <p>Posadas, Misiones<br />Argentina</p>
+                            <p>Av. Éxodo 841<br />San Salvador de Jujuy, Argentina</p>
                         </div>
 
                         <div className="info-card">
@@ -98,8 +98,8 @@ export default function ContactPage() {
                             <div className="info-icon">📧</div>
                             <h3>Email</h3>
                             <p>
-                                <a href="mailto:contacto@magnolia.com">
-                                    contacto@magnolia.com
+                                <a href="mailto:magnolianovedades56@gmail.com">
+                                    magnolianovedades56@gmail.com
                                 </a>
                             </p>
                         </div>
@@ -118,7 +118,7 @@ export default function ContactPage() {
                             <h3>Encuéntranos</h3>
                             <div className="map-wrapper">
                                 <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3539.812280363473!2d-55.89615492378615!3d-27.36750207629984!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9457be1c53796d8b%3A0x5c7a7a68e5b4e8e8!2sPosadas%2C%20Misiones!5e0!3m2!1ses!2sar!4v1234567890123!5m2!1ses!2sar"
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3622.8937485849347!2d-65.30366492385!3d-24.18666997849!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x941b0f2e8b8b8b8b%3A0x8b8b8b8b8b8b8b8b!2sAv.%20%C3%89xodo%20841%2C%20San%20Salvador%20de%20Jujuy%2C%20Jujuy!5e0!3m2!1ses!2sar!4v1234567890123!5m2!1ses!2sar"
                                     width="100%"
                                     height="350"
                                     style={{ border: 0 }}

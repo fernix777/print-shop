@@ -1,19 +1,27 @@
-import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useState, useEffect, useContext } from 'react'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { getProductBySlug } from '../../services/storeService'
 import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
+import { AuthContext } from '../../context/AuthContext'
+import { useCart } from '../../context/CartContext'
 import './ProductDetail.css'
 
 export default function ProductDetail() {
     const { slug } = useParams()
+    const navigate = useNavigate()
+    const { user } = useContext(AuthContext)
+    const { addToCart } = useCart()
     const [product, setProduct] = useState(null)
     const [loading, setLoading] = useState(true)
     const [selectedImage, setSelectedImage] = useState(0)
     const [selectedVariant, setSelectedVariant] = useState(null)
     const [quantity, setQuantity] = useState(1)
+    const [purchaseType, setPurchaseType] = useState('') // 'unidad', 'caja' o 'bulto'
+    const [selectedColor, setSelectedColor] = useState('')
+    const [showNotification, setShowNotification] = useState(false)
 
     useEffect(() => {
         loadProduct()
@@ -35,36 +43,61 @@ export default function ProductDetail() {
     const formatPrice = (price) => {
         return new Intl.NumberFormat('es-AR', {
             style: 'currency',
-            currency: 'ARS'
+            currency: 'ARS',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
         }).format(price)
     }
 
-    const handleWhatsAppOrder = () => {
-        const phoneNumber = '543765016293'
-
-        // Construir URL completa del producto
-        const productUrl = `${window.location.origin}/producto/${slug}`
-
-        // Construir mensaje profesional
-        let message = `🛍️ *CONSULTA DE PRODUCTO*\n\n`
-        message += `📦 *Producto:* ${product.name}\n`
-
-        if (selectedVariant) {
-            if (selectedVariant.color) message += `🎨 *Color:* ${selectedVariant.color}\n`
-            if (selectedVariant.size) message += `📏 *Tamaño:* ${selectedVariant.size}\n`
+    const handleAddToCart = () => {
+        if (!user) {
+            navigate('/login?redirect=' + encodeURIComponent(window.location.pathname))
+            return
         }
 
-        message += `🔢 *Cantidad:* ${quantity}\n`
-        message += `💰 *Precio:* ${formatPrice(getFinalPrice())}\n\n`
-        message += `🔗 *Ver producto:*\n${productUrl}\n\n`
-        message += `¡Hola! Me interesa este producto. ¿Está disponible?`
+        if (!purchaseType || !selectedColor) {
+            alert('Por favor selecciona el tipo de venta y el color del producto')
+            return
+        }
 
-        const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
-        window.open(url, '_blank')
+        const finalPrice = getFinalPrice() / quantity // Precio unitario
+
+        addToCart(product, quantity, {
+            purchaseType,
+            selectedColor,
+            selectedCondition: purchaseType, // Usar purchaseType como condición
+            selectedVariant,
+            finalPrice
+        })
+
+        // Mostrar notificación
+        setShowNotification(true)
+        setTimeout(() => setShowNotification(false), 3000)
+
+        // Resetear cantidad
+        setQuantity(1)
+    }
+
+    const getPriceByType = () => {
+        let basePrice = product.base_price
+
+        // Ajustar según el tipo de venta
+        switch (purchaseType) {
+            case 'unidad':
+                return basePrice // Precio base por unidad
+            case 'caja':
+                // Usar precio explícito si existe, sino calcular
+                return product.price_box ? Number(product.price_box) : basePrice * (product.units_per_box || 12)
+            case 'bulto':
+                // Usar precio explícito si existe, sino calcular
+                return product.price_bundle ? Number(product.price_bundle) : basePrice * (product.units_per_box || 12) * (product.boxes_per_bundle || 40)
+            default:
+                return basePrice
+        }
     }
 
     const getFinalPrice = () => {
-        let price = product.base_price
+        let price = getPriceByType()
         if (selectedVariant && selectedVariant.price_modifier) {
             price += selectedVariant.price_modifier
         }
@@ -155,9 +188,15 @@ export default function ProductDetail() {
                             </div>
                         )}
 
-                        <div className="product-price">
-                            {formatPrice(getFinalPrice())}
-                        </div>
+                        {user ? (
+                            <div className="product-price">
+                                {formatPrice(getFinalPrice())}
+                            </div>
+                        ) : (
+                            <div className="login-required">
+                                <i className="fas fa-lock"></i> Inicia sesión para ver precios
+                            </div>
+                        )}
 
                         {product.description && (
                             <div className="product-description">
@@ -166,43 +205,76 @@ export default function ProductDetail() {
                             </div>
                         )}
 
-                        {/* Variantes */}
-                        {variants.length > 0 && (
-                            <div className="product-variants">
-                                <h3>Opciones disponibles</h3>
-                                <div className="variants-list">
-                                    {variants.map((variant) => (
-                                        <button
-                                            key={variant.id}
-                                            className={`variant-btn ${selectedVariant?.id === variant.id ? 'active' : ''}`}
-                                            onClick={() => setSelectedVariant(variant)}
-                                        >
-                                            {variant.color && <span>{variant.color}</span>}
-                                            {variant.size && <span>{variant.size}</span>}
-                                            {variant.price_modifier !== 0 && (
-                                                <span className="price-mod">
-                                                    {variant.price_modifier > 0 ? '+' : ''}
-                                                    {formatPrice(variant.price_modifier)}
-                                                </span>
-                                            )}
-                                        </button>
-                                    ))}
-                                </div>
+                        {/* Información de paquete y bulto */}
+                        <div className="package-info">
+                            <div className="info-item">
+                                <i className="fas fa-box"></i>
+                                <span>{product.units_per_box || 12} unidades por paquete</span>
                             </div>
-                        )}
+                            <div className="info-item">
+                                <i className="fas fa-pallet"></i>
+                                <span>{product.boxes_per_bundle || 40} paquetes por bulto</span>
+                            </div>
+                        </div>
+
+                        {/* Selector de Tipo de Venta */}
+                        <div className="form-group">
+                            <label>Tipo de Venta</label>
+                            <select
+                                className="form-control"
+                                value={purchaseType}
+                                onChange={(e) => setPurchaseType(e.target.value)}
+                            >
+                                <option value="">Elige una opción</option>
+                                <option value="unidad">Unidad</option>
+                                <option value="caja">Caja ({product.units_per_box || 12} unidades)</option>
+                                <option value="bulto">Bulto ({product.boxes_per_bundle || 40} cajas)</option>
+                            </select>
+                        </div>
+
+                        {/* Selector de color */}
+                        <div className="form-group">
+                            <label>Color</label>
+                            <select
+                                className="form-control"
+                                value={selectedColor}
+                                onChange={(e) => setSelectedColor(e.target.value)}
+                            >
+                                <option value="">Elige una opción</option>
+                                <option value="Rojo">Rojo</option>
+                                <option value="Azul">Azul</option>
+                                <option value="Verde">Verde</option>
+                                <option value="Amarillo">Amarillo</option>
+                                <option value="Negro">Negro</option>
+                                <option value="Blanco">Blanco</option>
+                            </select>
+                        </div>
 
                         {/* Cantidad */}
                         <div className="product-quantity">
-                            <h3>Cantidad</h3>
+                            <h3>Cantidad de {purchaseType === 'caja' ? 'cajas' : purchaseType === 'bulto' ? 'bultos' : 'unidades'}</h3>
                             <div className="quantity-selector">
-                                <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        setQuantity(Math.max(1, quantity - 1))
+                                    }}
+                                >-</button>
                                 <input
                                     type="number"
                                     value={quantity}
                                     onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
                                     min="1"
                                 />
-                                <button onClick={() => setQuantity(quantity + 1)}>+</button>
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        setQuantity(quantity + 1)
+                                    }}
+                                >+</button>
+                            </div>
+                            <div className="min-purchase">
+                                <i className="fas fa-info-circle"></i> Compra mínima total: $20.000
                             </div>
                         </div>
 
@@ -219,12 +291,19 @@ export default function ProductDetail() {
 
                         {/* Botón de compra */}
                         <button
-                            onClick={handleWhatsAppOrder}
-                            className="btn btn-primary btn-large"
-                            disabled={product.stock === 0}
+                            onClick={handleAddToCart}
+                            className="btn btn-primary btn-large btn-block"
+                            disabled={!purchaseType || !selectedColor || !user}
                         >
-                            💬 Consultar por WhatsApp
+                            🛒 Agregar al Carrito
                         </button>
+
+                        {/* Notificación de éxito */}
+                        {showNotification && (
+                            <div className="success-notification">
+                                ✓ Producto agregado al carrito
+                            </div>
+                        )}
                     </div>
                 </div>
             </main>

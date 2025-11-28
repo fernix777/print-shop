@@ -146,3 +146,9 @@ Deberías ver:
 **Error: "bucket not found"**
 - Verifica que creaste los 3 buckets
 - Verifica que los nombres sean exactos (sin espacios)
+
+## 📱 Contacto
+
+Para soporte técnico, contáctanos por WhatsApp:
+- Número: +54 9 3885 17-1795
+

@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import './HeroSection.css'
+import todoOctubreBanner from '../../assets/images/hero/todo_octubre.png'
 
 export default function HeroSection() {
     const [currentSlide, setCurrentSlide] = useState(0)
 
     const slides = [
+        {
+            image: todoOctubreBanner,
+            title: '¡Todo Octubre!',
+            subtitle: 'Descuentos especiales en toda la tienda'
+        },
         {
             image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1920&q=80',
             title: 'Magnolia Novedades',

@@ -29,9 +29,9 @@ export default function Footer() {
                 <div className="footer-column">
                     <h4>Contacto</h4>
                     <ul>
-                        <li>📧 info@magnolia.com</li>
-                        <li>📱 WhatsApp: +54 9 XXX XXX-XXXX</li>
-                        <li>📍 Argentina</li>
+                        <li>📧 magnolianovedades56@gmail.com</li>
+                        <li>📱 WhatsApp: +54 388 517-1795</li>
+                        <li>📍 Av. Éxodo 841, San Salvador de Jujuy, Argentina</li>
                     </ul>
                 </div>
 
@@ -39,10 +39,10 @@ export default function Footer() {
                 <div className="footer-column">
                     <h4>Síguenos</h4>
                     <div className="social-links">
-                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-link">
+                        <a href="https://www.instagram.com/magnolia_novedades/" target="_blank" rel="noopener noreferrer" className="social-link">
                             📷 Instagram
                         </a>
-                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-link">
+                        <a href="https://www.facebook.com/magnolianove" target="_blank" rel="noopener noreferrer" className="social-link">
                             📘 Facebook
                         </a>
                         <a href="https://wa.me/543765016293" target="_blank" rel="noopener noreferrer" className="social-link">

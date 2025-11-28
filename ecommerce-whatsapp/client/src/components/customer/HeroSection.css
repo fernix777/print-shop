@@ -35,26 +35,33 @@
     right: 0;
     bottom: 0;
     background: linear-gradient(135deg,
-            rgba(233, 30, 140, 0.7) 0%,
-            rgba(196, 24, 118, 0.6) 50%,
-            rgba(196, 165, 184, 0.5) 100%);
+            rgba(0, 0, 0, 0.4) 0%,
+            rgba(0, 0, 0, 0.3) 50%,
+            rgba(0, 0, 0, 0.2) 100%);
     z-index: 1;
 }
 
 .hero-content {
     position: relative;
     z-index: 2;
-    text-align: center;
+    text-align: left;
     color: var(--white);
-    max-width: 800px;
-    padding: var(--spacing-lg);
+    max-width: 600px;
+    padding: var(--spacing-xl);
+    margin-left: 10%;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     animation: fadeInUp 1s ease-out;
 }
 
 .hero-title {
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    font-weight: 700;
-    margin: 0 0 var(--spacing-md) 0;
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.2;
+    background: rgba(0, 0, 0, 0.5);
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
     animation: fadeInUp 1s ease-out 0.2s both;
 }

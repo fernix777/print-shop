@@ -1,6 +1,7 @@
 import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import HeroSection from '../../components/customer/HeroSection'
+import AboutSection from '../../components/customer/AboutSection'
 import CategoriesSection from '../../components/customer/CategoriesSection'
 import FeaturedProducts from '../../components/customer/FeaturedProducts'
 import BenefitsSection from '../../components/customer/BenefitsSection'
@@ -14,6 +15,7 @@ export default function StorePage() {
 
             <main>
                 <HeroSection />
+                <AboutSection />
                 <CategoriesSection />
                 <FeaturedProducts />
                 <BenefitsSection />

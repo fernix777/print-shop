@@ -194,3 +194,44 @@
         width: 100%;
     }
 }
+
+/* Precios Calculados */
+.calculated-prices {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px dashed var(--light-gray);
+}
+
+.calculated-prices h3 {
+    font-size: var(--text-lg);
+    color: var(--dark-gray);
+    margin: 0 0 var(--spacing-md) 0;
+}
+
+.price-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.price-card {
+    background-color: var(--off-white);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--light-gray);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.price-card .label {
+    font-size: var(--text-sm);
+    color: var(--gray);
+    font-weight: 500;
+}
+
+.price-card .value {
+    font-size: var(--text-xl);
+    color: var(--primary);
+    font-weight: 700;
+}

@@ -1,17 +1,33 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import './Header.css'
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
+import Cart from './Cart';
+import './Header.css';
 
 export default function Header() {
-    const [menuOpen, setMenuOpen] = useState(false)
-    const [searchQuery, setSearchQuery] = useState('')
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [cartOpen, setCartOpen] = useState(false);
+    const { user, signOut } = useAuth();
+    const { getCartCount } = useCart();
+    const navigate = useNavigate();
 
     const handleSearch = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         if (searchQuery.trim()) {
-            window.location.href = `/buscar?q=${encodeURIComponent(searchQuery)}`
+            window.location.href = `/buscar?q=${encodeURIComponent(searchQuery)}`;
         }
-    }
+    };
+
+    const handleSignOut = async () => {
+        try {
+            await signOut();
+            navigate('/');
+        } catch (error) {
+            console.error('Error al cerrar sesión:', error);
+        }
+    };
 
     return (
         <header className="store-header">
@@ -24,7 +40,7 @@ export default function Header() {
 
                 {/* Navegación Desktop */}
                 <nav className="header-nav desktop-nav">
-                    <Link to="/" className="nav-link">Inicio</Link>
+                    <Link to="/" className="nav-link">Sobre Nosotros</Link>
                     <Link to="/productos" className="nav-link">Productos</Link>
                     <Link to="/categorias" className="nav-link">Categorías</Link>
                     <Link to="/contacto" className="nav-link">Contacto</Link>
@@ -41,11 +57,40 @@ export default function Header() {
                     <button type="submit">🔍</button>
                 </form>
 
-                {/* Carrito */}
-                <Link to="/carrito" className="header-cart">
-                    🛒
-                    <span className="cart-badge">0</span>
-                </Link>
+                <div className="header-actions">
+                    {/* Carrito */}
+                    <button
+                        className="header-cart"
+                        title="Carrito"
+                        onClick={() => setCartOpen(true)}
+                    >
+                        🛒
+                        {getCartCount() > 0 && (
+                            <span className="cart-badge">{getCartCount()}</span>
+                        )}
+                    </button>
+
+                    {/* Usuario */}
+                    {user ? (
+                        <div className="user-dropdown">
+                            <button className="user-button">
+                                👤 {user.email.split('@')[0]}
+                            </button>
+                            <div className="dropdown-menu">
+                                <Link to="/mi-cuenta" className="dropdown-item">Mi Cuenta</Link>
+                                <Link to="/mis-pedidos" className="dropdown-item">Mis Pedidos</Link>
+                                <button onClick={handleSignOut} className="dropdown-item">
+                                    Cerrar Sesión
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="auth-buttons">
+                            <Link to="/login" className="btn btn-outline btn-sm">Iniciar Sesión</Link>
+                            <Link to="/registro" className="btn btn-primary btn-sm">Registrarse</Link>
+                        </div>
+                    )}
+                </div>
 
                 {/* Hamburger Menu (Mobile) */}
                 <button
@@ -59,12 +104,15 @@ export default function Header() {
             {/* Mobile Menu */}
             {menuOpen && (
                 <nav className="mobile-nav">
-                    <Link to="/" onClick={() => setMenuOpen(false)}>Inicio</Link>
+                    <Link to="/" onClick={() => setMenuOpen(false)}>Sobre Nosotros</Link>
                     <Link to="/productos" onClick={() => setMenuOpen(false)}>Productos</Link>
                     <Link to="/categorias" onClick={() => setMenuOpen(false)}>Categorías</Link>
                     <Link to="/contacto" onClick={() => setMenuOpen(false)}>Contacto</Link>
                 </nav>
             )}
+
+            {/* Cart Modal */}
+            {cartOpen && <Cart onClose={() => setCartOpen(false)} />}
         </header>
     )
 }

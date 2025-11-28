@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { AuthContext } from '../../context/AuthContext'
 import { getProductsByCategory } from '../../services/storeService'
 import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
@@ -12,6 +13,7 @@ export default function CategoryPage() {
     const [products, setProducts] = useState([])
     const [category, setCategory] = useState(null)
     const [loading, setLoading] = useState(true)
+    const { user } = useContext(AuthContext)
 
     useEffect(() => {
         loadProducts()
@@ -109,7 +111,13 @@ export default function CategoryPage() {
                                             <p className="product-description">{product.description}</p>
                                         )}
                                         <div className="product-footer">
-                                            <span className="product-price">{formatPrice(product.base_price)}</span>
+                                            {user ? (
+                                                <span className="product-price">{formatPrice(product.base_price)}</span>
+                                            ) : (
+                                                <span className="login-to-see">
+                                                    <Link to="/login">Inicia sesión</Link> para ver precios
+                                                </span>
+                                            )}
                                             {product.stock > 0 ? (
                                                 <span className="stock-badge available">En stock</span>
                                             ) : (

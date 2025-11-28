@@ -4,7 +4,6 @@ import toast from 'react-hot-toast'
 import { getProductById, createProduct, updateProduct } from '../../services/productService'
 import { getCategories } from '../../services/categoryService'
 import ImageUploader from '../../components/admin/ImageUploader'
-import VariantManager from '../../components/admin/VariantManager'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './ProductForm.css'
 
@@ -26,11 +25,14 @@ export default function ProductForm() {
         subcategory_id: '',
         stock: 0,
         active: true,
-        featured: false
+        featured: false,
+        units_per_box: 12,
+        boxes_per_bundle: 40,
+        price_box: '',
+        price_bundle: ''
     })
 
     const [images, setImages] = useState([])
-    const [variants, setVariants] = useState([])
     const [errors, setErrors] = useState({})
 
     useEffect(() => {
@@ -74,7 +76,11 @@ export default function ProductForm() {
             subcategory_id: data.subcategory_id || '',
             stock: data.stock || 0,
             active: data.active ?? true,
-            featured: data.featured ?? false
+            featured: data.featured ?? false,
+            units_per_box: data.units_per_box || 12,
+            boxes_per_bundle: data.boxes_per_bundle || 40,
+            price_box: data.price_box || '',
+            price_bundle: data.price_bundle || ''
         })
 
         // Cargar imágenes existentes
@@ -88,10 +94,7 @@ export default function ProductForm() {
             })))
         }
 
-        // Cargar variantes existentes
-        if (data.variants) {
-            setVariants(data.variants)
-        }
+
 
         setLoading(false)
     }
@@ -147,7 +150,11 @@ export default function ProductForm() {
                 base_price: Number(formData.base_price),
                 stock: Number(formData.stock),
                 category_id: Number(formData.category_id),
-                subcategory_id: formData.subcategory_id ? Number(formData.subcategory_id) : null
+                subcategory_id: formData.subcategory_id ? Number(formData.subcategory_id) : null,
+                units_per_box: Number(formData.units_per_box),
+                boxes_per_bundle: Number(formData.boxes_per_bundle),
+                price_box: formData.price_box ? Number(formData.price_box) : null,
+                price_bundle: formData.price_bundle ? Number(formData.price_bundle) : null
             }
 
             // Obtener solo las imágenes nuevas (que tienen file)
@@ -172,32 +179,7 @@ export default function ProductForm() {
                 throw result.error
             }
 
-            // Guardar variantes si hay
-            console.log('Variants to save:', variants)
-            console.log('Product ID:', productId)
 
-            if (variants.length > 0 && productId) {
-                const { createVariant } = await import('../../services/variantService')
-
-                console.log('Saving variants...')
-                for (const variant of variants) {
-                    const variantData = {
-                        product_id: Number(productId),
-                        color: variant.color || null,
-                        size: variant.size || null,
-                        sku: variant.sku || null,
-                        price_modifier: Number(variant.price_modifier) || 0,
-                        stock: Number(variant.stock) || 0
-                    }
-
-                    console.log('Saving variant:', variantData)
-                    const result = await createVariant(variantData)
-                    console.log('Variant save result:', result)
-                }
-                console.log('All variants saved')
-            } else {
-                console.log('No variants to save or no product ID')
-            }
 
             toast.success(isEditing ? 'Producto actualizado' : 'Producto creado')
             navigate('/admin/products')
@@ -293,6 +275,65 @@ export default function ProductForm() {
                             />
                         </div>
                     </div>
+
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="units_per_box">Unidades por Caja</label>
+                            <input
+                                id="units_per_box"
+                                name="units_per_box"
+                                type="number"
+                                min="1"
+                                value={formData.units_per_box}
+                                onChange={handleChange}
+                                disabled={saving}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="boxes_per_bundle">Cajas por Bulto</label>
+                            <input
+                                id="boxes_per_bundle"
+                                name="boxes_per_bundle"
+                                type="number"
+                                min="1"
+                                value={formData.boxes_per_bundle}
+                                onChange={handleChange}
+                                disabled={saving}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Precios Explícitos */}
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="price_box">Precio por Caja ({formData.units_per_box} u)</label>
+                            <input
+                                id="price_box"
+                                name="price_box"
+                                type="number"
+                                step="0.01"
+                                value={formData.price_box}
+                                onChange={handleChange}
+                                disabled={saving}
+                                placeholder="Opcional"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="price_bundle">Precio por Bulto ({Number(formData.units_per_box || 12) * Number(formData.boxes_per_bundle || 40)} u)</label>
+                            <input
+                                id="price_bundle"
+                                name="price_bundle"
+                                type="number"
+                                step="0.01"
+                                value={formData.price_bundle}
+                                onChange={handleChange}
+                                disabled={saving}
+                                placeholder="Opcional"
+                            />
+                        </div>
+                    </div>
                 </section>
 
                 {/* Categorización */}
@@ -347,17 +388,7 @@ export default function ProductForm() {
                     {errors.images && <span className="error-text">{errors.images}</span>}
                 </section>
 
-                {/* Variantes */}
-                <section className="form-section">
-                    <h2>Variantes (Opcional)</h2>
-                    <p className="section-description">
-                        Define diferentes combinaciones de color y tamaño con sus propios precios y stock
-                    </p>
-                    <VariantManager
-                        variants={variants}
-                        onChange={setVariants}
-                    />
-                </section>
+
 
                 {/* Configuración */}
                 <section className="form-section">
@@ -407,6 +438,6 @@ export default function ProductForm() {
                     </button>
                 </div>
             </form>
-        </div>
+        </div >
     )
 }

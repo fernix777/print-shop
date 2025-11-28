@@ -1,6 +1,6 @@
 export default function Home() {
     return (
-        <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, var(--off-white) 0%, var(--light-gray) 100%)' }}>
+        <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, var(--off-white) 0%, var(--light-gray) 100%)', overflowX: 'hidden' }}>
             {/* Header */}
             <header style={{
                 padding: '1.5rem 0',
