@@ -75,8 +75,16 @@ export default function ProductDetail() {
             )
         }
 
-        // Si no tiene viñetas, mostrar como texto normal
-        return <p>{description}</p>
+        // Si no tiene viñetas, mostrar línea por línea
+        return (
+            <div className="description-container">
+                {lines.map((line, index) => (
+                    <p key={index} className="description-line">
+                        {line}
+                    </p>
+                ))}
+            </div>
+        )
     }
 
 
@@ -189,31 +197,40 @@ export default function ProductDetail() {
                 </div>
 
                 <div className="product-detail">
-                    {/* Galería de imágenes */}
-                    <div className="product-gallery">
-                        <div className="main-image">
-                            {images.length > 0 ? (
-                                <img src={images[selectedImage]?.image_url} alt={product.name} />
-                            ) : (
-                                <div className="no-image">📷</div>
+                    {/* Galería de imágenes con descripción abajo */}
+                    <div className="product-gallery-section">
+                        <div className="product-gallery">
+                            <div className="main-image">
+                                {images.length > 0 ? (
+                                    <img src={images[selectedImage]?.image_url} alt={product.name} />
+                                ) : (
+                                    <div className="no-image">📷</div>
+                                )}
+                            </div>
+                            {images.length > 1 && (
+                                <div className="image-thumbnails">
+                                    {images.map((img, index) => (
+                                        <div
+                                            key={img.id}
+                                            className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
+                                            onClick={() => setSelectedImage(index)}
+                                        >
+                                            <img src={img.image_url} alt={`${product.name} ${index + 1}`} />
+                                        </div>
+                                    ))}
+                                </div>
                             )}
                         </div>
-                        {images.length > 1 && (
-                            <div className="image-thumbnails">
-                                {images.map((img, index) => (
-                                    <div
-                                        key={img.id}
-                                        className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
-                                        onClick={() => setSelectedImage(index)}
-                                    >
-                                        <img src={img.image_url} alt={`${product.name} ${index + 1}`} />
-                                    </div>
-                                ))}
+
+                        {/* Descripción debajo de las fotos */}
+                        {product.description && (
+                            <div className="product-description-section">
+                                {formatDescription(product.description)}
                             </div>
                         )}
                     </div>
 
-                    {/* Información del producto */}
+                    {/* Información del producto - Panel de compra */}
                     <div className="product-info">
                         <h1>{product.name}</h1>
 
@@ -232,13 +249,6 @@ export default function ProductDetail() {
                         ) : (
                             <div className="login-required">
                                 <i className="fas fa-lock"></i> Inicia sesión para ver precios
-                            </div>
-                        )}
-
-                        {product.description && (
-                            <div className="detail-description">
-                                <h3>Descripción</h3>
-                                {formatDescription(product.description)}
                             </div>
                         )}
 
@@ -299,50 +309,54 @@ export default function ProductDetail() {
                             </div>
                         )}
 
-                        {/* Cantidad */}
-                        <div className="product-quantity">
-                            <h3>Cantidad de {purchaseType === 'paquete' ? 'paquetes' : purchaseType === 'bulto' ? 'bultos' : 'unidades'}</h3>
-                            <div className="quantity-selector">
-                                <button
-                                    onClick={(e) => {
-                                        e.preventDefault()
-                                        setQuantity(Math.max(1, quantity - 1))
-                                    }}
-                                >-</button>
-                                <input
-                                    type="number"
-                                    value={quantity}
-                                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                                    min="1"
-                                />
-                                <button
-                                    onClick={(e) => {
-                                        e.preventDefault()
-                                        setQuantity(quantity + 1)
-                                    }}
-                                >+</button>
+                        {/* Acciones de compra */}
+                        <div className="purchase-actions">
+                            <div className="quantity-wrapper">
+                                <div className="product-quantity">
+                                    <h3>Cantidad de {purchaseType === 'paquete' ? 'paquetes' : purchaseType === 'bulto' ? 'bultos' : 'unidades'}</h3>
+                                    <div className="quantity-selector">
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                setQuantity(Math.max(1, quantity - 1))
+                                            }}
+                                        >-</button>
+                                        <input
+                                            type="number"
+                                            value={quantity}
+                                            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                                            min="1"
+                                        />
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                setQuantity(quantity + 1)
+                                            }}
+                                        >+</button>
+                                    </div>
+                                </div>
+
+                                {/* Stock */}
+                                {product.stock > 0 ? (
+                                    <div className="stock-info available">
+                                        ✓ {product.stock} disponibles
+                                    </div>
+                                ) : (
+                                    <div className="stock-info unavailable">
+                                        ✗ Sin stock
+                                    </div>
+                                )}
                             </div>
+
+                            {/* Botón de compra */}
+                            <button
+                                onClick={handleAddToCart}
+                                className="btn btn-primary btn-large add-to-cart-btn"
+                                disabled={!purchaseType || (product.has_colors && !selectedColor) || !user}
+                            >
+                                🛒 Agregar al Carrito
+                            </button>
                         </div>
-
-                        {/* Stock */}
-                        {product.stock > 0 ? (
-                            <div className="stock-info available">
-                                ✓ {product.stock} disponibles
-                            </div>
-                        ) : (
-                            <div className="stock-info unavailable">
-                                ✗ Sin stock
-                            </div>
-                        )}
-
-                        {/* Botón de compra */}
-                        <button
-                            onClick={handleAddToCart}
-                            className="btn btn-primary btn-large btn-block"
-                            disabled={!purchaseType || (product.has_colors && !selectedColor) || !user}
-                        >
-                            🛒 Agregar al Carrito
-                        </button>
 
                         {/* Notificación de éxito */}
                         {showNotification && (

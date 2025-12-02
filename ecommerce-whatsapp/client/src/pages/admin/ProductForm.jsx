@@ -11,7 +11,7 @@ const AVAILABLE_COLORS = [
     'Cálido', 'Blanco', 'Multicolor',
     'Rojo', 'Azul', 'Verde', 'Amarillo',
     'Rosa', 'Violeta', 'Naranja', 'Negro',
-    'Plateado', 'Dorado'
+    'Plateado', 'Dorado', 'Surtido'
 ]
 
 export default function ProductForm() {
@@ -82,7 +82,7 @@ export default function ProductForm() {
         // Cargar variantes existentes y mapear a colores seleccionados
         let variants = [];
         let colors = [];
-        
+
         if (data.variants && data.variants.length > 0) {
             variants = data.variants;
             // Extraer colores de variant_value, asegurando que sean válidos
@@ -122,20 +122,20 @@ export default function ProductForm() {
 
         // Establecer colores seleccionados
         setSelectedColors(colors);
-        
+
         setLoading(false)
     }
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         const newValue = type === 'checkbox' ? checked : value;
-        
+
         setFormData(prev => {
             const newFormData = {
                 ...prev,
                 [name]: newValue
             };
-            
+
             // Si se desactiva has_colors, limpiar los colores seleccionados
             if (name === 'has_colors' && !newValue) {
                 setSelectedColors([]);
@@ -144,7 +144,7 @@ export default function ProductForm() {
                     variants: []
                 };
             }
-            
+
             return newFormData;
         });
 
@@ -172,7 +172,7 @@ export default function ProductForm() {
             const newSelectedColors = prev.includes(color)
                 ? prev.filter(c => c !== color)
                 : [...prev, color];
-            
+
             return newSelectedColors;
         });
 
@@ -267,7 +267,7 @@ export default function ProductForm() {
                 has_colors: formData.has_colors,
                 sale_types: formData.sale_types,
                 // Usar las variantes de formData directamente si existen, sino usar selectedColors
-                variants: formData.has_colors && formData.variants && formData.variants.length > 0 
+                variants: formData.has_colors && formData.variants && formData.variants.length > 0
                     ? formData.variants.map(v => ({
                         name: v.name || v.variant_value,
                         variant_value: v.variant_value || v.name,

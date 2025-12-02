@@ -44,6 +44,13 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
+/* Sección de galería + descripción */
+.product-gallery-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
 /* Galería */
 .product-gallery {
     display: flex;
@@ -189,7 +196,15 @@
     gap: var(--spacing-sm);
 }
 
-/* Description */
+/* Descripción del producto - Debajo de las fotos */
+.product-description-section {
+    padding: var(--spacing-md);
+    background-color: var(--off-white);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--light-gray);
+}
+
+/* Estilos heredados para compatibilidad */
 .detail-description {
     padding: var(--spacing-md);
     background-color: var(--off-white);
@@ -214,6 +229,14 @@
     font-weight: 500;
     margin: 0;
     line-height: 1.6;
+}
+
+.description-line {
+    color: var(--dark-gray);
+    font-weight: 400;
+    margin: 0;
+    line-height: 1.6;
+    word-break: break-word;
 }
 
 .description-tags {
@@ -435,7 +458,43 @@
         font-size: 1.1rem;
         position: sticky;
         bottom: var(--spacing-md);
-        z-index: 100;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        align-items: stretch;
+        gap: var(--spacing-md);
     }
+
+    .purchase-actions .add-to-cart-btn {
+        margin-top: 0;
+        width: 100%;
+    }
+
+    .quantity-wrapper {
+        align-items: center;
+        text-align: center;
+    }
+}
+
+/* Purchase Actions Layout */
+.purchase-actions {
+    display: flex;
+    align-items: flex-start;
+    /* Align to top to control vertical position manually */
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.quantity-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.purchase-actions .add-to-cart-btn {
+    width: auto;
+    /* Override btn-large 100% width */
+    flex: 1;
+    /* Take remaining space */
+    min-width: 200px;
+    margin-top: 2.1rem;
+    /* Align with the input field (skipping the label) */
 }
