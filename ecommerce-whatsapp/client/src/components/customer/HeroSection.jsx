@@ -13,17 +13,17 @@ export default function HeroSection() {
             subtitle: 'Descuentos especiales en toda la tienda'
         },
         {
-            image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1920&q=80',
+            image: '/brillo.png',
             title: 'Magnolia Novedades',
             subtitle: 'Decoración y regalos únicos para cada ocasión'
         },
         {
-            image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1920&q=80',
+            image: '/pic3.png',
             title: 'Encuentra tu estilo',
             subtitle: 'Las mejores tendencias en decoración del hogar'
         },
         {
-            image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1920&q=80',
+            image: '/imagen1 (1).png',
             title: 'Regalos especiales',
             subtitle: 'Para cada momento importante de tu vida'
         },
