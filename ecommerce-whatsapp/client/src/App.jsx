@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
+import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
@@ -114,6 +115,7 @@ function App() {
                     </Router>
                 </CartProvider>
             </AuthProvider>
+            <Analytics />
         </HelmetProvider>
     )
 }
