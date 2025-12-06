@@ -24,6 +24,7 @@ body {
     color: var(--black);
     background-color: var(--off-white);
     overflow-x: hidden;
+    padding-top: 60px;
 }
 
 /* Tipografía */
