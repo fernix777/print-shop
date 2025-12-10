@@ -1,58 +1,91 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+
+// Cargar variables de entorno
+dotenv.config({ path: '.env.local' });
+dotenv.config({ path: '.env' });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Importar datos de productos desde Supabase o archivo local
-// Para este ejemplo, usaremos datos de prueba
-const products = [
-    {
-        id: 1,
-        name: 'Producto Destacado 1',
-        slug: 'producto-destacado-1',
-        description: 'Descripción del primer producto destacado',
-        price: 1999.99,
-        image: 'https://www.magnolia-n.com/logo.jpg',
-        category: 'Decoración'
-    },
-    {
-        id: 2,
-        name: 'Producto Destacado 2',
-        slug: 'producto-destacado-2',
-        description: 'Descripción del segundo producto destacado',
-        price: 2499.99,
-        image: 'https://www.magnolia-n.com/logo.jpg',
-        category: 'Regalos'
-    },
-    {
-        id: 3,
-        name: 'Producto Destacado 3',
-        slug: 'producto-destacado-3',
-        description: 'Descripción del tercer producto destacado',
-        price: 1799.99,
-        image: 'https://www.magnolia-n.com/logo.jpg',
-        category: 'Accesorios'
-    }
-];
+// Conectar a Supabase
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
 
-function generateRSSFeed() {
+if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('✗ Error: Variables de Supabase no encontradas');
+    console.error('  Asegúrate de tener .env.local con:');
+    console.error('  VITE_SUPABASE_URL=...');
+    console.error('  VITE_SUPABASE_ANON_KEY=...');
+    process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+async function getProductsFromSupabase() {
+    try {
+        // Obtener todos los productos
+        const { data, error } = await supabase
+            .from('products')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('✗ Error al obtener productos:', error.message);
+            return [];
+        }
+
+        // Para cada producto, obtener sus imágenes
+        const productsWithImages = await Promise.all(
+            (data || []).map(async (product) => {
+                const { data: images } = await supabase
+                    .from('product_images')
+                    .select('*')
+                    .eq('product_id', product.id)
+                    .order('order', { ascending: true });
+
+                return {
+                    ...product,
+                    images: images || []
+                };
+            })
+        );
+
+        return productsWithImages;
+    } catch (error) {
+        console.error('✗ Error de conexión:', error.message);
+        return [];
+    }
+}
+
+function getPrimaryImage(product) {
+    if (!product.images || product.images.length === 0) return 'https://www.magnolia-n.com/logo.jpg';
+    const primary = product.images.find(img => img.is_primary);
+    return primary ? primary.image_url : product.images[0].image_url;
+}
+
+function generateRSSFeed(products) {
     const now = new Date().toISOString();
     
     let itemsXml = '';
     
     products.forEach(product => {
+        const imageUrl = getPrimaryImage(product);
+        const productUrl = `https://www.magnolia-n.com/producto/${product.slug}`;
+        
         itemsXml += `
     <item>
         <title>${escapeXml(product.name)}</title>
-        <link>https://www.magnolia-n.com/producto/${product.slug}</link>
-        <description>${escapeXml(product.description)}</description>
-        <category>${escapeXml(product.category)}</category>
-        <price>${product.price.toFixed(2)}</price>
-        <image>${product.image}</image>
+        <link>${productUrl}</link>
+        <description>${escapeXml(product.description || 'Producto de Magnolia Novedades')}</description>
+        <price>${(product.price || 0).toFixed(2)}</price>
+        <currency>ARS</currency>
+        <image>${imageUrl}</image>
         <pubDate>${now}</pubDate>
-        <guid>https://www.magnolia-n.com/producto/${product.slug}</guid>
+        <guid>${productUrl}</guid>
     </item>`;
     });
 
@@ -86,9 +119,18 @@ function escapeXml(str) {
         .replace(/'/g, '&apos;');
 }
 
-function saveFeed() {
+async function saveFeed() {
     try {
-        const feedContent = generateRSSFeed();
+        console.log('🔄 Obteniendo productos desde Supabase...');
+        const products = await getProductsFromSupabase();
+        
+        if (products.length === 0) {
+            console.warn('⚠ No hay productos disponibles');
+        } else {
+            console.log(`✓ ${products.length} productos encontrados`);
+        }
+
+        const feedContent = generateRSSFeed(products);
         const publicDir = path.join(__dirname, '../public');
         const feedPath = path.join(publicDir, 'feed.xml');
 
@@ -100,6 +142,7 @@ function saveFeed() {
         fs.writeFileSync(feedPath, feedContent, 'utf8');
         console.log('✓ Feed RSS generado exitosamente en: public/feed.xml');
         console.log(`✓ Disponible en: https://www.magnolia-n.com/feed.xml`);
+        console.log(`✓ Productos en el feed: ${products.length}`);
     } catch (error) {
         console.error('✗ Error al generar el feed:', error.message);
         process.exit(1);
@@ -107,3 +150,4 @@ function saveFeed() {
 }
 
 saveFeed();
+

@@ -5,7 +5,7 @@
         <link>https://www.magnolia-n.com</link>
         <description>Decoración y regalos únicos en San Salvador de Jujuy, Argentina</description>
         <language>es-ar</language>
-        <lastBuildDate>2025-12-10T23:53:35.996Z</lastBuildDate>
+        <lastBuildDate>2025-12-10T23:57:55.747Z</lastBuildDate>
         <image>
             <url>https://www.magnolia-n.com/logo.jpg</url>
             <title>Magnolia Novedades</title>
@@ -13,34 +13,354 @@
         </image>
         
     <item>
-        <title>Producto Destacado 1</title>
-        <link>https://www.magnolia-n.com/producto/producto-destacado-1</link>
-        <description>Descripción del primer producto destacado</description>
-        <category>Decoración</category>
-        <price>1999.99</price>
+        <title>(A17) LED RGB 5050 CON FUENTE X 5M</title>
+        <link>https://www.magnolia-n.com/producto/a17-led-rgb-5050-con-fuente-x5m</link>
+        <description>CARACTERISTICAS
+
+- Guirnalda led 5m multicolor 5050 RGB
+- Juego de tiras de luz de bajo voltaje 12 V
+- Longitud: 5 metros
+- Incluye control + fuente de alimentación + tira de luz</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
         <image>https://www.magnolia-n.com/logo.jpg</image>
-        <pubDate>2025-12-10T23:53:35.996Z</pubDate>
-        <guid>https://www.magnolia-n.com/producto/producto-destacado-1</guid>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a17-led-rgb-5050-con-fuente-x5m</guid>
     </item>
     <item>
-        <title>Producto Destacado 2</title>
-        <link>https://www.magnolia-n.com/producto/producto-destacado-2</link>
-        <description>Descripción del segundo producto destacado</description>
-        <category>Regalos</category>
-        <price>2499.99</price>
+        <title>(A18-5) LED NEON SIN FUENTE X 5M - VERDE</title>
+        <link>https://www.magnolia-n.com/producto/a18-5-led-neon-sin-fuente-x-5m-verde</link>
+        <description>CARACTERISTICAS
+
+- Juego de tira de luz flexibles
+
+- Longitud 5 metros de largo</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
         <image>https://www.magnolia-n.com/logo.jpg</image>
-        <pubDate>2025-12-10T23:53:35.996Z</pubDate>
-        <guid>https://www.magnolia-n.com/producto/producto-destacado-2</guid>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a18-5-led-neon-sin-fuente-x-5m-verde</guid>
     </item>
     <item>
-        <title>Producto Destacado 3</title>
-        <link>https://www.magnolia-n.com/producto/producto-destacado-3</link>
-        <description>Descripción del tercer producto destacado</description>
-        <category>Accesorios</category>
-        <price>1799.99</price>
+        <title>(A18-4) LED NEON SIN FUENTE X 5M - VIOLETA</title>
+        <link>https://www.magnolia-n.com/producto/a18-4-led-neon-sin-fuente-x-5m-violeta</link>
+        <description>CARACTERISTICAS
+
+- Juego de tira de luz flexibles
+
+- Longitud 5 metros de largo</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
         <image>https://www.magnolia-n.com/logo.jpg</image>
-        <pubDate>2025-12-10T23:53:35.996Z</pubDate>
-        <guid>https://www.magnolia-n.com/producto/producto-destacado-3</guid>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a18-4-led-neon-sin-fuente-x-5m-violeta</guid>
+    </item>
+    <item>
+        <title>(A18-3) LED NEON SIN FUENTE X 5M - ROSA</title>
+        <link>https://www.magnolia-n.com/producto/a18-3-led-neon-sin-fuente-x-5m-rosa</link>
+        <description>CARACTERISTICAS
+
+- Juego de tira de luz flexibles
+
+- Longitud 5 metros de largo</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a18-3-led-neon-sin-fuente-x-5m-rosa</guid>
+    </item>
+    <item>
+        <title>(A18-2) LED NEON SIN FUENTE X 5M - ROJO</title>
+        <link>https://www.magnolia-n.com/producto/a18-2-led-neon-sin-fuente-x-5m-rojo</link>
+        <description>CARACTERISTICAS
+
+- Juego de tira de luz flexibles
+
+- Longitud 5 metros de largo</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a18-2-led-neon-sin-fuente-x-5m-rojo</guid>
+    </item>
+    <item>
+        <title>(A18-1) LED NEON SIN FUENTE X 5M - AZUL</title>
+        <link>https://www.magnolia-n.com/producto/a18-1-led-neon-sin-fuente-x-5m-azul</link>
+        <description>CARACTERISTICAS
+
+- Juego de tira de luz flexibles
+
+- Longitud 5 metros de largo
+</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a18-1-led-neon-sin-fuente-x-5m-azul</guid>
+    </item>
+    <item>
+        <title>(A9-2) LED ALAMBRE - 50cm</title>
+        <link>https://www.magnolia-n.com/producto/a9-2-led-alambre-50cm</link>
+        <description>CARACTERISTICAS
+
+- 10 LEDS
+
+- MEDIDA: 50CM
+
+- UTILIZA 3 PILAS AG13 (INCLUIDO)</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a9-2-led-alambre-50cm</guid>
+    </item>
+    <item>
+        <title>(A9-1) LED ALAMBRE - 50cm</title>
+        <link>https://www.magnolia-n.com/producto/a9-1-led-alambre-50cm</link>
+        <description>CARACTERISTICAS
+
+- 10 LEDS
+
+- MEDIDA: 50CM
+
+- UTILIZA 3 PILAS AG13 (INCLUIDO)</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a9-1-led-alambre-50cm</guid>
+    </item>
+    <item>
+        <title>(A3-2) LED ALAMBRE - 3M</title>
+        <link>https://www.magnolia-n.com/producto/a3-2-led-alambre-3m</link>
+        <description>CARACTERISTICAS
+
+- 30 LEDS
+
+- MEDIDA: 3M
+
+- UTILIZA 3 PILAS AG13 (INCLUIDO)</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a3-2-led-alambre-3m</guid>
+    </item>
+    <item>
+        <title>(A3-1)  LED ALAMBRE - 3M</title>
+        <link>https://www.magnolia-n.com/producto/a3-1-led-alambre-3m</link>
+        <description>CARACTERISTICAS
+
+- 30 LEDS
+- MEDIDA: 3M
+- UTILIZA 3 PILAS AG13 (INCLUIDO)</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a3-1-led-alambre-3m</guid>
+    </item>
+    <item>
+        <title>(B-15-2)GLOBO LED - BLANCO</title>
+        <link>https://www.magnolia-n.com/producto/b-15-2-globo-led-blanco</link>
+        <description>CADA GLOBO INCLUYE
+
+- 1 Globo burbuja de 20 CM
+
+- 1 Led alambre de 3 M - blanco
+
+- 1 portaglobos de 60 CM</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/b-15-2-globo-led-blanco</guid>
+    </item>
+    <item>
+        <title>(A15-5) LED NEON CON FUENTE X 5M - VERDE</title>
+        <link>https://www.magnolia-n.com/producto/a15-5-led-neon-con-fuente-x-5m-verde</link>
+        <description>- Juego de tira de luz flexibles
+- Longitud 5 metros de largo
+- Incluye fuente de alimentación para conectar a 220v</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a15-5-led-neon-con-fuente-x-5m-verde</guid>
+    </item>
+    <item>
+        <title>(A15-4) LED NEON CON FUENTE X 5M - VIOLETA</title>
+        <link>https://www.magnolia-n.com/producto/a15-4-led-neon-con-fuente-x-5m-violeta</link>
+        <description>- Juego de tira de luz flexibles
+- Longitud 5 metros de largo
+- Incluye fuente de alimentación para conectar a 220v</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a15-4-led-neon-con-fuente-x-5m-violeta</guid>
+    </item>
+    <item>
+        <title>(A15-3) LED NEON CON FUENTE X 5M - ROSA</title>
+        <link>https://www.magnolia-n.com/producto/a15-3-led-neon-con-fuente-x-5m-rosa</link>
+        <description>- Juego de tira de luz flexibles
+- Longitud 5 metros de largo
+- Incluye fuente de alimentación para conectar a 220v</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a15-3-led-neon-con-fuente-x-5m-rosa</guid>
+    </item>
+    <item>
+        <title>(A15-2) LED NEON CON FUENTE X 5M - ROJO</title>
+        <link>https://www.magnolia-n.com/producto/a15-2-led-neon-con-fuente-x-5m-rojo</link>
+        <description>- Juego de tira de luz flexibles
+- Longitud 5 metros de largo
+- Incluye fuente de alimentación para conectar a 220v</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a15-2-led-neon-con-fuente-x-5m-rojo</guid>
+    </item>
+    <item>
+        <title>(A15-1) LED NEON CON FUENTE X 5M - AZUL</title>
+        <link>https://www.magnolia-n.com/producto/a15-1-led-neon-con-fuente-x-5m-azul</link>
+        <description>- Juego de tira de luz flexibles
+- Longitud 5 metros de largo
+- Incluye fuente de alimentación para conectar a 220v
+</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a15-1-led-neon-con-fuente-x-5m-azul</guid>
+    </item>
+    <item>
+        <title>(A29-3) GUIRNALDA LED 100 LUCES NAVIDAD - 8 EFECTOS - 9M - CALIDO</title>
+        <link>https://www.magnolia-n.com/producto/a29-3-guirnalda-led-100-luces-navidad-8-efectos-9m-calido</link>
+        <description>- Conexión eléctrica a enchufe de 220v
+- Longitud: 9 metros
+- Transformador de 8 funciones</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a29-3-guirnalda-led-100-luces-navidad-8-efectos-9m-calido</guid>
+    </item>
+    <item>
+        <title>(A29-2) GUIRNALDA LED 100 LUCES NAVIDAD - 8 EFECTOS - 9M- BLANCA</title>
+        <link>https://www.magnolia-n.com/producto/a29-2-guirnalda-led-100-luces-navidad-8-efectos-9m-blanca</link>
+        <description>- Conexión eléctrica a enchufe de 220v
+- Longitud: 9 metros
+- Transformador de 8 funciones</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a29-2-guirnalda-led-100-luces-navidad-8-efectos-9m-blanca</guid>
+    </item>
+    <item>
+        <title>(A29-1) GUIRNALDA LED 100 LUCES NAVIDAD - 8 EFECTOS - 9M - MULTICOLOR</title>
+        <link>https://www.magnolia-n.com/producto/a29-1-guirnalda-led-100-luces-navidad-8-efectos-9m-multicolor</link>
+        <description>- Conexión eléctrica a enchufe de 220v
+- Longitud: 9 metros
+- Transformador de 8 funciones</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/a29-1-guirnalda-led-100-luces-navidad-8-efectos-9m-multicolor</guid>
+    </item>
+    <item>
+        <title>(B61) SILBATO LED</title>
+        <link>https://www.magnolia-n.com/producto/b61-silbato-led</link>
+        <description>- Usa 3 pilas AG3 (incluido)</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/b61-silbato-led</guid>
+    </item>
+    <item>
+        <title>(B-15-1) GLOBO LED - MULTICOLOR</title>
+        <link>https://www.magnolia-n.com/producto/b-15-1-globo-led-multicolor</link>
+        <description>CADA GLOBO INCLUYE
+- 1 Globo burbuja de 20 CM
+- 1 Led alambre de 3 M - multicolor
+- 1 portaglobos de 60 CM</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/b-15-1-globo-led-multicolor</guid>
+    </item>
+    <item>
+        <title>(B64) CORONAS DE PLUMAS LED - MULTICOLOR</title>
+        <link>https://www.magnolia-n.com/producto/b64-coronas-de-plumas-led-multicolor</link>
+        <description>- 10 leds
+- Utiliza 3 pilas AG13 (INCLUIDO)
+- Color de las plumas: blanco, rosa, violeta y celeste
+- Color de las luces: multicolor</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/b64-coronas-de-plumas-led-multicolor</guid>
+    </item>
+    <item>
+        <title>(B4-2) CORONA DE FLORES LED - ROSA</title>
+        <link>https://www.magnolia-n.com/producto/b4-2-corona-de-flores-led-rosa</link>
+        <description>- 10 leds
+- Utiliza 3 pilas AG13 (INCLUIDO)</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/b4-2-corona-de-flores-led-rosa</guid>
+    </item>
+    <item>
+        <title>(B4-3) CORONA DE FLORES LED - BLANCA</title>
+        <link>https://www.magnolia-n.com/producto/b4-3-corona-de-flores-led-blanca</link>
+        <description>- 10 leds
+- Utiliza 3 pilas AG13 (INCLUIDO)</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/b4-3-corona-de-flores-led-blanca</guid>
+    </item>
+    <item>
+        <title>(B4-1) CORONA DE FLORES LED - MULTICOLOR</title>
+        <link>https://www.magnolia-n.com/producto/b4-1-corona-de-flores-led-multicolor</link>
+        <description>- 10 leds
+- Utiliza 3 pilas AG13 (INCLUIDO)</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/b4-1-corona-de-flores-led-multicolor</guid>
+    </item>
+    <item>
+        <title>(B3) PULSERA LED</title>
+        <link>https://www.magnolia-n.com/producto/b3-pulsera-led</link>
+        <description>- Utiliza 3 pilas AG3 (INCLUIDO)</description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/b3-pulsera-led</guid>
+    </item>
+    <item>
+        <title>(B49)  VARITA LED</title>
+        <link>https://www.magnolia-n.com/producto/b49-varita-led</link>
+        <description>- Varita Led 45cm </description>
+        <price>0.00</price>
+        <currency>ARS</currency>
+        <image>https://www.magnolia-n.com/logo.jpg</image>
+        <pubDate>2025-12-10T23:57:55.747Z</pubDate>
+        <guid>https://www.magnolia-n.com/producto/b49-varita-led</guid>
     </item>
     </channel>
 </rss>
