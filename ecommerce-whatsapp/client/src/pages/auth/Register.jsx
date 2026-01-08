@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../config/supabase';
+import { trackCompleteRegistration } from '../../services/facebookService';
 import './Auth.css';
 
 export default function Register() {
@@ -14,15 +15,15 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (password !== confirmPassword) {
             return setError('Las contraseñas no coinciden');
         }
-        
+
         try {
             setError('');
             setLoading(true);
-            
+
             const { data: authData, error: signUpError } = await supabase.auth.signUp({
                 email,
                 password,
@@ -33,16 +34,22 @@ export default function Register() {
                     emailRedirectTo: `${window.location.origin}/`,
                 },
             });
-            
+
             if (signUpError) {
                 throw signUpError;
             }
-            
+
             // Si el registro requiere confirmación por correo
             if (authData.user) {
+                // Rastrear en Facebook
+                trackCompleteRegistration({
+                    email: authData.user.email,
+                    user_id: authData.user.id
+                });
+
                 navigate('/registro-exitoso', { state: { email } });
             }
-            
+
         } catch (error) {
             console.error('Error al registrarse:', error);
             setError(error.message || 'Error al crear la cuenta. Intenta de nuevo.');
@@ -56,7 +63,7 @@ export default function Register() {
             <div className="auth-card">
                 <h2>Crear Cuenta</h2>
                 {error && <div className="error-message">{error}</div>}
-                
+
                 <form onSubmit={handleSubmit} className="auth-form">
                     <div className="form-group">
                         <label htmlFor="fullName">Nombre Completo</label>
@@ -69,7 +76,7 @@ export default function Register() {
                             placeholder="Tu nombre completo"
                         />
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="email">Correo Electrónico</label>
                         <input
@@ -81,7 +88,7 @@ export default function Register() {
                             placeholder="tu@email.com"
                         />
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="password">Contraseña</label>
                         <input
@@ -94,7 +101,7 @@ export default function Register() {
                             minLength="6"
                         />
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="confirmPassword">Confirmar Contraseña</label>
                         <input
@@ -106,16 +113,16 @@ export default function Register() {
                             placeholder="Vuelve a escribir tu contraseña"
                         />
                     </div>
-                    
-                    <button 
-                        type="submit" 
+
+                    <button
+                        type="submit"
                         className="btn btn-primary btn-block"
                         disabled={loading}
                     >
                         {loading ? 'Creando cuenta...' : 'Registrarse'}
                     </button>
                 </form>
-                
+
                 <div className="auth-footer">
                     <p>
                         ¿Ya tienes una cuenta?{' '}

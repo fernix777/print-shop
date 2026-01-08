@@ -7,6 +7,7 @@ import WhatsAppButton from '../../components/customer/WhatsAppButton'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import { AuthContext } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
+import { trackViewContent } from '../../services/facebookService'
 import './ProductDetail.css'
 
 export default function ProductDetail() {
@@ -39,6 +40,18 @@ export default function ProductDetail() {
         setProduct(data)
         setLoading(false)
     }
+
+    useEffect(() => {
+        if (product) {
+            // Rastrear visualización del producto
+            const currentUser = user ? {
+                email: user.email,
+                user_id: user.id
+            } : null;
+
+            trackViewContent(product, currentUser);
+        }
+    }, [product, user]);
 
     const formatPrice = (price) => {
         return new Intl.NumberFormat('es-AR', {

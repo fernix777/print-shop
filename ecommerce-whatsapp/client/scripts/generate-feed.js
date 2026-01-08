@@ -75,11 +75,11 @@ function getPrimaryImage(product) {
 
 function generateProductFeed(products) {
     const now = new Date().toISOString();
-    
+
     let itemsXml = '';
     let validProducts = 0;
     let skippedProducts = 0;
-    
+
     products.forEach((product, index) => {
         // Validar datos del producto
         const validationErrors = validateProductData(product);
@@ -88,48 +88,48 @@ function generateProductFeed(products) {
             skippedProducts++;
             return;
         }
-        
+
         const imageUrl = getPrimaryImage(product);
         const productUrl = `https://www.magnolia-n.com/producto/${product.slug}`;
-        
+
         // Validar URLs
         if (!validateUrl(productUrl)) {
             console.warn(`⚠ URL de producto inválida: ${productUrl}`);
             skippedProducts++;
             return;
         }
-        
+
         if (!validateUrl(imageUrl)) {
             console.warn(`⚠ URL de imagen inválida para ${product.name}: ${imageUrl}`);
         }
-        
+
         // Generar ID único
         const productId = product.id.toString();
-        
+
         // Formatear precio
-        const price = product.price && product.price > 0 ? product.price : 1; // Usar 1 ARS como precio mínimo
+        const price = product.base_price && product.base_price > 0 ? product.base_price : 1; // Usar 1 ARS como precio mínimo
         const formattedPrice = `${price.toFixed(2)} ARS`;
-        
+
         // Advertir sobre productos sin precio
-        if (!product.price || product.price <= 0) {
+        if (!product.base_price || product.base_price <= 0) {
             console.warn(`⚠ Producto "${product.name}" no tiene precio válido, usando precio mínimo: 1 ARS`);
         }
-        
+
         // Determinar disponibilidad
         const stock = product.stock || 0;
         const availability = stock > 0 ? 'in stock' : 'out of stock';
-        
+
         // Descripción limpia
         let description = product.description || 'Producto de Magnolia Novedades - Decoración y regalos únicos en San Salvador de Jujuy, Argentina';
         if (description.length > 5000) {
             description = description.substring(0, 4997) + '...';
         }
-        
+
         // Categoría del producto
         const category = product.category || 'Decoración';
-        
+
         validProducts++;
-        
+
         itemsXml += `
         <item>
             <g:id>${escapeXml(productId)}</g:id>
@@ -182,21 +182,21 @@ function escapeXml(str) {
 
 function validateProductData(product) {
     const errors = [];
-    
+
     if (!product.name) {
         errors.push('Falta nombre del producto');
     }
-    
+
     if (!product.slug) {
         errors.push('Falta slug del producto');
     }
-    
+
     if (!product.id) {
         errors.push('Falta ID del producto');
     }
-    
+
     // No validar precio aquí, lo manejaremos en la generación
-    
+
     return errors;
 }
 
@@ -213,7 +213,7 @@ async function saveFeed() {
     try {
         console.log('🔄 Obteniendo productos desde Supabase...');
         const products = await getProductsFromSupabase();
-        
+
         if (products.length === 0) {
             console.warn('⚠ No hay productos disponibles');
         } else {

@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { trackAddToCart } from '../services/facebookService';
+import { useAuth } from './AuthContext';
 
 const CartContext = createContext();
 
@@ -12,6 +14,8 @@ export function CartProvider({ children }) {
         return [];
     });
 
+    const { user } = useAuth();
+
     // Guardar el carrito en localStorage cuando cambie
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -20,6 +24,13 @@ export function CartProvider({ children }) {
     }, [cart]);
 
     const addToCart = (product, quantity = 1, options = {}) => {
+        // Rastrear en Facebook
+        const currentUser = user ? {
+            email: user.email,
+            user_id: user.id
+        } : null;
+        trackAddToCart(product, quantity, currentUser);
+
         setCart(prevCart => {
             // Verificar si el producto ya está en el carrito
             const existingItemIndex = prevCart.findIndex(item =>

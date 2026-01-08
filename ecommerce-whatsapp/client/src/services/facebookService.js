@@ -1,12 +1,24 @@
 /**
  * Facebook Conversion API Service
- * Servicio para enviar eventos de conversión a Facebook
+ * Servicio para enviar eventos de conversión a Facebook con alta precisión
  */
 
 import { FACEBOOK_CONFIG, FACEBOOK_EVENTS, isFacebookConfigured } from '../config/facebook';
 
 /**
+ * Obtener valor de una cookie por nombre
+ */
+const getCookie = (name) => {
+    if (typeof document === 'undefined') return null;
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+};
+
+/**
  * Hash de string usando SHA-256 (requerido por Facebook)
+ * Compatible con el navegador
  */
 const hashString = async (str) => {
     if (!str) return null;
@@ -25,29 +37,35 @@ const hashString = async (str) => {
 };
 
 /**
- * Preparar datos de usuario con hash
+ * Preparar datos de usuario con hash y parámetros de alta precisión
  */
 const prepareUserData = async (user) => {
     const userData = {};
 
-    if (user?.email) {
-        userData.em = await hashString(user.email);
+    // Datos básicos (Hasheados)
+    if (user?.email) userData.em = await hashString(user.email);
+    if (user?.phone) userData.ph = await hashString(user.phone);
+    if (user?.first_name) userData.fn = await hashString(user.first_name);
+    if (user?.last_name) userData.ln = await hashString(user.last_name);
+
+    // Ubicación (Hasheados)
+    if (user?.city) userData.ct = await hashString(user.city);
+    if (user?.state) userData.st = await hashString(user.state);
+    if (user?.zip) userData.zp = await hashString(user.zip);
+    if (user?.country) userData.country = await hashString(user.country);
+
+    // Identificadores de Facebook (NO hasheados)
+    userData.fbp = getCookie('_fbp');
+    userData.fbc = getCookie('_fbc');
+
+    // Identificador externo
+    if (user?.user_id || user?.id) {
+        userData.external_id = user.user_id || user.id;
     }
 
-    if (user?.phone) {
-        userData.ph = await hashString(user.phone);
-    }
-
-    if (user?.first_name) {
-        userData.fn = await hashString(user.first_name);
-    }
-
-    if (user?.last_name) {
-        userData.ln = await hashString(user.last_name);
-    }
-
-    if (user?.user_id) {
-        userData.external_id = user.user_id;
+    // Datos del navegador
+    if (typeof navigator !== 'undefined') {
+        userData.client_user_agent = navigator.userAgent;
     }
 
     return userData;
@@ -63,7 +81,7 @@ export const trackFacebookEvent = async (eventName, eventData = {}) => {
     }
 
     try {
-        const userData = eventData.user ? await prepareUserData(eventData.user) : {};
+        const userData = eventData.user ? await prepareUserData(eventData.user) : await prepareUserData({});
 
         const payload = {
             data: [
@@ -71,6 +89,7 @@ export const trackFacebookEvent = async (eventName, eventData = {}) => {
                     event_name: eventName,
                     event_time: Math.floor(Date.now() / 1000),
                     event_source_url: typeof window !== 'undefined' ? window.location.href : '',
+                    action_source: 'website',
                     user_data: userData,
                     custom_data: {
                         value: eventData.value || undefined,
@@ -106,7 +125,7 @@ export const trackFacebookEvent = async (eventName, eventData = {}) => {
         }
 
         const result = await response.json();
-        console.log(`✅ Evento Facebook registrado: ${eventName}`, result);
+        console.log(`✅ Evento Facebook registrado (Alta Precisión): ${eventName}`, result);
         return result;
 
     } catch (error) {

@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { supabase } from '../../config/supabase'
+import { AuthContext } from '../../context/AuthContext'
+import { trackSearch } from '../../services/facebookService'
 import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
@@ -10,6 +12,7 @@ import './SearchPage.css'
 export default function SearchPage() {
     const [searchParams] = useSearchParams()
     const query = searchParams.get('q') || ''
+    const { user } = useContext(AuthContext)
 
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
@@ -25,6 +28,16 @@ export default function SearchPage() {
             searchProducts()
         }
     }, [query, filters])
+
+    useEffect(() => {
+        if (query && !loading) {
+            // Rastrear búsqueda
+            trackSearch(query, products.length, {
+                email: user?.email,
+                user_id: user?.id
+            });
+        }
+    }, [query, products.length, loading, user]);
 
     const searchProducts = async () => {
         setLoading(true)
