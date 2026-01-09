@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
-import { trackInitiateCheckout } from '../../services/facebookService'
+import { trackInitiateCheckout, trackPurchase } from '../../services/facebookService'
 import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
@@ -11,7 +11,7 @@ import './CheckoutPage.css'
 export default function CheckoutPage() {
     const navigate = useNavigate()
     const { user } = useAuth()
-    const { cart, getTotalPrice, getTotalItems, clearCart } = useCart()
+    const { cart, getCartTotal, getCartCount, clearCart } = useCart()
     
     const [formData, setFormData] = useState({
         firstName: user?.first_name || '',
@@ -30,8 +30,8 @@ export default function CheckoutPage() {
     const [processing, setProcessing] = useState(false)
     const [checkoutInitiated, setCheckoutInitiated] = useState(false)
 
-    const cartTotal = getTotalPrice()
-    const cartItemsCount = getTotalItems()
+    const cartTotal = getCartTotal()
+    const cartItemsCount = getCartCount()
 
     // Rastrear InitiateCheckout cuando el componente se monta
     useEffect(() => {
@@ -95,6 +95,48 @@ export default function CheckoutPage() {
             const orderWithId = { ...orderData, order_id: orderId }
             
             localStorage.setItem('lastOrder', JSON.stringify(orderWithId))
+
+            // Rastrear la compra en Facebook
+            const fbOrderData = {
+                id: orderId,
+                user: {
+                    email: user?.email,
+                    user_id: user?.id
+                },
+                total: cartTotal,
+                items: cart.map(item => ({
+                    product_id: item.id,
+                    product_name: item.name,
+                    quantity: item.quantity,
+                    price: item.price
+                }))
+            }
+            trackPurchase(fbOrderData)
+
+            // Si el método de pago es WhatsApp, abrir el chat
+            if (paymentMethod === 'whatsapp') {
+                const phoneNumber = '543885171795'
+                let message = '🛒 *PEDIDO DE COMPRA*\n\n'
+                message += `👤 *Cliente:* ${formData.firstName} ${formData.lastName}\n`
+                message += `📧 *Email:* ${formData.email}\n`
+                message += `📞 *Teléfono:* ${formData.phone}\n`
+                message += `📍 *Dirección:* ${formData.address}, ${formData.city}, ${formData.state}\n\n`
+                
+                message += '📋 *Productos solicitados:*\n'
+                cart.forEach((item, index) => {
+                    message += `\n${index + 1}. *${item.name}*\n`
+                    message += `   - Cantidad: ${item.quantity}\n`
+                    message += `   - Precio unitario: $${item.price.toLocaleString('es-AR')}\n`
+                    message += `   - Subtotal: $${(item.price * item.quantity).toLocaleString('es-AR')}\n`
+                })
+                
+                message += `\n💰 *Total a pagar: $${cartTotal.toLocaleString('es-AR')}*\n\n`
+                message += `ID de Orden: ${orderId}\n`
+                message += '¡Hola! Quisiera confirmar este pedido.'
+
+                const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
+                window.open(url, '_blank')
+            }
 
             // Redirigir a confirmación
             navigate('/order-confirmation', { state: { orderId, order: orderWithId } })

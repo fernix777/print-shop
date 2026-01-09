@@ -55,8 +55,10 @@ const prepareUserData = async (user) => {
     if (user?.country) userData.country = await hashString(user.country);
 
     // Identificadores de Facebook (NO hasheados)
-    userData.fbp = getCookie('_fbp');
-    userData.fbc = getCookie('_fbc');
+    const fbp = getCookie('_fbp');
+    const fbc = getCookie('_fbc');
+    if (fbp) userData.fbp = fbp;
+    if (fbc) userData.fbc = fbc;
 
     // Identificador externo
     if (user?.user_id || user?.id) {
@@ -93,6 +95,27 @@ export const trackFacebookEvent = async (eventName, eventData = {}) => {
         // Generar ID único para deduplicación
         const eventId = generateEventId();
 
+        // Limpiar custom_data: remover campos undefined y NaN
+        const customData = {};
+        if (eventData.value !== undefined && !isNaN(eventData.value)) {
+            customData.value = eventData.value;
+        }
+        if (eventData.currency) {
+            customData.currency = eventData.currency || 'ARS';
+        }
+        if (eventData.content_name) {
+            customData.content_name = eventData.content_name;
+        }
+        if (eventData.content_type) {
+            customData.content_type = eventData.content_type || 'product';
+        }
+        if (eventData.content_id) {
+            customData.content_id = eventData.content_id;
+        }
+        if (eventData.contents && eventData.contents.length > 0) {
+            customData.contents = eventData.contents;
+        }
+
         const payload = {
             data: [
                 {
@@ -102,14 +125,7 @@ export const trackFacebookEvent = async (eventName, eventData = {}) => {
                     event_source_url: typeof window !== 'undefined' ? window.location.href : '',
                     action_source: 'website',
                     user_data: userData,
-                    custom_data: {
-                        value: eventData.value || undefined,
-                        currency: eventData.currency || 'ARS',
-                        content_name: eventData.content_name || undefined,
-                        content_type: eventData.content_type || 'product',
-                        content_id: eventData.content_id || undefined,
-                        contents: eventData.contents || []
-                    }
+                    custom_data: customData
                 }
             ],
             test_event_code: import.meta.env.VITE_FACEBOOK_TEST_EVENT_CODE // Opcional: para testing
