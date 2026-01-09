@@ -7,7 +7,7 @@ import WhatsAppButton from '../../components/customer/WhatsAppButton'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import { AuthContext } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
-import { trackViewContent } from '../../services/facebookService'
+import { trackViewContent, trackAddToCart } from '../../services/facebookService'
 import './ProductDetail.css'
 
 export default function ProductDetail() {
@@ -127,6 +127,13 @@ export default function ProductDetail() {
             selectedVariant,
             finalPrice
         })
+
+        // Rastrear evento AddToCart en Facebook
+        const currentUser = user ? {
+            email: user.email,
+            user_id: user.id
+        } : null;
+        trackAddToCart(product, quantity, currentUser);
 
         // Mostrar notificación
         setShowNotification(true)

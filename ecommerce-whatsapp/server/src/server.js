@@ -4,6 +4,9 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Importar rutas
+import facebookRoutes from './routes/facebook.js';
+
 // Configuración
 dotenv.config();
 
@@ -29,6 +32,9 @@ app.get('/api/health', (req, res) => {
         timestamp: new Date().toISOString()
     });
 });
+
+// Registrar rutas de Facebook
+app.use('/api/facebook', facebookRoutes);
 
 // Importar rutas (se agregarán después)
 // import authRoutes from './routes/authRoutes.js';

@@ -171,7 +171,8 @@ export const trackFacebookEvent = async (eventName, eventData = {}) => {
  * Rastrear visualización de contenido
  */
 export const trackViewContent = async (product, user = null) => {
-    return trackFacebookEvent(FACEBOOK_EVENTS.VIEW_CONTENT, {
+    // 1. Rastrear desde cliente
+    const clientResult = await trackFacebookEvent(FACEBOOK_EVENTS.VIEW_CONTENT, {
         user,
         content_id: product.id,
         content_name: product.name,
@@ -184,13 +185,22 @@ export const trackViewContent = async (product, user = null) => {
             }
         ]
     });
+
+    // 2. Rastrear desde servidor (deduplicación)
+    const serverResult = await trackServerEvent('track-view', {
+        product,
+        user
+    });
+
+    return clientResult || serverResult;
 };
 
 /**
  * Rastrear agregar al carrito
  */
 export const trackAddToCart = async (product, quantity, user = null) => {
-    return trackFacebookEvent(FACEBOOK_EVENTS.ADD_TO_CART, {
+    // 1. Rastrear desde cliente
+    const clientResult = await trackFacebookEvent(FACEBOOK_EVENTS.ADD_TO_CART, {
         user,
         content_id: product.id,
         content_name: product.name,
@@ -203,13 +213,23 @@ export const trackAddToCart = async (product, quantity, user = null) => {
             }
         ]
     });
+
+    // 2. Rastrear desde servidor (más confiable)
+    const serverResult = await trackServerEvent('track-add-to-cart', {
+        product,
+        quantity,
+        user
+    });
+
+    return clientResult || serverResult;
 };
 
 /**
  * Rastrear iniciación de checkout
  */
 export const trackInitiateCheckout = async (cartTotal, itemsCount, user = null) => {
-    return trackFacebookEvent(FACEBOOK_EVENTS.INITIATE_CHECKOUT, {
+    // 1. Rastrear desde cliente
+    const clientResult = await trackFacebookEvent(FACEBOOK_EVENTS.INITIATE_CHECKOUT, {
         user,
         value: cartTotal,
         content_type: 'product_group',
@@ -220,13 +240,23 @@ export const trackInitiateCheckout = async (cartTotal, itemsCount, user = null) 
             }
         ]
     });
+
+    // 2. Rastrear desde servidor
+    const serverResult = await trackServerEvent('track-checkout', {
+        cartTotal,
+        itemsCount,
+        user
+    });
+
+    return clientResult || serverResult;
 };
 
 /**
  * Rastrear compra/conversión
  */
 export const trackPurchase = async (order) => {
-    return trackFacebookEvent(FACEBOOK_EVENTS.PURCHASE, {
+    // 1. Rastrear desde cliente
+    const clientResult = await trackFacebookEvent(FACEBOOK_EVENTS.PURCHASE, {
         user: order.user,
         value: order.total,
         content_id: order.id,
@@ -239,17 +269,32 @@ export const trackPurchase = async (order) => {
             delivery_category: 'home_delivery'
         }))
     });
+
+    // 2. Rastrear desde servidor (CRÍTICO para conversiones)
+    const serverResult = await trackServerEvent('track-purchase', {
+        order
+    });
+
+    return clientResult || serverResult;
 };
 
 /**
  * Rastrear registro completado
  */
 export const trackCompleteRegistration = async (user) => {
-    return trackFacebookEvent(FACEBOOK_EVENTS.COMPLETE_REGISTRATION, {
+    // 1. Rastrear desde cliente
+    const clientResult = await trackFacebookEvent(FACEBOOK_EVENTS.COMPLETE_REGISTRATION, {
         user,
         content_name: 'Registration',
         content_type: 'lead'
     });
+
+    // 2. Rastrear desde servidor
+    const serverResult = await trackServerEvent('track-registration', {
+        user
+    });
+
+    return clientResult || serverResult;
 };
 
 /**
@@ -274,6 +319,36 @@ export const trackContact = async (message, user = null) => {
         content_type: 'inquiry',
         value: message.length
     });
+};
+
+/**
+ * Enviar evento al servidor para rastreo server-side
+ */
+const trackServerEvent = async (endpoint, data) => {
+    try {
+        const response = await fetch(`/api/facebook/${endpoint}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ...data,
+                eventSourceUrl: typeof window !== 'undefined' ? window.location.href : ''
+            })
+        });
+
+        if (!response.ok) {
+            console.warn(`Server tracking failed: ${endpoint}`);
+            return null;
+        }
+
+        const result = await response.json();
+        console.log(`✅ Server-side event tracked: ${endpoint}`, result);
+        return result;
+    } catch (error) {
+        console.error(`Error en server tracking (${endpoint}):`, error);
+        return null;
+    }
 };
 
 export default {
