@@ -1,4 +1,4 @@
-// import { trackServerPurchase } from '../facebookCAPI'
+import { trackServerPurchase } from '../facebookCAPI'
 
 export default async function handler(req, res) {
   console.log('🔍 track-purchase called:', { method: req.method, body: req.body })
@@ -19,16 +19,11 @@ export default async function handler(req, res) {
       return
     }
 
-    // Temporarily skip Facebook API call and just return success
-    console.log('✅ Simulated success (Facebook API call disabled for debugging)')
-    res.status(200).json({ 
-      success: true, 
-      data: { 
-        message: 'Simulated success - Facebook API call disabled',
-        order: order,
-        eventSourceUrl: eventSourceUrl || ''
-      }
-    })
+    console.log('🚀 Calling trackServerPurchase...')
+    const result = await trackServerPurchase(order, eventSourceUrl || '')
+    console.log('✅ trackServerPurchase result:', result)
+
+    res.status(200).json({ success: !!result, data: result })
   } catch (error) {
     console.error('❌ Error tracking purchase (serverless):', error)
     res.status(500).json({ success: false, error: error.message })

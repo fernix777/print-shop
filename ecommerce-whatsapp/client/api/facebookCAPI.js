@@ -1,14 +1,17 @@
 // Facebook Conversion API service for Vercel serverless functions
 // Adaptado desde server/src/services/facebookCAPI.js
 
-import crypto from 'crypto'
-
 // Hash de string usando SHA-256 (requerido por Facebook)
-const hashData = (data) => {
+// Usamos Web Crypto API en lugar de Node crypto para compatibilidad con Vercel
+const hashData = async (data) => {
   if (!data) return null
   try {
     const normalized = String(data).toLowerCase().trim().replace(/\s+/g, '')
-    return crypto.createHash('sha256').update(normalized).digest('hex')
+    const encoder = new TextEncoder()
+    const dataBuffer = encoder.encode(normalized)
+    const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
   } catch (error) {
     console.error('Error al hacer hash:', error)
     return null
@@ -16,20 +19,20 @@ const hashData = (data) => {
 }
 
 // Preparar datos de usuario con hash
-const prepareUserData = (user = {}) => {
+const prepareUserData = async (user = {}) => {
   const userData = {}
 
   // Datos básicos (hasheados)
-  if (user.email) userData.em = hashData(user.email)
-  if (user.phone) userData.ph = hashData(user.phone)
-  if (user.first_name) userData.fn = hashData(user.first_name)
-  if (user.last_name) userData.ln = hashData(user.last_name)
+  if (user.email) userData.em = await hashData(user.email)
+  if (user.phone) userData.ph = await hashData(user.phone)
+  if (user.first_name) userData.fn = await hashData(user.first_name)
+  if (user.last_name) userData.ln = await hashData(user.last_name)
 
   // Ubicación (hasheados)
-  if (user.city) userData.ct = hashData(user.city)
-  if (user.state) userData.st = hashData(user.state)
-  if (user.zip) userData.zp = hashData(user.zip)
-  if (user.country) userData.country = hashData(user.country)
+  if (user.city) userData.ct = await hashData(user.city)
+  if (user.state) userData.st = await hashData(user.state)
+  if (user.zip) userData.zp = await hashData(user.zip)
+  if (user.country) userData.country = await hashData(user.country)
 
   // Identificadores de Facebook (NO hasheados)
   if (user.fbp) userData.fbp = user.fbp
@@ -65,7 +68,7 @@ export async function trackServerEvent(eventName, eventData = {}) {
   }
 
   try {
-    const userData = prepareUserData(eventData.user || {})
+    const userData = await prepareUserData(eventData.user || {})
 
     // Generar ID único para deduplicación
     const eventId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
