@@ -134,6 +134,55 @@ export async function trackServerEvent(eventName, eventData = {}) {
   }
 }
 
+// Rastrear vista de contenido
+export async function trackServerViewContent(product, user, eventSourceUrl = '') {
+  return trackServerEvent('ViewContent', {
+    user: user,
+    value: product.base_price || product.price,
+    content_id: product.id,
+    content_name: product.name,
+    content_type: 'product',
+    event_source_url: eventSourceUrl,
+    contents: [{
+      id: product.id,
+      quantity: 1,
+      item_price: product.base_price || product.price,
+      title: product.name,
+      delivery_category: 'home_delivery'
+    }]
+  })
+}
+
+// Rastrear agregar al carrito
+export async function trackServerAddToCart(product, user, eventSourceUrl = '') {
+  return trackServerEvent('AddToCart', {
+    user: user,
+    value: product.base_price || product.price,
+    content_id: product.id,
+    content_name: product.name,
+    content_type: 'product',
+    event_source_url: eventSourceUrl,
+    contents: [{
+      id: product.id,
+      quantity: product.quantity || 1,
+      item_price: product.base_price || product.price,
+      title: product.name,
+      delivery_category: 'home_delivery'
+    }]
+  })
+}
+
+// Rastrear inicio de checkout
+export async function trackServerInitiateCheckout(cartTotal, itemsCount, user, eventSourceUrl = '') {
+  return trackServerEvent('InitiateCheckout', {
+    user: user,
+    value: cartTotal,
+    content_type: 'product',
+    num_items: itemsCount,
+    event_source_url: eventSourceUrl
+  })
+}
+
 // Rastrear compra/conversión
 export async function trackServerPurchase(order, eventSourceUrl = '') {
   return trackServerEvent('Purchase', {
