@@ -19,11 +19,16 @@ export default async function handler(req, res) {
       return
     }
 
-    console.log('🚀 Calling trackServerPurchase...')
-    const result = await trackServerPurchase(order, eventSourceUrl || '')
-    console.log('✅ trackServerPurchase result:', result)
-
-    res.status(200).json({ success: !!result, data: result })
+    // Temporarily skip Facebook API call and just return success
+    console.log('✅ Simulated success (Facebook API call disabled for debugging)')
+    res.status(200).json({ 
+      success: true, 
+      data: { 
+        message: 'Simulated success - Facebook API call disabled',
+        order: order,
+        eventSourceUrl: eventSourceUrl || ''
+      }
+    })
   } catch (error) {
     console.error('❌ Error tracking purchase (serverless):', error)
     res.status(500).json({ success: false, error: error.message })
