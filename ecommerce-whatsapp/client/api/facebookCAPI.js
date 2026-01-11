@@ -117,13 +117,15 @@ export async function trackServerEvent(eventName, eventData = {}) {
       }
     )
 
+    const responseText = await response.text()
+    
     if (!response.ok) {
-      const error = await response.json()
+      const error = JSON.parse(responseText)
       console.error('Error en Facebook Conversion API (Serverless):', error)
       return null
     }
 
-    const result = await response.json()
+    const result = JSON.parse(responseText)
     console.log(`✅ Evento Facebook registrado (Serverless): ${eventName}`, result)
     return result
   } catch (error) {
