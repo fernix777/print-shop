@@ -30,6 +30,16 @@ const getUserData = (customData = {}) => {
     fbc,
     client_ip_address: customData.client_ip_address, // Se obtiene del servidor
     client_user_agent: navigator.userAgent,
+    // Incluir todos los datos posibles para Enhanced Matching
+    email: customData.email,
+    phone: customData.phone,
+    first_name: customData.firstName,
+    last_name: customData.lastName,
+    city: customData.city,
+    state: customData.state,
+    zip: customData.zip,
+    country: customData.country,
+    user_id: customData.user_id,
     ...customData
   };
 };

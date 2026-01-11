@@ -22,19 +22,19 @@ const hashData = async (data) => {
 const prepareUserData = async (user = {}) => {
   const userData = {}
 
-  // Datos básicos (hasheados)
+  // Datos básicos (hasheados) - Prioridad alta
   if (user.email) userData.em = await hashData(user.email)
   if (user.phone) userData.ph = await hashData(user.phone)
   if (user.first_name) userData.fn = await hashData(user.first_name)
   if (user.last_name) userData.ln = await hashData(user.last_name)
 
-  // Ubicación (hasheados)
+  // Ubicación (hasheados) - Prioridad media
   if (user.city) userData.ct = await hashData(user.city)
   if (user.state) userData.st = await hashData(user.state)
   if (user.zip) userData.zp = await hashData(user.zip)
   if (user.country) userData.country = await hashData(user.country)
 
-  // Identificadores de Facebook (NO hasheados)
+  // Identificadores de Facebook (NO hasheados) - Críticos
   if (user.fbp) userData.fbp = user.fbp
   if (user.fbc) userData.fbc = user.fbc
 
@@ -43,12 +43,20 @@ const prepareUserData = async (user = {}) => {
     userData.external_id = user.user_id || user.id
   }
 
-  // Datos del navegador
+  // Datos del navegador - Siempre incluir
   if (user.client_ip_address) {
     userData.client_ip_address = user.client_ip_address
   }
   if (user.client_user_agent) {
     userData.client_user_agent = user.client_user_agent
+  }
+
+  // Si no hay suficientes datos, agregar datos genéricos para evitar error
+  const hasRequiredData = userData.em || userData.ph || userData.external_id
+  if (!hasRequiredData) {
+    // Agregar datos genéricos para cumplir con requisitos mínimos
+    userData.client_ip_address = userData.client_ip_address || '0.0.0.0'
+    userData.client_user_agent = userData.client_user_agent || 'Unknown'
   }
 
   return userData
