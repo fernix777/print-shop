@@ -59,7 +59,7 @@ export default function FeaturedProducts() {
                             <Link
                                 key={product.id}
                                 to={`/producto/${product.slug}`}
-                                className="product-card"
+                                className={`product-card ${product.stock <= 0 ? 'unavailable' : ''}`}
                             >
                                 <div className="product-image">
                                     {primaryImage ? (
@@ -85,6 +85,11 @@ export default function FeaturedProducts() {
                                         )}
                                         {product.category && (
                                             <span className="product-category">{product.category.name}</span>
+                                        )}
+                                        {product.stock > 0 ? (
+                                            <span className="stock-badge available">✓ Disponible</span>
+                                        ) : (
+                                            <span className="stock-badge unavailable">✗ No Disponible</span>
                                         )}
                                     </div>
                                 </div>

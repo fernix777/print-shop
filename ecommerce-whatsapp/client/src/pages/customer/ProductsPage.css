@@ -153,6 +153,25 @@
     color: var(--error);
 }
 
+/* Producto no disponible - tarjeta visual */
+.product-card.unavailable {
+    opacity: 0.6;
+    filter: grayscale(30%);
+}
+
+.product-card.unavailable:hover {
+    transform: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.product-card.unavailable .product-image img {
+    transition: none;
+}
+
+.product-card.unavailable:hover .product-image img {
+    transform: none;
+}
+
 .empty-state {
     text-align: center;
     padding: var(--spacing-xl);

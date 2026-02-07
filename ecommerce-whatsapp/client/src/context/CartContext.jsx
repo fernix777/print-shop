@@ -24,6 +24,12 @@ export function CartProvider({ children }) {
     }, [cart]);
 
     const addToCart = (product, quantity = 1, options = {}) => {
+        // Verificar stock disponible
+        if (!product || product.stock <= 0) {
+            console.warn('No se puede agregar al carrito: producto sin stock');
+            return;
+        }
+
         // Rastrear evento AddToCart (Pixel + CAPI)
         trackAddToCart(product, quantity);
 

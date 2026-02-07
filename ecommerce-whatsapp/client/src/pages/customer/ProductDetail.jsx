@@ -364,11 +364,11 @@ export default function ProductDetail() {
                                 {/* Stock */}
                                 {product.stock > 0 ? (
                                     <div className="stock-info available">
-                                        ✓ {product.stock} disponibles
+                                        ✓ Disponible
                                     </div>
                                 ) : (
                                     <div className="stock-info unavailable">
-                                        ✗ Sin stock
+                                        ✗ No Disponible
                                     </div>
                                 )}
                             </div>
@@ -377,9 +377,13 @@ export default function ProductDetail() {
                             <button
                                 onClick={handleAddToCart}
                                 className="btn btn-primary btn-large add-to-cart-btn"
-                                disabled={!purchaseType || (product.has_colors && !selectedColor) || !user}
+                                disabled={product.stock <= 0 || !purchaseType || (product.has_colors && !selectedColor) || !user}
                             >
-                                🛒 Agregar al Carrito
+                                {product.stock <= 0 ? (
+                                    <>❌ No Disponible</>
+                                ) : (
+                                    <>🛒 Agregar al Carrito</>
+                                )}
                             </button>
                         </div>
 

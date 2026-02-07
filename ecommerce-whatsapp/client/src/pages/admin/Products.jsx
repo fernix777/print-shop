@@ -195,7 +195,7 @@ export default function Products() {
                                     <div className="product-stats">
                                         <span>{product.images?.length || 0} imágenes</span>
                                         <span>{product.variants?.length || 0} variantes</span>
-                                        <span>Stock: {product.stock || 0}</span>
+                                        <span>{product.stock > 0 ? '✓ Disponible' : '✗ No Disponible'}</span>
                                     </div>
                                 </div>
 

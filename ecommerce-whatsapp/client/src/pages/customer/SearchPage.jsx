@@ -229,7 +229,7 @@ export default function SearchPage() {
                                                     {product.stock > 0 ? (
                                                         <span className="in-stock">✓ Disponible</span>
                                                     ) : (
-                                                        <span className="out-of-stock">Sin stock</span>
+                                                        <span className="out-of-stock">✗ No Disponible</span>
                                                     )}
                                                 </span>
                                             </div>
