@@ -69,24 +69,31 @@
 
 ---
 
-## 🎯 PUNTO 3: PROCESO DE COMPRA (CHECKOUT)
+## ✅ PUNTO 3: PROCESO DE COMPRA (CHECKOUT) (COMPLETADO)
 
 ### Requerimientos
 1. ✅ Layout actual (resumen + datos envío) está bien
-2. ❌ Eliminar métodos de pago, dejar solo "Coordinar por WhatsApp"
-3. ❌ Incluir "Instrucciones Especiales" en mensaje de WhatsApp
+2. ✅ Eliminar métodos de pago, dejar solo "Coordinar por WhatsApp"
+3. ✅ Incluir "Instrucciones Especiales" en mensaje de WhatsApp
 
-### Archivos a Modificar
-- `client/src/pages/customer/CheckoutPage.jsx`
-- `client/src/pages/customer/OrderConfirmation.jsx`
+### Archivos Modificados
+- [`client/src/pages/customer/CheckoutPage.jsx`](client/src/pages/customer/CheckoutPage.jsx)
+- [`client/src/pages/customer/CheckoutPage.css`](client/src/pages/customer/CheckoutPage.css)
 
-### Cambios Específicos
-- Remover selector de método de pago
-- Agregar campo de instrucciones especiales al mensaje de WhatsApp
-- Simplificar flujo de checkout
+### Cambios Implementados
+✅ **Método de Pago Simplificado**
+- Eliminadas opciones de Transferencia Bancaria y Efectivo en Sucursal
+- Solo queda "Coordinar por WhatsApp"
+- Diseño visual mejorado con ícono de WhatsApp
+- Fondo verde distintivo para destacar la opción
 
-### Complejidad: ⭐⭐ (Baja-Media)
-### Tiempo Estimado: 45 minutos
+✅ **Instrucciones Especiales en WhatsApp**
+- Campo de instrucciones ahora se incluye en el mensaje de WhatsApp
+- Se muestra como: "📝 *Instrucciones Especiales:*\n{texto}"
+- Solo aparece si el cliente ingresó instrucciones
+
+### Commit: `a8b70dc` (7 de febrero de 2026)
+### Estado: ✅ COMPLETADO
 
 ---
 
