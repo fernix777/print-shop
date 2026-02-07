@@ -3,19 +3,29 @@ import './BenefitsSection.css'
 export default function BenefitsSection() {
     const benefits = [
         {
-            icon: '🚚',
-            title: 'Envíos a todo el país',
-            description: 'Llegamos a donde estés con los mejores precios de envío'
+            icon: '🏪',
+            title: 'RETIRO EN TIENDA',
+            description: 'Visitanos y lleva tus productos directamente'
         },
         {
-            icon: '⭐',
-            title: 'Productos de calidad',
-            description: 'Seleccionamos cuidadosamente cada artículo para ti'
+            icon: '🚚',
+            title: 'ENVÍOS A TODO EL PAÍS',
+            description: 'Recibe tus compras en la puerta de tu casa'
+        },
+        {
+            icon: '🛡️',
+            title: 'COMPRA SEGURA',
+            description: 'Tu información está protegida con nosotros'
         },
         {
             icon: '💬',
-            title: 'Atención personalizada',
-            description: 'Estamos disponibles por WhatsApp para ayudarte'
+            title: 'ATENCIÓN PERSONALIZADA',
+            description: 'Te asesoramos por WhatsApp'
+        },
+        {
+            icon: '💰',
+            title: 'MEJORES PRECIOS',
+            description: 'Calidad al mejor precio del mercado'
         }
     ]
 

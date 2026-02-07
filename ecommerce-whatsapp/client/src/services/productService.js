@@ -424,3 +424,50 @@ function generateSlug(text) {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '')
 }
+
+/**
+ * Obtiene productos destacados (los más agregados al carrito o comprados)
+ * @param {number} limit - Número de productos a obtener
+ * @returns {Promise<{data: Array, error: null} | {data: null, error: Error}>}
+ */
+export async function getFeaturedProducts(limit = 8) {
+    try {
+        // Primero intentamos obtener productos marcados como destacados
+        let { data, error } = await supabase
+            .from('products')
+            .select(`
+        *,
+        category:categories(id, name),
+        images:product_images(*),
+        variants:product_variants(*)
+      `)
+            .eq('active', true)
+            .eq('featured', true)
+            .order('created_at', { ascending: false })
+            .limit(limit)
+
+        if (error) throw error
+
+        // Si no hay productos destacados, obtener los últimos productos activos
+        if (!data || data.length === 0) {
+            ({ data, error } = await supabase
+                .from('products')
+                .select(`
+            *,
+            category:categories(id, name),
+            images:product_images(*),
+            variants:product_variants(*)
+          `)
+                .eq('active', true)
+                .order('created_at', { ascending: false })
+                .limit(limit))
+
+            if (error) throw error
+        }
+
+        return { data, error: null }
+    } catch (error) {
+        console.error('Error fetching featured products:', error)
+        return { data: null, error }
+    }
+}

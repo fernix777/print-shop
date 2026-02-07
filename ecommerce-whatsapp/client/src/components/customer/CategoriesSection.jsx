@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getActiveCategories } from '../../services/storeService'
+import { getProductsByCategory } from '../../services/productService'
 import LoadingSpinner from '../common/LoadingSpinner'
 import './CategoriesSection.css'
 
 export default function CategoriesSection() {
     const [categories, setCategories] = useState([])
+    const [categoryProducts, setCategoryProducts] = useState({})
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -14,7 +16,19 @@ export default function CategoriesSection() {
 
     const loadCategories = async () => {
         const { data } = await getActiveCategories()
-        setCategories(data?.slice(0, 4) || []) // Mostrar solo 4 categorías
+        const categoriesData = data?.slice(0, 4) || []
+        setCategories(categoriesData)
+        
+        // Cargar productos para cada categoría
+        const productsMap = {}
+        for (const category of categoriesData) {
+            const { data: products } = await getProductsByCategory(category.slug)
+            if (products && products.length > 0) {
+                // Tomar solo los primeros 3 productos
+                productsMap[category.id] = products.slice(0, 3)
+            }
+        }
+        setCategoryProducts(productsMap)
         setLoading(false)
     }
 
@@ -38,23 +52,53 @@ export default function CategoriesSection() {
 
                 <div className="categories-grid">
                     {categories.map(category => (
-                        <Link
-                            key={category.id}
-                            to={`/categoria/${category.slug}`}
-                            className="category-card"
-                        >
-                            {category.image_url && (
-                                <div className="category-image">
-                                    <img src={category.image_url} alt={category.name} />
+                        <div key={category.id} className="category-card-wrapper">
+                            <Link
+                                to={`/categoria/${category.slug}`}
+                                className="category-card"
+                            >
+                                {category.image_url && (
+                                    <div className="category-image">
+                                        <img src={category.image_url} alt={category.name} />
+                                    </div>
+                                )}
+                                <div className="category-info">
+                                    <h3>{category.name}</h3>
+                                    {category.description && (
+                                        <p>{category.description}</p>
+                                    )}
+                                </div>
+                            </Link>
+                            
+                            {/* Productos destacados de la categoría */}
+                            {categoryProducts[category.id] && categoryProducts[category.id].length > 0 && (
+                                <div className="category-products">
+                                    <div className="category-products-grid">
+                                        {categoryProducts[category.id].map(product => (
+                                            <Link
+                                                key={product.id}
+                                                to={`/producto/${product.slug}`}
+                                                className="category-product-item"
+                                            >
+                                                {product.image_url && (
+                                                    <div className="category-product-image">
+                                                        <img src={product.image_url} alt={product.name} />
+                                                    </div>
+                                                )}
+                                                <div className="category-product-info">
+                                                    <span className="category-product-name">{product.name}</span>
+                                                    {product.price && (
+                                                        <span className="category-product-price">
+                                                            ${parseFloat(product.price).toLocaleString('es-AR')}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </Link>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
-                            <div className="category-info">
-                                <h3>{category.name}</h3>
-                                {category.description && (
-                                    <p>{category.description}</p>
-                                )}
-                            </div>
-                        </Link>
+                        </div>
                     ))}
                 </div>
 

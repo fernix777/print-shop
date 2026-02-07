@@ -1,14 +1,14 @@
 import { useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { getFeaturedProducts } from '../../services/storeService'
-import { AuthContext } from '../../context/AuthContext'
+import { getFeaturedProducts } from '../../services/productService'
+import { CartContext } from '../../context/CartContext'
 import LoadingSpinner from '../common/LoadingSpinner'
 import './FeaturedProducts.css'
 
 export default function FeaturedProducts() {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
-    const { user } = useContext(AuthContext)
+    const { addToCart } = useContext(CartContext)
 
     useEffect(() => {
         loadProducts()
@@ -16,27 +16,36 @@ export default function FeaturedProducts() {
 
     const loadProducts = async () => {
         const { data } = await getFeaturedProducts(8)
-        setProducts(data || [])
+        if (data) {
+            setProducts(data)
+        }
         setLoading(false)
     }
 
-    const getPrimaryImage = (product) => {
-        if (!product.images || product.images.length === 0) return null
-        const primary = product.images.find(img => img.is_primary)
-        return primary ? primary.image_url : product.images[0].image_url
-    }
+    const handleAddToCart = (e, product) => {
+        e.preventDefault()
+        e.stopPropagation()
+        
+        // Obtener imagen principal
+        const primaryImage = product.images?.find(img => img.is_primary)?.image_url 
+            || product.images?.[0]?.image_url 
+            || product.image_url
 
-    const formatPrice = (price) => {
-        return new Intl.NumberFormat('es-AR', {
-            style: 'currency',
-            currency: 'ARS'
-        }).format(price)
+        addToCart({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: primaryImage,
+            stock: product.stock,
+            variants: product.variants,
+            slug: product.slug
+        })
     }
 
     if (loading) {
         return (
-            <section className="featured-products">
-                <LoadingSpinner size="large" message="Cargando productos..." />
+            <section className="featured-section">
+                <LoadingSpinner size="large" message="Cargando productos destacados..." />
             </section>
         )
     }
@@ -46,50 +55,58 @@ export default function FeaturedProducts() {
     }
 
     return (
-        <section className="featured-products">
+        <section className="featured-section">
             <div className="section-container">
-                <h2 className="section-title">Productos Destacados</h2>
-                <p className="section-subtitle">Descubre nuestras mejores opciones</p>
+                <h2 className="section-title">Los Más Populares</h2>
+                <p className="section-subtitle">Productos que nuestros clientes aman</p>
 
-                <div className="products-grid">
+                <div className="featured-grid">
                     {products.map(product => {
-                        const primaryImage = getPrimaryImage(product)
+                        const primaryImage = product.images?.find(img => img.is_primary)?.image_url 
+                            || product.images?.[0]?.image_url 
+                            || product.image_url
+                        const isAvailable = product.stock > 0
 
                         return (
                             <Link
                                 key={product.id}
                                 to={`/producto/${product.slug}`}
-                                className={`product-card ${product.stock <= 0 ? 'unavailable' : ''}`}
+                                className={`featured-card ${!isAvailable ? 'out-of-stock' : ''}`}
                             >
-                                <div className="product-image">
+                                <div className="featured-image">
                                     {primaryImage ? (
                                         <img src={primaryImage} alt={product.name} />
                                     ) : (
-                                        <div className="no-image">📷</div>
+                                        <div className="no-image">Sin imagen</div>
                                     )}
-                                    <span className="featured-badge">⭐ Destacado</span>
+                                    {isAvailable ? (
+                                        <span className="stock-badge available">✓ Disponible</span>
+                                    ) : (
+                                        <span className="stock-badge unavailable">✗ No Disponible</span>
+                                    )}
                                 </div>
-
-                                <div className="product-info">
-                                    <h3>{product.name}</h3>
-                                    {product.description && (
-                                        <p className="product-description">{product.description}</p>
+                                
+                                <div className="featured-info">
+                                    <h3 className="featured-name">{product.name}</h3>
+                                    {product.category && (
+                                        <span className="featured-category">{product.category.name}</span>
                                     )}
-                                    <div className="product-footer">
-                                        {user ? (
-                                            <span className="product-price">{formatPrice(product.base_price)}</span>
-                                        ) : (
-                                            <span className="login-to-see">
-                                                <Link to="/login">Inicia sesión</Link> para ver precios
-                                            </span>
-                                        )}
-                                        {product.category && (
-                                            <span className="product-category">{product.category.name}</span>
-                                        )}
-                                        {product.stock > 0 ? (
-                                            <span className="stock-badge available">✓ Disponible</span>
-                                        ) : (
-                                            <span className="stock-badge unavailable">✗ No Disponible</span>
+                                    <div className="featured-footer">
+                                        <span className="featured-price">
+                                            ${parseFloat(product.price).toLocaleString('es-AR')}
+                                        </span>
+                                        {isAvailable && (
+                                            <button 
+                                                className="featured-add-btn"
+                                                onClick={(e) => handleAddToCart(e, product)}
+                                            >
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <circle cx="9" cy="21" r="1"/>
+                                                    <circle cx="20" cy="21" r="1"/>
+                                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                                                </svg>
+                                                Agregar
+                                            </button>
                                         )}
                                     </div>
                                 </div>

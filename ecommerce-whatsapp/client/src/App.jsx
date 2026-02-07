@@ -17,6 +17,8 @@ import ContactPage from './pages/customer/ContactPage';
 import SearchPage from './pages/customer/SearchPage';
 import CheckoutPage from './pages/customer/CheckoutPage';
 import OrderConfirmation from './pages/customer/OrderConfirmation';
+import MyAccount from './pages/customer/MyAccount';
+import MyOrders from './pages/customer/MyOrders';
 
 // Páginas de autenticación
 import Login from './pages/auth/Login';
@@ -67,6 +69,18 @@ function App() {
                             <Route path="/contacto" element={<ContactPage />} />
                             <Route path="/checkout" element={<CheckoutPage />} />
                             <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                            
+                            {/* Rutas de usuario autenticado */}
+                            <Route path="/mi-cuenta" element={
+                                <ProtectedRoute>
+                                    <MyAccount />
+                                </ProtectedRoute>
+                            } />
+                            <Route path="/mis-pedidos" element={
+                                <ProtectedRoute>
+                                    <MyOrders />
+                                </ProtectedRoute>
+                            } />
 
                             {/* Rutas de autenticación de administradores */}
                             <Route path="/admin/login" element={

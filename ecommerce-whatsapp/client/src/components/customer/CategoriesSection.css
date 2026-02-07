@@ -43,8 +43,14 @@
 }
 
 .category-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.category-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
 }
 
 .category-image {
@@ -86,6 +92,71 @@
     overflow: hidden;
 }
 
+/* Productos destacados de la categoría */
+.category-products {
+    padding: 0 var(--spacing-md) var(--spacing-md);
+}
+
+.category-products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-sm);
+}
+
+.category-product-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    text-decoration: none;
+    color: inherit;
+    background: var(--off-white);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xs);
+    transition: all var(--transition-fast);
+}
+
+.category-product-item:hover {
+    background: var(--white);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
+}
+
+.category-product-image {
+    width: 100%;
+    height: 60px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--light-gray);
+}
+
+.category-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.category-product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.category-product-name {
+    font-size: 0.7rem;
+    color: var(--dark-gray);
+    font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.category-product-price {
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 700;
+}
+
 .section-cta {
     text-align: center;
     margin-top: var(--spacing-xl);
@@ -98,5 +169,22 @@
 
     .category-image {
         height: 200px;
+    }
+
+    .category-products-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-xs);
+    }
+
+    .category-product-image {
+        height: 50px;
+    }
+
+    .category-product-name {
+        font-size: 0.65rem;
+    }
+
+    .category-product-price {
+        font-size: 0.7rem;
     }
 }
