@@ -32,7 +32,10 @@ import AdminLogin from './pages/admin/Login';
 import Dashboard from './pages/admin/Dashboard';
 import Categories from './pages/admin/Categories';
 import Products from './pages/admin/Products';
+import Orders from './pages/admin/Orders';
 import ProductForm from './pages/admin/ProductForm';
+import AdminBanners from './pages/admin/AdminBanners';
+import AdminCustomers from './pages/admin/AdminCustomers';
 
 // Componente para tracking automático de PageView
 function PageViewTracker() {
@@ -47,8 +50,16 @@ function PageViewTracker() {
 
 // Componente para redirigir usuarios autenticados
 function RedirectIfAuth({ children }) {
-    const { user } = useAuth();
-    return user ? <Navigate to="/" replace /> : children;
+    const { user, isAdmin } = useAuth();
+    
+    if (user) {
+        if (isAdmin()) {
+            return <Navigate to="/admin/dashboard" replace />;
+        }
+        return <Navigate to="/" replace />;
+    }
+    
+    return children;
 }
 
 function App() {
@@ -56,7 +67,7 @@ function App() {
         <HelmetProvider>
             <AuthProvider>
                 <CartProvider>
-                    <Router>
+                    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                         <PageViewTracker />
                         <Routes>
                             {/* Rutas públicas */}
@@ -72,12 +83,12 @@ function App() {
                             
                             {/* Rutas de usuario autenticado */}
                             <Route path="/mi-cuenta" element={
-                                <ProtectedRoute>
+                                <ProtectedRoute requireAdmin={false}>
                                     <MyAccount />
                                 </ProtectedRoute>
                             } />
                             <Route path="/mis-pedidos" element={
-                                <ProtectedRoute>
+                                <ProtectedRoute requireAdmin={false}>
                                     <MyOrders />
                                 </ProtectedRoute>
                             } />
@@ -132,6 +143,30 @@ function App() {
                                 element={
                                     <ProtectedRoute>
                                         <Products />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/orders"
+                                element={
+                                    <ProtectedRoute>
+                                        <Orders />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/banners"
+                                element={
+                                    <ProtectedRoute>
+                                        <AdminBanners />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/customers"
+                                element={
+                                    <ProtectedRoute>
+                                        <AdminCustomers />
                                     </ProtectedRoute>
                                 }
                             />

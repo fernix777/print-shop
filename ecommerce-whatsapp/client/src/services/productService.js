@@ -12,15 +12,22 @@ import { uploadImage, deleteImage, extractPathFromUrl, uploadMultipleImages } fr
  */
 export async function getProducts(filters = {}) {
     try {
-        let query = supabase
-            .from('products')
-            .select(`
+        let selectQuery = `
         *,
         category:categories(id, name),
         subcategory:subcategories(id, name),
         images:product_images(*),
         variants:product_variants(*)
-      `)
+      `
+
+        // Si filtramos por categoría o subcategoría, usamos la tabla pivote
+        if (filters.category_id || filters.subcategory_id) {
+            selectQuery += `, product_categories!inner(category_id, subcategory_id)`
+        }
+
+        let query = supabase
+            .from('products')
+            .select(selectQuery)
             .order('created_at', { ascending: false })
 
         // Filtros
@@ -33,11 +40,11 @@ export async function getProducts(filters = {}) {
         }
 
         if (filters.category_id) {
-            query = query.eq('category_id', filters.category_id)
+            query = query.eq('product_categories.category_id', filters.category_id)
         }
 
         if (filters.subcategory_id) {
-            query = query.eq('subcategory_id', filters.subcategory_id)
+            query = query.eq('product_categories.subcategory_id', filters.subcategory_id)
         }
 
         if (filters.search) {
@@ -78,7 +85,8 @@ export async function getProductById(id) {
         category:categories(id, name),
         subcategory:subcategories(id, name),
         images:product_images(*),
-        variants:product_variants(*)
+        variants:product_variants(*),
+        product_categories(category_id, subcategory_id)
       `)
             .eq('id', id)
             .single()
@@ -103,8 +111,8 @@ export async function createProduct(productData, imageFiles = []) {
         // Generar slug
         const slug = productData.slug || generateSlug(productData.name)
 
-        // Separar variantes de los datos del producto
-        const { variants, ...productFields } = productData
+        // Separar variantes y categorías de los datos del producto
+        const { variants, categories: productCategories, ...productFields } = productData
 
         // Crear producto
         const { data: product, error: productError } = await supabase
@@ -118,6 +126,21 @@ export async function createProduct(productData, imageFiles = []) {
 
         if (productError) throw productError
 
+        // Guardar categorías adicionales si existen
+        if (productCategories && productCategories.length > 0) {
+            const categoriesToInsert = productCategories.map(c => ({
+                product_id: product.id,
+                category_id: c.category_id,
+                subcategory_id: c.subcategory_id || null
+            }))
+
+            const { error: catError } = await supabase
+                .from('product_categories')
+                .insert(categoriesToInsert)
+
+            if (catError) console.error('Error saving product categories:', catError)
+        }
+
         // Guardar variantes si existen
         if (variants && variants.length > 0) {
             const variantsToInsert = variants.map(v => ({
@@ -126,7 +149,8 @@ export async function createProduct(productData, imageFiles = []) {
                 variant_value: v.variant_value || v.name,
                 sku: v.sku || null,
                 price_modifier: Number(v.price_modifier) || 0,
-                stock: Number(v.stock) || 0
+                stock: Number(v.stock) || 0,
+                active: v.active !== undefined ? v.active : true
             }))
 
             const { error: variantsError } = await supabase
@@ -182,8 +206,8 @@ export async function createProduct(productData, imageFiles = []) {
  */
 export async function updateProduct(id, productData) {
     try {
-        // Separar variantes de los datos del producto
-        const { variants, ...productFields } = productData
+        // Separar variantes y categorías de los datos del producto
+        const { variants, categories: productCategories, ...productFields } = productData
 
         const { data, error } = await supabase
             .from('products')
@@ -193,6 +217,32 @@ export async function updateProduct(id, productData) {
             .single()
 
         if (error) throw error
+
+        // Actualizar categorías (Eliminar y crear nuevas)
+        if (productCategories !== undefined) {
+            // 1. Eliminar categorías existentes en la tabla pivote
+            const { error: deleteCatError } = await supabase
+                .from('product_categories')
+                .delete()
+                .eq('product_id', id)
+            
+            if (deleteCatError) console.error('Error deleting old product categories:', deleteCatError)
+
+            // 2. Insertar nuevas categorías
+            if (productCategories.length > 0) {
+                const categoriesToInsert = productCategories.map(c => ({
+                    product_id: id,
+                    category_id: c.category_id,
+                    subcategory_id: c.subcategory_id || null
+                }))
+
+                const { error: insertCatError } = await supabase
+                    .from('product_categories')
+                    .insert(categoriesToInsert)
+
+                if (insertCatError) console.error('Error inserting new product categories:', insertCatError)
+            }
+        }
 
         // Actualizar variantes (Estrategia: Eliminar todas y crear nuevas)
         if (variants !== undefined) {
@@ -212,7 +262,8 @@ export async function updateProduct(id, productData) {
                     variant_value: v.variant_value || v.name,
                     sku: v.sku || null,
                     price_modifier: Number(v.price_modifier) || 0,
-                    stock: Number(v.stock) || 0
+                    stock: Number(v.stock) || 0,
+                    active: v.active !== undefined ? v.active : true
                 }))
 
                 const { error: variantsError } = await supabase

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
+import { createOrder } from '../../services/orderService'
 import { trackInitiateCheckout, trackPurchase } from '../../services/facebookService'
 import { trackInitiateCheckout as trackPixelInitiateCheckout } from '../../utils/facebookPixel'
 import Header from '../../components/customer/Header'
@@ -84,18 +85,28 @@ export default function CheckoutPage() {
 
         try {
             // Preparar datos de la orden
-            const orderData = {
+            const orderPayload = {
                 customer: formData,
                 items: cart,
                 total: cartTotal,
-                itemsCount: cartItemsCount,
                 paymentMethod,
-                timestamp: new Date().toISOString()
+                user_id: user?.id
             }
 
-            // Guardar la orden en localStorage o enviarla al servidor
-            const orderId = `ORD-${Date.now()}`
-            const orderWithId = { ...orderData, order_id: orderId }
+            // 1. Guardar orden en base de datos
+            const { data: savedOrder, error: orderError } = await createOrder(orderPayload)
+            
+            if (orderError) {
+                console.error('Error saving order:', orderError)
+                // Continuamos con el flujo de WhatsApp aunque falle el guardado en BD?
+                // Mejor mostrar error o intentarlo de nuevo.
+                // Pero para no bloquear ventas, podríamos generar un ID temporal si falla.
+                // Por ahora, asumimos que debe guardarse.
+                throw new Error('No se pudo procesar el pedido. Por favor intenta nuevamente.')
+            }
+
+            const orderId = savedOrder ? `ORD-${String(savedOrder.id).padStart(6, '0')}` : `ORD-${Date.now()}`
+            const orderWithId = { ...orderPayload, order_id: orderId, id: savedOrder?.id }
             
             localStorage.setItem('lastOrder', JSON.stringify(orderWithId))
 

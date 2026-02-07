@@ -1,0 +1,136 @@
+import { supabase } from '../config/supabase'
+
+/**
+ * Obtener todos los banners (para admin)
+ */
+export async function getBanners() {
+    try {
+        const { data, error } = await supabase
+            .from('banners')
+            .select('*')
+            .order('display_order', { ascending: true })
+            .order('created_at', { ascending: false })
+
+        if (error) throw error
+        return { data, error: null }
+    } catch (error) {
+        console.error('Error fetching banners:', error)
+        return { data: null, error }
+    }
+}
+
+/**
+ * Obtener banners activos (para clientes)
+ */
+export async function getActiveBanners() {
+    try {
+        const { data, error } = await supabase
+            .from('banners')
+            .select('*')
+            .eq('active', true)
+            .order('display_order', { ascending: true })
+
+        if (error) throw error
+        return { data, error: null }
+    } catch (error) {
+        console.error('Error fetching active banners:', error)
+        return { data: null, error }
+    }
+}
+
+/**
+ * Crear un nuevo banner
+ * @param {Object} bannerData 
+ * @param {File} imageFile 
+ */
+export async function createBanner(bannerData, imageFile) {
+    try {
+        let image_url = bannerData.image_url
+
+        // Si hay archivo, subirlo primero
+        if (imageFile) {
+            const fileExt = imageFile.name.split('.').pop()
+            const fileName = `banner_${Date.now()}.${fileExt}`
+            const filePath = `banners/${fileName}`
+
+            const { error: uploadError } = await supabase.storage
+                .from('products') // Reusamos el bucket de productos
+                .upload(filePath, imageFile)
+
+            if (uploadError) throw uploadError
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('products')
+                .getPublicUrl(filePath)
+
+            image_url = publicUrl
+        }
+
+        const { data, error } = await supabase
+            .from('banners')
+            .insert([{ ...bannerData, image_url }])
+            .select()
+            .single()
+
+        if (error) throw error
+        return { data, error: null }
+    } catch (error) {
+        console.error('Error creating banner:', error)
+        return { data: null, error }
+    }
+}
+
+/**
+ * Actualizar un banner
+ */
+export async function updateBanner(id, updates) {
+    try {
+        const { data, error } = await supabase
+            .from('banners')
+            .update(updates)
+            .eq('id', id)
+            .select()
+            .single()
+
+        if (error) throw error
+        return { data, error: null }
+    } catch (error) {
+        console.error('Error updating banner:', error)
+        return { data: null, error }
+    }
+}
+
+/**
+ * Eliminar un banner
+ */
+export async function deleteBanner(id, imageUrl) {
+    try {
+        // 1. Eliminar registro de BD
+        const { error: dbError } = await supabase
+            .from('banners')
+            .delete()
+            .eq('id', id)
+
+        if (dbError) throw dbError
+
+        // 2. Intentar eliminar imagen del storage si es nuestra
+        if (imageUrl && imageUrl.includes('banners/')) {
+            try {
+                const path = imageUrl.split('/products/')[1] // Asumiendo estructura de URL de supabase
+                if (path) {
+                    await supabase.storage
+                        .from('products')
+                        .remove([path])
+                }
+            } catch (storageError) {
+                console.warn('Error deleting banner image from storage:', storageError)
+                // No lanzamos error para no bloquear la UI si ya se borró de BD
+            }
+        }
+
+        return { error: null }
+    } catch (error) {
+        console.error('Error deleting banner:', error)
+        return { error }
+    }
+}

@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { trackAddToCart } from '../services/facebookTracking';
 import { useAuth } from './AuthContext';
 
-const CartContext = createContext();
+export const CartContext = createContext();
 
 export function CartProvider({ children }) {
     const [cart, setCart] = useState(() => {

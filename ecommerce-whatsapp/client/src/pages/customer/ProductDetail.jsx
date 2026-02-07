@@ -38,7 +38,39 @@ export default function ProductDetail() {
             return
         }
 
-        setProduct(data)
+        // Cargar variantes
+        let variants = []
+        let colors = []
+
+        if (data.variants && data.variants.length > 0) {
+            // Filtrar variantes inactivas
+            variants = data.variants.filter(v => v.active !== false)
+            
+            // Extraer colores de variant_value
+            colors = variants
+                .map(v => v.variant_value || v.name)
+        }
+
+        setProduct({
+            ...data,
+            variants: variants
+        })
+
+        // Establecer imagen inicial
+        if (data.images && data.images.length > 0) {
+            // Buscar imagen primaria
+            const primaryIndex = data.images.findIndex(img => img.is_primary)
+            setSelectedImage(primaryIndex >= 0 ? primaryIndex : 0)
+        }
+
+        // Si hay variantes, preseleccionar la primera
+        if (variants.length > 0) {
+            // No seleccionamos automáticamente para obligar al usuario a elegir si lo desea
+            // o se puede seleccionar el primero:
+            // setSelectedVariant(variants[0])
+            // setSelectedColor(variants[0].variant_value || variants[0].name)
+        }
+
         setLoading(false)
     }
 

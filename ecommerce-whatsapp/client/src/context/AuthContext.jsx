@@ -16,6 +16,11 @@ export const AuthProvider = ({ children }) => {
             
             // Configurar Enhanced Matching si hay usuario
             if (user) {
+                console.log('👤 AuthContext: User loaded', { 
+                    email: user.email, 
+                    role: user.user_metadata?.role,
+                    metadata: user.user_metadata 
+                });
                 const matchingData = getUserDataForMatching(user.user_metadata);
                 if (matchingData) {
                     setupEnhancedMatching(matchingData);
@@ -27,17 +32,17 @@ export const AuthProvider = ({ children }) => {
 
         // Escuchar cambios de autenticación
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            (_event, session) => {
-                const user = session?.user ?? null;
-                setUser(user);
+            (event, session) => {
+                const currentUser = session?.user ?? null;
+                setUser(currentUser);
                 
-                // Configurar Enhanced Matching según el estado de autenticación
-                if (user) {
-                    const matchingData = getUserDataForMatching(user.user_metadata);
+                // Configurar Enhanced Matching según el evento
+                if (event === 'SIGNED_IN' || (event === 'INITIAL_SESSION' && currentUser)) {
+                    const matchingData = getUserDataForMatching(currentUser.user_metadata);
                     if (matchingData) {
                         setupEnhancedMatching(matchingData);
                     }
-                } else {
+                } else if (event === 'SIGNED_OUT') {
                     clearEnhancedMatching();
                 }
             }
@@ -67,7 +72,23 @@ export const AuthProvider = ({ children }) => {
             if (error) throw error
             return { error: null }
         } catch (error) {
-            return { error }
+            console.warn('Error logging out:', error)
+            // Force local state cleanup even if network request fails
+            setUser(null)
+            clearEnhancedMatching()
+            
+            // Manually clear Supabase local storage token to prevent persistence
+            try {
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
+                        localStorage.removeItem(key)
+                    }
+                })
+            } catch (e) {
+                console.warn('Could not clear local storage:', e)
+            }
+            
+            return { error: null }
         }
     }
 

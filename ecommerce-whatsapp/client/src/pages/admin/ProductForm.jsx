@@ -7,12 +7,8 @@ import ImageUploader from '../../components/admin/ImageUploader'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './ProductForm.css'
 
-const AVAILABLE_COLORS = [
-    'Cálido', 'Blanco', 'Multicolor',
-    'Rojo', 'Azul', 'Verde', 'Amarillo',
-    'Rosa', 'Violeta', 'Naranja', 'Negro',
-    'Plateado', 'Dorado', 'Surtido'
-]
+
+
 
 export default function ProductForm() {
     const { id } = useParams()
@@ -28,8 +24,6 @@ export default function ProductForm() {
         name: '',
         description: '',
         base_price: '',
-        category_id: '',
-        subcategory_id: '',
         stock: 0,
         active: true,
         featured: false,
@@ -39,11 +33,12 @@ export default function ProductForm() {
         price_bundle: '',
         has_colors: true,
         sale_types: ['unidad', 'paquete', 'bulto'],
-        variants: []
+        variants: [],
+        categories: [] // [{ category_id, subcategory_id }]
     })
 
     const [images, setImages] = useState([])
-    const [selectedColors, setSelectedColors] = useState([])
+    const [newColor, setNewColor] = useState('') // Para agregar color personalizado
     const [errors, setErrors] = useState({})
 
     useEffect(() => {
@@ -52,17 +47,6 @@ export default function ProductForm() {
             loadProduct()
         }
     }, [id])
-
-    useEffect(() => {
-        // Cargar subcategorías cuando cambia la categoría
-        if (formData.category_id) {
-            const category = categories.find(c => c.id === Number(formData.category_id))
-            setSubcategories(category?.subcategories || [])
-        } else {
-            setSubcategories([])
-            setFormData(prev => ({ ...prev, subcategory_id: '' }))
-        }
-    }, [formData.category_id, categories])
 
     const loadCategories = async () => {
         const { data } = await getCategories({ active: true })
@@ -79,24 +63,33 @@ export default function ProductForm() {
             return
         }
 
-        // Cargar variantes existentes y mapear a colores seleccionados
+        // Cargar variantes existentes
         let variants = [];
         let colors = [];
 
         if (data.variants && data.variants.length > 0) {
-            variants = data.variants;
-            // Extraer colores de variant_value, asegurando que sean válidos
-            colors = data.variants
-                .map(v => v.variant_value || v.name)
-                .filter(color => AVAILABLE_COLORS.includes(color));
+            variants = data.variants.map(v => ({
+                ...v,
+                active: v.active !== undefined ? v.active : true
+            }));
+        }
+
+        // Cargar categorías
+        let productCategories = [];
+        if (data.product_categories && data.product_categories.length > 0) {
+            productCategories = data.product_categories;
+        } else if (data.category_id) {
+            // Migración: Si tiene category_id pero no product_categories
+            productCategories = [{ 
+                category_id: data.category_id, 
+                subcategory_id: data.subcategory_id 
+            }];
         }
 
         setFormData({
             name: data.name || '',
             description: data.description || '',
             base_price: data.base_price || '',
-            category_id: data.category_id || '',
-            subcategory_id: data.subcategory_id || '',
             stock: data.stock || 0,
             active: data.active ?? true,
             featured: data.featured ?? false,
@@ -106,7 +99,8 @@ export default function ProductForm() {
             price_bundle: data.price_bundle || '',
             has_colors: data.has_colors ?? true,
             sale_types: data.sale_types || ['unidad', 'paquete', 'bulto'],
-            variants: variants
+            variants: variants,
+            categories: productCategories
         })
 
         // Cargar imágenes existentes
@@ -119,9 +113,6 @@ export default function ProductForm() {
                 display_order: img.display_order
             })))
         }
-
-        // Establecer colores seleccionados
-        setSelectedColors(colors);
 
         setLoading(false)
     }
@@ -136,9 +127,8 @@ export default function ProductForm() {
                 [name]: newValue
             };
 
-            // Si se desactiva has_colors, limpiar los colores seleccionados
+            // Si se desactiva has_colors, limpiar los variantes
             if (name === 'has_colors' && !newValue) {
-                setSelectedColors([]);
                 return {
                     ...newFormData,
                     variants: []
@@ -167,43 +157,74 @@ export default function ProductForm() {
         }
     }
 
-    const handleColorChange = (color) => {
-        setSelectedColors(prev => {
-            const newSelectedColors = prev.includes(color)
-                ? prev.filter(c => c !== color)
-                : [...prev, color];
+    const handleAddCategory = () => {
+        setFormData(prev => ({
+            ...prev,
+            categories: [...prev.categories, { category_id: '', subcategory_id: '', tempId: Date.now() }]
+        }))
+    }
 
-            return newSelectedColors;
-        });
+    const handleRemoveCategory = (index) => {
+        setFormData(prev => {
+            const newCats = [...prev.categories]
+            newCats.splice(index, 1)
+            return { ...prev, categories: newCats }
+        })
+    }
 
-        // Actualizar las variantes cuando cambie la selección de colores
-        setFormData(prevData => {
-            const newSelectedColors = prevData.selectedColors || selectedColors;
-            const colorToToggle = color;
-            const isAdding = !newSelectedColors.includes(colorToToggle);
-
-            if (isAdding) {
-                // Agregar nueva variante para este color
-                const newVariant = {
-                    name: colorToToggle,
-                    variant_value: colorToToggle,
-                    variant_type: 'color',
-                    sku: '',
-                    price_modifier: 0,
-                    stock: 0
-                };
-                return {
-                    ...prevData,
-                    variants: [...(prevData.variants || []), newVariant]
-                };
-            } else {
-                // Remover variante para este color
-                return {
-                    ...prevData,
-                    variants: (prevData.variants || []).filter(v => v.variant_value !== colorToToggle)
-                };
+    const handleCategoryChange = (index, field, value) => {
+        setFormData(prev => {
+            const newCats = [...prev.categories]
+            newCats[index] = { ...newCats[index], [field]: value }
+            
+            // Si cambia la categoría, resetear subcategoría
+            if (field === 'category_id') {
+                newCats[index].subcategory_id = ''
             }
-        });
+            
+            return { ...prev, categories: newCats }
+        })
+    }
+
+    const handleAddVariant = () => {
+        if (!newColor.trim()) return
+        
+        // Verificar si ya existe
+        const exists = formData.variants.some(v => 
+            (v.name || v.variant_value).toLowerCase() === newColor.trim().toLowerCase()
+        )
+        
+        if (exists) {
+            toast.error('Este color ya está en la lista')
+            return
+        }
+
+        setFormData(prev => ({
+            ...prev,
+            variants: [...prev.variants, { 
+                name: newColor.trim(), 
+                variant_value: newColor.trim(), 
+                active: true,
+                variant_type: 'color'
+            }]
+        }))
+        setNewColor('')
+    }
+
+    const handleRemoveVariant = (index) => {
+        setFormData(prev => {
+            const newVars = [...prev.variants]
+            newVars.splice(index, 1)
+            return { ...prev, variants: newVars }
+        })
+    }
+
+    const handleToggleVariantActive = (index) => {
+        setFormData(prev => {
+            const newVars = [...prev.variants]
+            newVars[index] = { ...newVars[index], active: !newVars[index].active }
+            return { ...prev, variants: newVars }
+        })
     }
 
     const validate = () => {
@@ -217,8 +238,8 @@ export default function ProductForm() {
             newErrors.base_price = 'El precio debe ser mayor a 0'
         }
 
-        if (!formData.category_id) {
-            newErrors.category_id = 'Selecciona una categoría'
+        if (!formData.categories || formData.categories.length === 0) {
+            newErrors.categories = 'Selecciona al menos una categoría'
         }
 
         if (images.length === 0) {
@@ -258,23 +279,26 @@ export default function ProductForm() {
                 ...formData,
                 base_price: Number(formData.base_price),
                 stock: Number(formData.stock),
-                category_id: Number(formData.category_id),
-                subcategory_id: formData.subcategory_id ? Number(formData.subcategory_id) : null,
+                // Asignar primera categoría como principal para compatibilidad
+                category_id: formData.categories[0]?.category_id ? Number(formData.categories[0].category_id) : null,
+                subcategory_id: formData.categories[0]?.subcategory_id ? Number(formData.categories[0].subcategory_id) : null,
+                categories: formData.categories,
                 units_per_box: Number(formData.units_per_box),
                 boxes_per_bundle: Number(formData.boxes_per_bundle),
                 price_box: formData.price_box ? Number(formData.price_box) : null,
                 price_bundle: formData.price_bundle ? Number(formData.price_bundle) : null,
                 has_colors: formData.has_colors,
                 sale_types: formData.sale_types,
-                // Usar las variantes de formData directamente si existen, sino usar selectedColors
+                // Usar las variantes de formData
                 variants: formData.has_colors && formData.variants && formData.variants.length > 0
                     ? formData.variants.map(v => ({
                         name: v.name || v.variant_value,
                         variant_value: v.variant_value || v.name,
                         variant_type: 'color',
                         sku: v.sku || '',
-                        price_modifier: v.price_modifier || 0,
-                        stock: v.stock || 0
+                        active: v.active !== undefined ? v.active : true,
+                        price_modifier: 0, 
+                        stock: 0 
                     }))
                     : []
             }
@@ -389,16 +413,21 @@ export default function ProductForm() {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="stock">Stock</label>
-                            <input
+                            <label htmlFor="stock">Disponibilidad</label>
+                            <select
                                 id="stock"
                                 name="stock"
-                                type="number"
-                                min="0"
-                                value={formData.stock}
-                                onChange={handleChange}
+                                value={formData.stock > 0 ? 'available' : 'unavailable'}
+                                onChange={(e) => {
+                                    const val = e.target.value === 'available' ? 1000 : 0;
+                                    setFormData(prev => ({ ...prev, stock: val }))
+                                }}
                                 disabled={saving}
-                            />
+                                style={{ borderColor: formData.stock > 0 ? 'var(--success)' : 'var(--danger)' }}
+                            >
+                                <option value="available">Disponible</option>
+                                <option value="unavailable">No disponible</option>
+                            </select>
                         </div>
                     </div>
 
@@ -469,42 +498,66 @@ export default function ProductForm() {
                 {/* Categorización */}
                 <section className="form-section">
                     <h2>Categorización</h2>
+                    <p className="section-description">Asigna una o más categorías a este producto.</p>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="category_id">Categoría *</label>
-                            <select
-                                id="category_id"
-                                name="category_id"
-                                value={formData.category_id}
-                                onChange={handleChange}
-                                className={errors.category_id ? 'error' : ''}
-                                disabled={saving}
-                            >
-                                <option value="">Selecciona una categoría</option>
-                                {categories.map(cat => (
-                                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                                ))}
-                            </select>
-                            {errors.category_id && <span className="error-text">{errors.category_id}</span>}
-                        </div>
+                    {formData.categories.map((cat, index) => {
+                        const selectedCategory = categories.find(c => c.id === Number(cat.category_id))
+                        const availableSubcategories = selectedCategory?.subcategories || []
 
-                        <div className="form-group">
-                            <label htmlFor="subcategory_id">Subcategoría</label>
-                            <select
-                                id="subcategory_id"
-                                name="subcategory_id"
-                                value={formData.subcategory_id}
-                                onChange={handleChange}
-                                disabled={saving || !formData.category_id}
-                            >
-                                <option value="">Sin subcategoría</option>
-                                {subcategories.map(sub => (
-                                    <option key={sub.id} value={sub.id}>{sub.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
+                        return (
+                            <div key={cat.tempId || index} className="category-row" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', marginBottom: '1rem', padding: '1rem', background: '#f9fafb', borderRadius: '8px' }}>
+                                <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                                    <label>Categoría {index + 1} *</label>
+                                    <select
+                                        value={cat.category_id}
+                                        onChange={(e) => handleCategoryChange(index, 'category_id', e.target.value)}
+                                        disabled={saving}
+                                        className={errors.categories && index === 0 && !cat.category_id ? 'error' : ''}
+                                    >
+                                        <option value="">Selecciona una categoría</option>
+                                        {categories.map(c => (
+                                            <option key={c.id} value={c.id}>{c.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                                    <label>Subcategoría</label>
+                                    <select
+                                        value={cat.subcategory_id}
+                                        onChange={(e) => handleCategoryChange(index, 'subcategory_id', e.target.value)}
+                                        disabled={saving || !cat.category_id}
+                                    >
+                                        <option value="">Sin subcategoría</option>
+                                        {availableSubcategories.map(s => (
+                                            <option key={s.id} value={s.id}>{s.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemoveCategory(index)}
+                                    className="btn-icon danger"
+                                    title="Eliminar categoría"
+                                    style={{ padding: '10px', height: '42px', marginTop: '24px' }}
+                                    disabled={formData.categories.length === 1}
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        )
+                    })}
+
+                    <button
+                        type="button"
+                        onClick={handleAddCategory}
+                        className="btn-secondary"
+                        style={{ marginTop: '0.5rem' }}
+                    >
+                        + Agregar otra categoría
+                    </button>
+                    {errors.categories && <span className="error-text" style={{ display: 'block', marginTop: '0.5rem' }}>{errors.categories}</span>}
                 </section>
 
                 {/* Imágenes */}
@@ -537,22 +590,68 @@ export default function ProductForm() {
                         </label>
                     </div>
 
-                    {/* Selector de Colores Simplificado */}
+                    {/* Gestión de Variantes */}
                     {formData.has_colors && (
                         <div className="form-group">
-                            <label>Variantes de Color Disponibles</label>
-                            <div className="color-grid">
-                                {AVAILABLE_COLORS.map(color => (
-                                    <label key={color} className="checkbox-label color-checkbox">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedColors.includes(color)}
-                                            onChange={() => handleColorChange(color)}
-                                            disabled={saving}
-                                        />
-                                        <span>{color}</span>
-                                    </label>
+                            <label>Gestión de Variantes</label>
+                            <p className="section-description">Agrega los colores disponibles. Puedes ocultar los que no tengan stock temporalmente.</p>
+                            
+                            <div className="add-variant-row" style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                                <input
+                                    type="text"
+                                    value={newColor}
+                                    onChange={(e) => setNewColor(e.target.value)}
+                                    placeholder="Nombre del color (ej. Celeste)"
+                                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddVariant())}
+                                    style={{ flex: 1 }}
+                                />
+                                <button 
+                                    type="button" 
+                                    onClick={handleAddVariant}
+                                    className="btn-secondary"
+                                    disabled={!newColor.trim()}
+                                >
+                                    Agregar
+                                </button>
+                            </div>
+
+                            <div className="variants-list" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                {formData.variants.map((variant, index) => (
+                                    <div key={index} className="variant-item" style={{ 
+                                        display: 'flex', 
+                                        justifyContent: 'space-between', 
+                                        alignItems: 'center',
+                                        padding: '8px 12px',
+                                        background: '#f3f4f6',
+                                        borderRadius: '6px',
+                                        border: '1px solid #e5e7eb'
+                                    }}>
+                                        <span style={{ fontWeight: 500 }}>{variant.name || variant.variant_value}</span>
+                                        
+                                        <div className="variant-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                            <label className="checkbox-label" style={{ marginBottom: 0, fontSize: '14px' }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={variant.active}
+                                                    onChange={() => handleToggleVariantActive(index)}
+                                                />
+                                                <span>{variant.active ? 'Visible' : 'Oculto'}</span>
+                                            </label>
+                                            
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveVariant(index)}
+                                                className="btn-icon danger"
+                                                title="Eliminar variante"
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+                                    </div>
                                 ))}
+                                {formData.variants.length === 0 && (
+                                    <p className="no-data-text" style={{ color: 'var(--gray)', fontStyle: 'italic' }}>No hay variantes agregadas.</p>
+                                )}
                             </div>
                         </div>
                     )}

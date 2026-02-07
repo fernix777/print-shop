@@ -4,7 +4,6 @@ import HeroSection from '../../components/customer/HeroSection'
 import AboutSection from '../../components/customer/AboutSection'
 import CategoriesSection from '../../components/customer/CategoriesSection'
 import FeaturedProducts from '../../components/customer/FeaturedProducts'
-import BenefitsSection from '../../components/customer/BenefitsSection'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
 import './StorePage.css'
 
@@ -18,7 +17,6 @@ export default function StorePage() {
                 <AboutSection />
                 <CategoriesSection />
                 <FeaturedProducts />
-                <BenefitsSection />
             </main>
 
             <Footer />

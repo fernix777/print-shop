@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../../config/supabase'
+import { getSalesStats } from '../../services/orderService'
 import './Dashboard.css'
 
 export default function Dashboard() {
@@ -27,23 +28,23 @@ export default function Dashboard() {
             console.log('📊 Dashboard: Fetching stats...')
             setLoading(true)
 
-            // Fetch products count
-            const { count: productsCount } = await supabase
-                .from('products')
-                .select('*', { count: 'exact', head: true })
+            const [productsRes, categoriesRes, salesRes] = await Promise.all([
+                supabase.from('products').select('*', { count: 'exact', head: true }),
+                supabase.from('categories').select('*', { count: 'exact', head: true }),
+                getSalesStats()
+            ])
 
-            // Fetch categories count
-            const { count: categoriesCount } = await supabase
-                .from('categories')
-                .select('*', { count: 'exact', head: true })
+            const productsCount = productsRes.count
+            const categoriesCount = categoriesRes.count
+            const { totalSales, ordersCount, error: statsError } = salesRes
 
-            console.log('📈 Dashboard: Stats fetched:', { productsCount, categoriesCount })
+            console.log('📈 Dashboard: Stats fetched:', { productsCount, categoriesCount, totalSales, ordersCount })
 
             setStats({
                 products: productsCount || 0,
                 categories: categoriesCount || 0,
-                orders: 0, // TODO: Implement when orders table exists
-                sales: 0   // TODO: Implement when orders table exists
+                orders: ordersCount || 0,
+                sales: totalSales || 0
             })
         } catch (error) {
             console.error('❌ Dashboard: Error fetching stats:', error)
@@ -66,18 +67,24 @@ export default function Dashboard() {
                 </div>
 
                 <nav className="sidebar-nav">
-                    <a href="/admin/dashboard" className="nav-item active">
+                    <Link to="/admin/dashboard" className="nav-item active">
                         <span>📊</span> Dashboard
-                    </a>
-                    <a href="/admin/products" className="nav-item">
+                    </Link>
+                    <Link to="/admin/products" className="nav-item">
                         <span>📦</span> Productos
-                    </a>
-                    <a href="/admin/categories" className="nav-item">
+                    </Link>
+                    <Link to="/admin/categories" className="nav-item">
                         <span>🏷️</span> Categorías
-                    </a>
-                    <a href="/admin/orders" className="nav-item">
+                    </Link>
+                    <Link to="/admin/orders" className="nav-item">
                         <span>🛒</span> Pedidos
-                    </a>
+                    </Link>
+                    <Link to="/admin/banners" className="nav-item">
+                        <span>🖼️</span> Banners
+                    </Link>
+                    <Link to="/admin/customers" className="nav-item">
+                        <span>👥</span> Clientes
+                    </Link>
                 </nav>
 
                 <div className="sidebar-footer">

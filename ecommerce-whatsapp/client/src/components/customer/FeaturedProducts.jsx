@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { getFeaturedProducts } from '../../services/productService'
+import { getTopSellingProductsPerCategory } from '../../services/storeService'
 import { CartContext } from '../../context/CartContext'
+import { useAuth } from '../../context/AuthContext'
 import LoadingSpinner from '../common/LoadingSpinner'
 import './FeaturedProducts.css'
 
@@ -9,13 +10,14 @@ export default function FeaturedProducts() {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const { addToCart } = useContext(CartContext)
+    const { user } = useAuth()
 
     useEffect(() => {
         loadProducts()
     }, [])
 
     const loadProducts = async () => {
-        const { data } = await getFeaturedProducts(8)
+        const { data } = await getTopSellingProductsPerCategory()
         if (data) {
             setProducts(data)
         }
@@ -92,9 +94,15 @@ export default function FeaturedProducts() {
                                         <span className="featured-category">{product.category.name}</span>
                                     )}
                                     <div className="featured-footer">
-                                        <span className="featured-price">
-                                            ${parseFloat(product.price).toLocaleString('es-AR')}
-                                        </span>
+                                        {user ? (
+                                            <span className="featured-price">
+                                                ${!isNaN(parseFloat(product.price)) ? parseFloat(product.price).toLocaleString('es-AR') : '0.00'}
+                                            </span>
+                                        ) : (
+                                            <span className="featured-price login-required">
+                                                Ver precio
+                                            </span>
+                                        )}
                                         {isAvailable && (
                                             <button 
                                                 className="featured-add-btn"

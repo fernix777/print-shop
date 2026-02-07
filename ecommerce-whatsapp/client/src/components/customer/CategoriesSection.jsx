@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { getActiveCategories } from '../../services/storeService'
-import { getProductsByCategory } from '../../services/productService'
+import { getActiveCategories, getProductsByCategory } from '../../services/storeService'
+import { useAuth } from '../../context/AuthContext'
 import LoadingSpinner from '../common/LoadingSpinner'
 import './CategoriesSection.css'
 
@@ -9,6 +9,7 @@ export default function CategoriesSection() {
     const [categories, setCategories] = useState([])
     const [categoryProducts, setCategoryProducts] = useState({})
     const [loading, setLoading] = useState(true)
+    const { user } = useAuth()
 
     useEffect(() => {
         loadCategories()
@@ -64,9 +65,9 @@ export default function CategoriesSection() {
                                 )}
                                 <div className="category-info">
                                     <h3>{category.name}</h3>
-                                    {category.description && (
+                                    {/* {category.description && (
                                         <p>{category.description}</p>
-                                    )}
+                                    )} */}
                                 </div>
                             </Link>
                             
@@ -88,9 +89,15 @@ export default function CategoriesSection() {
                                                 <div className="category-product-info">
                                                     <span className="category-product-name">{product.name}</span>
                                                     {product.price && (
-                                                        <span className="category-product-price">
-                                                            ${parseFloat(product.price).toLocaleString('es-AR')}
-                                                        </span>
+                                                        user ? (
+                                                            <span className="category-product-price">
+                                                                ${!isNaN(parseFloat(product.price)) ? parseFloat(product.price).toLocaleString('es-AR') : '0.00'}
+                                                            </span>
+                                                        ) : (
+                                                            <span className="category-product-price login-required">
+                                                                Ver precio
+                                                            </span>
+                                                        )
                                                     )}
                                                 </div>
                                             </Link>

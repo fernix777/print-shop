@@ -9,7 +9,7 @@ export default function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [cartOpen, setCartOpen] = useState(false);
-    const { user, signOut } = useAuth();
+    const { user, signOut, isAdmin } = useAuth();
     const { getCartCount } = useCart();
     const navigate = useNavigate();
 
@@ -78,6 +78,11 @@ export default function Header() {
                                 👤 {user.email.split('@')[0]}
                             </button>
                             <div className="dropdown-menu">
+                                {isAdmin() && (
+                                    <Link to="/admin/dashboard" className="dropdown-item">
+                                        📊 Panel Admin
+                                    </Link>
+                                )}
                                 <Link to="/mi-cuenta" className="dropdown-item">Mi Cuenta</Link>
                                 <Link to="/mis-pedidos" className="dropdown-item">Mis Pedidos</Link>
                                 <button onClick={handleSignOut} className="dropdown-item">

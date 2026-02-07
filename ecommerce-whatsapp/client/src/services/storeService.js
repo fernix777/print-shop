@@ -5,6 +5,56 @@ import { supabase } from '../config/supabase'
  */
 
 /**
+ * Obtiene los 3 productos más vendidos (o destacados) de cada categoría
+ * @returns {Promise<{data: Array, error: null} | {data: null, error: Error}>}
+ */
+export async function getTopSellingProductsPerCategory() {
+    try {
+        // 1. Obtener todas las categorías activas
+        const { data: categories, error: catError } = await supabase
+            .from('categories')
+            .select('id, name, slug')
+            .eq('active', true)
+            .order('display_order', { ascending: true })
+
+        if (catError) throw catError
+
+        if (!categories || categories.length === 0) {
+            return { data: [], error: null }
+        }
+
+        // 2. Para cada categoría, obtener los 3 mejores productos
+        const productsPromises = categories.map(async (category) => {
+            const { data: products } = await supabase
+                .from('products')
+                .select(`
+                    *,
+                    category:categories(id, name, slug),
+                    images:product_images(*),
+                    product_categories!inner(category_id)
+                `)
+                .eq('active', true)
+                .eq('product_categories.category_id', category.id)
+                .order('featured', { ascending: false }) // Priorizar destacados
+                .order('created_at', { ascending: false }) // Luego los más nuevos
+                .limit(3)
+            
+            return products || []
+        })
+
+        const results = await Promise.all(productsPromises)
+        
+        // 3. Aplanar el array de arrays
+        const allProducts = results.flat()
+
+        return { data: allProducts, error: null }
+    } catch (error) {
+        console.error('Error fetching top selling products:', error)
+        return { data: null, error }
+    }
+}
+
+/**
  * Obtiene productos destacados
  * @param {number} limit - Número máximo de productos
  * @returns {Promise<{data: Array, error: null} | {data: null, error: Error}>}
@@ -81,10 +131,11 @@ export async function getProductsByCategory(categorySlug, options = {}) {
             .select(`
         *,
         category:categories(id, name, slug),
-        images:product_images(*)
+        images:product_images(*),
+        product_categories!inner(category_id)
       `)
             .eq('active', true)
-            .eq('category_id', category.id)
+            .eq('product_categories.category_id', category.id)
             .order('created_at', { ascending: false })
 
         if (options.limit) {

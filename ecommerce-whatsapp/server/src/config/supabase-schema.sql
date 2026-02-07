@@ -67,7 +67,18 @@ CREATE TABLE IF NOT EXISTS product_variants (
   price_modifier NUMERIC(10, 2) DEFAULT 0,
   stock INTEGER DEFAULT 0,
   sku TEXT,
+  active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Tabla de categorías múltiples por producto
+CREATE TABLE IF NOT EXISTS product_categories (
+  id BIGSERIAL PRIMARY KEY,
+  product_id BIGINT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  category_id BIGINT NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
+  subcategory_id BIGINT REFERENCES subcategories(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(product_id, category_id, subcategory_id)
 );
 
 -- Tabla de zonas de envío por código postal

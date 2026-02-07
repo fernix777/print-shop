@@ -55,13 +55,6 @@ export default function AboutSection() {
                                 </div>
                             </li>
                             <li>
-                                <span className="shipping-icon"><FaMotorcycle /></span>
-                                <div>
-                                    <strong>ENTREGAS EN SALTA CAPITAL</strong>
-                                    <p>Sin costo los sábados</p>
-                                </div>
-                            </li>
-                            <li>
                                 <span className="shipping-icon"><FaMapLocationDot /></span>
                                 <div>
                                     <strong>Envío Nacional</strong>
@@ -74,11 +67,6 @@ export default function AboutSection() {
 
                 {/* Valores adicionales */}
                 <div className="values-section">
-                    <div className="value-item">
-                        <span className="value-icon"><FaCircleCheck /></span>
-                        <h4>Calidad Garantizada</h4>
-                        <p>Productos 100% originales</p>
-                    </div>
                     <div className="value-item">
                         <span className="value-icon"><FaShieldHalved /></span>
                         <h4>Compra Segura</h4>

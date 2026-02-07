@@ -1,0 +1,135 @@
+.orders-page {
+    padding: 20px;
+}
+
+.orders-table-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table th,
+.orders-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.orders-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+}
+
+.orders-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-completed {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-cancelled {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.customer-info small {
+    display: block;
+    color: #666;
+}
+
+.order-actions button {
+    margin-right: 5px;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.btn-view {
+    background-color: #e2e6ea;
+    color: #333;
+}
+
+.btn-complete {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-cancel {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Modal styles for order details */
+.order-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.order-modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.order-items-list {
+    margin-top: 15px;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.item-details h4 {
+    margin: 0 0 5px 0;
+}

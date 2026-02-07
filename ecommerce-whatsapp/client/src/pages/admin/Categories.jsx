@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
-import { getCategories, deleteCategory } from '../../services/categoryService'
+import { getCategories, deleteCategory, deleteSubcategory } from '../../services/categoryService'
 import CategoryForm from '../../components/admin/CategoryForm'
+import SubcategoryForm from '../../components/admin/SubcategoryForm'
 import ConfirmDialog from '../../components/common/ConfirmDialog'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './Categories.css'
@@ -9,9 +10,18 @@ import './Categories.css'
 export default function Categories() {
     const [categories, setCategories] = useState([])
     const [loading, setLoading] = useState(true)
+    
+    // Category Form State
     const [showForm, setShowForm] = useState(false)
     const [editingCategory, setEditingCategory] = useState(null)
     const [deleteDialog, setDeleteDialog] = useState({ isOpen: false, category: null })
+    
+    // Subcategory Form State
+    const [showSubForm, setShowSubForm] = useState(false)
+    const [editingSubcategory, setEditingSubcategory] = useState(null)
+    const [targetCategory, setTargetCategory] = useState(null)
+    const [deleteSubDialog, setDeleteSubDialog] = useState({ isOpen: false, subcategory: null })
+
     const [filter, setFilter] = useState('all') // 'all' | 'active' | 'inactive'
 
     useEffect(() => {
@@ -32,6 +42,7 @@ export default function Categories() {
         setLoading(false)
     }
 
+    // Category Handlers
     const handleCreate = () => {
         setEditingCategory(null)
         setShowForm(true)
@@ -70,6 +81,51 @@ export default function Categories() {
         }
 
         setDeleteDialog({ isOpen: false, category: null })
+    }
+
+    // Subcategory Handlers
+    const handleCreateSubcategory = (category) => {
+        setTargetCategory(category)
+        setEditingSubcategory(null)
+        setShowSubForm(true)
+    }
+
+    const handleEditSubcategory = (subcategory, category) => {
+        setTargetCategory(category)
+        setEditingSubcategory(subcategory)
+        setShowSubForm(true)
+    }
+
+    const handleSubFormClose = () => {
+        setShowSubForm(false)
+        setEditingSubcategory(null)
+        setTargetCategory(null)
+    }
+
+    const handleSubFormSuccess = () => {
+        setShowSubForm(false)
+        setEditingSubcategory(null)
+        setTargetCategory(null)
+        loadCategories()
+        toast.success(editingSubcategory ? 'Subcategoría actualizada' : 'Subcategoría creada')
+    }
+
+    const handleDeleteSubcategoryClick = (subcategory) => {
+        setDeleteSubDialog({ isOpen: true, subcategory })
+    }
+
+    const handleDeleteSubcategoryConfirm = async () => {
+        const { success, error } = await deleteSubcategory(deleteSubDialog.subcategory.id)
+
+        if (success) {
+            toast.success('Subcategoría eliminada')
+            loadCategories()
+        } else {
+            toast.error('Error al eliminar subcategoría')
+            console.error(error)
+        }
+
+        setDeleteSubDialog({ isOpen: false, subcategory: null })
     }
 
     return (
@@ -128,7 +184,20 @@ export default function Categories() {
 
                             <div className="category-content">
                                 <div className="category-header">
-                                    <h3>{category.name}</h3>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <h3>{category.name}</h3>
+                                        <button 
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleEdit(category);
+                                            }}
+                                            className="btn-icon"
+                                            title="Editar Categoría"
+                                            style={{ fontSize: '1.2rem' }}
+                                        >
+                                            ✎
+                                        </button>
+                                    </div>
                                     <span className={`status-badge ${category.active ? 'active' : 'inactive'}`}>
                                         {category.active ? 'Activa' : 'Inactiva'}
                                     </span>
@@ -138,10 +207,45 @@ export default function Categories() {
                                     <p className="category-description">{category.description}</p>
                                 )}
 
-                                <div className="category-meta">
-                                    <span className="subcategory-count">
-                                        {category.subcategories?.length || 0} subcategorías
-                                    </span>
+                                <div className="subcategories-section">
+                                    <div className="subcategories-header">
+                                        <h4>Subcategorías ({category.subcategories?.length || 0})</h4>
+                                        <button 
+                                            onClick={() => handleCreateSubcategory(category)}
+                                            className="btn-add-sub"
+                                            title="Agregar subcategoría"
+                                        >
+                                            +
+                                        </button>
+                                    </div>
+                                    
+                                    {category.subcategories && category.subcategories.length > 0 ? (
+                                        <ul className="subcategory-list">
+                                            {category.subcategories.map(sub => (
+                                                <li key={sub.id} className="subcategory-item">
+                                                    <span className="sub-name">{sub.name}</span>
+                                                    <div className="sub-actions">
+                                                        <button 
+                                                            onClick={() => handleEditSubcategory(sub, category)}
+                                                            className="btn-icon"
+                                                            title="Editar"
+                                                        >
+                                                            ✎
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => handleDeleteSubcategoryClick(sub)}
+                                                            className="btn-icon danger"
+                                                            title="Eliminar"
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p className="no-subcategories">Sin subcategorías</p>
+                                    )}
                                 </div>
                             </div>
 
@@ -150,7 +254,7 @@ export default function Categories() {
                                     onClick={() => handleEdit(category)}
                                     className="btn btn-outline btn-sm"
                                 >
-                                    Editar
+                                    Editar Categoría
                                 </button>
                                 <button
                                     onClick={() => handleDeleteClick(category)}
@@ -172,12 +276,31 @@ export default function Categories() {
                 />
             )}
 
+            {showSubForm && (
+                <SubcategoryForm
+                    category={targetCategory}
+                    subcategory={editingSubcategory}
+                    onClose={handleSubFormClose}
+                    onSuccess={handleSubFormSuccess}
+                />
+            )}
+
             <ConfirmDialog
                 isOpen={deleteDialog.isOpen}
                 onClose={() => setDeleteDialog({ isOpen: false, category: null })}
                 onConfirm={handleDeleteConfirm}
                 title="Eliminar Categoría"
                 message={`¿Estás seguro de eliminar "${deleteDialog.category?.name}"? Esta acción no se puede deshacer.`}
+                confirmText="Eliminar"
+                type="danger"
+            />
+
+            <ConfirmDialog
+                isOpen={deleteSubDialog.isOpen}
+                onClose={() => setDeleteSubDialog({ isOpen: false, subcategory: null })}
+                onConfirm={handleDeleteSubcategoryConfirm}
+                title="Eliminar Subcategoría"
+                message={`¿Estás seguro de eliminar "${deleteSubDialog.subcategory?.name}"?`}
                 confirmText="Eliminar"
                 type="danger"
             />
