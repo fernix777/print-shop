@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
-import { trackInitiateCheckout, trackPurchase } from '../../services/facebookTracking'
-import { setupEnhancedMatching } from '../../utils/enhancedMatching'
+import { trackInitiateCheckout, trackPurchase } from '../../services/facebookService'
+import { trackInitiateCheckout as trackPixelInitiateCheckout } from '../../utils/facebookPixel'
 import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
@@ -37,8 +37,17 @@ export default function CheckoutPage() {
     // Rastrear InitiateCheckout cuando el componente se monta
     useEffect(() => {
         if (cart.length > 0 && !checkoutInitiated) {
-            // Rastrear InitiateCheckout (Pixel + CAPI)
-            trackInitiateCheckout(cart);
+            const userData = user ? {
+                email: user.email,
+                user_id: user.id,
+                phone: user.phone,
+                first_name: user.first_name,
+                last_name: user.last_name
+            } : null
+            
+            trackInitiateCheckout(cartTotal, cartItemsCount, userData)
+            // Rastrear en Facebook Pixel
+            trackPixelInitiateCheckout(cartTotal)
             setCheckoutInitiated(true)
         }
     }, [cart, user, cartTotal, cartItemsCount, checkoutInitiated])
@@ -74,18 +83,6 @@ export default function CheckoutPage() {
         setProcessing(true)
 
         try {
-            // Configurar Enhanced Matching con los datos del formulario
-            setupEnhancedMatching({
-                email: formData.email,
-                phone: formData.phone,
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                zip: formData.zipCode,
-                city: formData.city,
-                state: formData.state || 'Jujuy',
-                country: 'ar'
-            });
-
             // Preparar datos de la orden
             const orderData = {
                 customer: formData,

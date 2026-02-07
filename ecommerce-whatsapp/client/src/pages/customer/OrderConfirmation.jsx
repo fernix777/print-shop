@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { trackPurchase } from '../../services/facebookTracking'
+import { trackPurchase } from '../../services/facebookService'
+import { trackPurchase as trackPixelPurchase } from '../../utils/facebookPixel'
 import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
@@ -41,29 +42,32 @@ export default function OrderConfirmation() {
     // Rastrear evento de Purchase cuando se carga la orden
     useEffect(() => {
         if (order && !purchaseTracked) {
-            const purchaseOrder = {
+            const userData = user ? {
+                email: user.email || order.customer.email,
+                user_id: user.id,
+                phone: user.phone || order.customer.phone,
+                first_name: user.first_name || order.customer.firstName,
+                last_name: user.last_name || order.customer.lastName
+            } : {
+                email: order.customer.email,
+                phone: order.customer.phone
+            }
+
+            const purchaseData = {
                 id: orderId || order.order_id,
                 total: order.total,
-                user: user ? {
-                    email: user.email || order.customer.email,
-                    user_id: user.id,
-                    phone: user.phone || order.customer.phone,
-                    first_name: user.first_name || order.customer.firstName,
-                    last_name: user.last_name || order.customer.lastName
-                } : {
-                    email: order.customer.email,
-                    phone: order.customer.phone
-                },
+                user: userData,
                 items: order.items.map(item => ({
                     product_id: item.id,
-                    product_name: item.name,
                     quantity: item.quantity,
-                    price: item.price
+                    price: item.price,
+                    product_name: item.name
                 }))
             }
 
-            // Rastrear Purchase (Pixel + CAPI)
-            trackPurchase(purchaseOrder);
+            trackPurchase(purchaseData)
+            // Rastrear en Facebook Pixel
+            trackPixelPurchase(order.total, 'ARS', orderId || order.order_id)
             setPurchaseTracked(true)
 
             // Limpiar localStorage
