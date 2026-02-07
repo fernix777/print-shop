@@ -29,7 +29,19 @@ export default function Login() {
             navigate(from, { replace: true });
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
-            setError('Error al iniciar sesión. Verifica tus credenciales.');
+            
+            // Manejar errores específicos de Supabase
+            if (error.message?.includes('Invalid login credentials') || error.message?.includes('invalid')) {
+                setError('Correo electrónico o contraseña incorrectos. Por favor verifica tus datos.');
+            } else if (error.message?.includes('Email not confirmed') || error.message?.includes('confirm')) {
+                setError('Tu correo electrónico no ha sido confirmado. Revisa tu bandeja de entrada.');
+            } else if (error.message?.includes('rate limit')) {
+                setError('Demasiados intentos fallidos. Por favor espera unos minutos antes de volver a intentar.');
+            } else if (error.message?.includes('User not found')) {
+                setError('No existe una cuenta con este correo electrónico.');
+            } else {
+                setError(error.message || 'Error al iniciar sesión. Verifica tus credenciales.');
+            }
         } finally {
             setLoading(false);
         }

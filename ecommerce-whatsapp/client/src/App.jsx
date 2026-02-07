@@ -22,6 +22,8 @@ import OrderConfirmation from './pages/customer/OrderConfirmation';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import RegistrationSuccess from './pages/auth/RegistrationSuccess';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import ResetPassword from './pages/auth/ResetPassword';
 
 // Páginas admin
 import AdminLogin from './pages/admin/Login';
@@ -86,6 +88,12 @@ function App() {
                             } />
                             <Route path="/registro-exitoso" element={
                                 <RegistrationSuccess />
+                            } />
+                            <Route path="/recuperar-contrasena" element={
+                                <ForgotPassword />
+                            } />
+                            <Route path="/actualizar-contrasena" element={
+                                <ResetPassword />
                             } />
 
                             {/* Rutas protegidas de admin */}

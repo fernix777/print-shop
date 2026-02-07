@@ -260,6 +260,54 @@
     border-left: 4px solid #c62828;
 }
 
+.success-message {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    border-left: 4px solid #2e7d32;
+}
+
+.success-message-container {
+    text-align: center;
+    padding: 1rem;
+}
+
+.success-message-container .success-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.success-message-container h3 {
+    color: #2e7d32;
+    margin-bottom: 0.5rem;
+}
+
+.success-message-container .redirect-message {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+.auth-description {
+    color: var(--gray);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.success-info {
+    text-align: center;
+    padding: 2rem;
+}
+
+.success-info .success-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
 .terms-text {
     font-size: 0.8rem;
     margin-top: 1rem;

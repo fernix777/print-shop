@@ -24,12 +24,28 @@ export default function Register() {
             setError('');
             setLoading(true);
 
+            // Verificar si el correo ya está registrado
+            const { data: existingUsers, error: checkError } = await supabase
+                .from('profiles')
+                .select('email')
+                .eq('email', email.toLowerCase())
+                .maybeSingle();
+
+            if (checkError) {
+                console.warn('Error al verificar correo existente:', checkError);
+            }
+
+            if (existingUsers) {
+                throw new Error('Este correo electrónico ya está registrado. Por favor inicia sesión o usa otro correo.');
+            }
+
             const { data: authData, error: signUpError } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
                     data: {
                         full_name: fullName,
+                        email: email.toLowerCase(),
                     },
                     emailRedirectTo: `${window.location.origin}/`,
                 },
