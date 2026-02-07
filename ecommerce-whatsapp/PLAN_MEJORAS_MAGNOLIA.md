@@ -4,25 +4,24 @@
 
 ---
 
-## 🎯 PUNTO 1: STOCK DE ARTÍCULOS
+## ✅ PUNTO 1: STOCK DE ARTÍCULOS (COMPLETADO)
 
 ### Requerimiento
 - Cambiar visualización de stock de cantidad numérica a estado binario
 - Mostrar solo: "Disponible" o "No Disponible"
+- ✅ Si el producto está "No Disponible", NO se puede agregar al carrito
 
-### Archivos a Modificar
+### Archivos Modificados
 - `client/src/pages/customer/ProductDetail.jsx`
 - `client/src/pages/customer/ProductsPage.jsx`
+- `client/src/pages/customer/CategoryPage.jsx`
+- `client/src/pages/customer/SearchPage.jsx`
 - `client/src/components/customer/FeaturedProducts.jsx`
 - `client/src/pages/admin/Products.jsx`
-- `client/src/pages/admin/ProductForm.jsx`
+- `client/src/context/CartContext.jsx`
+- `client/src/pages/customer/ProductsPage.css`
 
-### Cambios en Base de Datos
-- Modificar campo `stock` en tabla `products` (mantener INT pero cambiar lógica de visualización)
-- Alternativa: Agregar campo booleano `available` 
-
-### Complejidad: ⭐⭐ (Baja-Media)
-### Tiempo Estimado: 30-45 minutos
+### Estado: ✅ COMPLETADO (Commit: e5aea1a - 7 de febrero 2026)
 
 ---
 
