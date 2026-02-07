@@ -125,15 +125,20 @@ export default function CheckoutPage() {
                 message += `📞 *Teléfono:* ${formData.phone}\n`
                 message += `📍 *Dirección:* ${formData.address}, ${formData.city}, ${formData.state}\n\n`
                 
+                // Incluir instrucciones especiales si existen
+                if (formData.instructions && formData.instructions.trim()) {
+                    message += `📝 *Instrucciones Especiales:*\n${formData.instructions}\n\n`
+                }
+                
                 message += '📋 *Productos solicitados:*\n'
                 cart.forEach((item, index) => {
                     message += `\n${index + 1}. *${item.name}*\n`
                     message += `   - Cantidad: ${item.quantity}\n`
-                    message += `   - Precio unitario: $${item.price.toLocaleString('es-AR')}\n`
-                    message += `   - Subtotal: $${(item.price * item.quantity).toLocaleString('es-AR')}\n`
+                    message += `   - Precio unitario: ${item.price.toLocaleString('es-AR')}\n`
+                    message += `   - Subtotal: ${(item.price * item.quantity).toLocaleString('es-AR')}\n`
                 })
                 
-                message += `\n💰 *Total a pagar: $${cartTotal.toLocaleString('es-AR')}*\n\n`
+                message += `\n💰 *Total a pagar: ${cartTotal.toLocaleString('es-AR')}*\n\n`
                 message += `ID de Orden: ${orderId}\n`
                 message += '¡Hola! Quisiera confirmar este pedido.'
 
@@ -356,11 +361,11 @@ export default function CheckoutPage() {
                                 </div>
                             </div>
 
-                            {/* Método de pago */}
-                            <div className="form-section">
+                            {/* Método de pago - Solo WhatsApp */}
+                            <div className="form-section payment-section">
                                 <h3>Método de Pago</h3>
                                 <div className="payment-options">
-                                    <label className="payment-option">
+                                    <label className="payment-option payment-whatsapp">
                                         <input
                                             type="radio"
                                             name="paymentMethod"
@@ -369,29 +374,11 @@ export default function CheckoutPage() {
                                             onChange={(e) => setPaymentMethod(e.target.value)}
                                             disabled={processing}
                                         />
-                                        <span>Coordinar por WhatsApp</span>
-                                    </label>
-                                    <label className="payment-option">
-                                        <input
-                                            type="radio"
-                                            name="paymentMethod"
-                                            value="transfer"
-                                            checked={paymentMethod === 'transfer'}
-                                            onChange={(e) => setPaymentMethod(e.target.value)}
-                                            disabled={processing}
-                                        />
-                                        <span>Transferencia Bancaria</span>
-                                    </label>
-                                    <label className="payment-option">
-                                        <input
-                                            type="radio"
-                                            name="paymentMethod"
-                                            value="cash"
-                                            checked={paymentMethod === 'cash'}
-                                            onChange={(e) => setPaymentMethod(e.target.value)}
-                                            disabled={processing}
-                                        />
-                                        <span>Efectivo en Sucursal</span>
+                                        <div className="payment-option-content">
+                                            <span className="payment-icon">💬</span>
+                                            <span className="payment-label">Coordinar por WhatsApp</span>
+                                            <span className="payment-description">Te contactaremos para confirmar tu pedido y acordar el pago</span>
+                                        </div>
                                     </label>
                                 </div>
                             </div>
