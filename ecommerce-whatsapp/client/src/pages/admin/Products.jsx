@@ -21,12 +21,18 @@ export default function Products() {
     })
 
     useEffect(() => {
+        const controller = new AbortController()
         loadCategories()
-        loadProducts()
+        loadProducts(controller.signal)
+
+        return () => controller.abort()
     }, [])
 
     useEffect(() => {
-        loadProducts()
+        const controller = new AbortController()
+        loadProducts(controller.signal)
+
+        return () => controller.abort()
     }, [filters])
 
     const loadCategories = async () => {
@@ -34,17 +40,23 @@ export default function Products() {
         setCategories(data || [])
     }
 
-    const loadProducts = async () => {
+    const loadProducts = async (signal) => {
         setLoading(true)
-        const { data, error } = await getProducts(filters)
+        const { data, error } = await getProducts(filters, signal)
 
         if (error) {
             toast.error('Error al cargar productos')
             console.error(error)
-        } else {
-            setProducts(data || [])
+        } else if (data) {
+            // Only update if not aborted (data comes back as empty array on abort but we should verify signal if possible, 
+            // but since service returns empty array on abort, we rely on component mounted state or signal check)
+            if (!signal?.aborted) {
+                setProducts(data || [])
+            }
         }
-        setLoading(false)
+        if (!signal?.aborted) {
+            setLoading(false)
+        }
     }
 
     const handleFilterChange = (key, value) => {

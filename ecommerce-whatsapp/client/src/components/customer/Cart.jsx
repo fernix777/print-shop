@@ -51,10 +51,11 @@ export default function Cart({ onClose }) {
         // Productos
         message += '📋 *Productos solicitados:*\n';
         cart.forEach((item, index) => {
+            const price = item.price || 0;
             message += `\n${index + 1}. *${item.name}*\n`;
             message += `   - Cantidad: ${item.quantity} ${item.purchaseType === 'paquete' ? 'paquetes' : item.purchaseType === 'bulto' ? 'bultos' : 'unidades'}\n`;
-            message += `   - Precio unitario: ${formatPrice(item.price)}\n`;
-            message += `   - Subtotal: ${formatPrice(item.price * item.quantity)}\n`;
+            message += `   - Precio unitario: ${formatPrice(price)}\n`;
+            message += `   - Subtotal: ${formatPrice(price * item.quantity)}\n`;
 
             if (item.selectedColor) {
                 message += `   - Variante: ${item.selectedColor}\n`;
@@ -83,7 +84,7 @@ export default function Cart({ onClose }) {
                 product_id: item.id,
                 product_name: item.name,
                 quantity: item.quantity,
-                price: item.price
+                price: item.price || 0
             }))
         };
 
@@ -141,7 +142,7 @@ export default function Cart({ onClose }) {
                                     {item.selectedColor && ` • ${item.selectedColor}`}
                                     {item.selectedCondition && ` • ${item.selectedCondition}`}
                                 </p>
-                                <p className="item-price">{formatPrice(item.price)} c/u</p>
+                                <p className="item-price">{formatPrice(item.price || 0)} c/u</p>
 
                                 <div className="item-quantity">
                                     <button
@@ -186,7 +187,7 @@ export default function Cart({ onClose }) {
                                 >
                                     <FaTimes />
                                 </button>
-                                <span>{formatPrice(item.price * item.quantity)}</span>
+                                <span>{formatPrice((item.price || 0) * item.quantity)}</span>
                             </div>
                         </div>
                     ))}

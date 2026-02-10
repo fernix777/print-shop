@@ -122,7 +122,7 @@ export default function CheckoutPage() {
                     product_id: item.id,
                     product_name: item.name,
                     quantity: item.quantity,
-                    price: item.price
+                    price: item.price || 0
                 }))
             }
             trackPurchase(fbOrderData)
@@ -143,10 +143,11 @@ export default function CheckoutPage() {
                 
                 message += '📋 *Productos solicitados:*\n'
                 cart.forEach((item, index) => {
+                    const price = item.price || 0
                     message += `\n${index + 1}. *${item.name}*\n`
                     message += `   - Cantidad: ${item.quantity}\n`
-                    message += `   - Precio unitario: ${item.price.toLocaleString('es-AR')}\n`
-                    message += `   - Subtotal: ${(item.price * item.quantity).toLocaleString('es-AR')}\n`
+                    message += `   - Precio unitario: ${price.toLocaleString('es-AR')}\n`
+                    message += `   - Subtotal: ${(price * item.quantity).toLocaleString('es-AR')}\n`
                 })
                 
                 message += `\n💰 *Total a pagar: ${cartTotal.toLocaleString('es-AR')}*\n\n`
@@ -200,7 +201,7 @@ export default function CheckoutPage() {
                                         </p>
                                     </div>
                                     <div className="item-price">
-                                        ${(item.price * item.quantity).toLocaleString('es-AR')}
+                                        ${((item.price || 0) * item.quantity).toLocaleString('es-AR')}
                                     </div>
                                 </div>
                             ))}

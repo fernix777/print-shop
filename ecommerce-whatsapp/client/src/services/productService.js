@@ -8,9 +8,10 @@ import { uploadImage, deleteImage, extractPathFromUrl, uploadMultipleImages } fr
 /**
  * Obtiene productos con filtros
  * @param {Object} filters - Filtros de búsqueda
+ * @param {AbortSignal} [signal] - Señal de aborto opcional
  * @returns {Promise<{data: Array, error: null} | {data: null, error: Error}>}
  */
-export async function getProducts(filters = {}) {
+export async function getProducts(filters = {}, signal) {
     try {
         let selectQuery = `
         *,
@@ -29,6 +30,7 @@ export async function getProducts(filters = {}) {
             .from('products')
             .select(selectQuery)
             .order('created_at', { ascending: false })
+            .abortSignal(signal)
 
         // Filtros
         if (filters.active !== undefined) {
@@ -66,6 +68,9 @@ export async function getProducts(filters = {}) {
 
         return { data, error: null }
     } catch (error) {
+        if (error.code === 20 || error.name === 'AbortError') {
+            return { data: [], error: null }
+        }
         console.error('Error fetching products:', error)
         return { data: null, error }
     }

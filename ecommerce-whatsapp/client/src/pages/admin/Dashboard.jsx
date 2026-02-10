@@ -19,19 +19,25 @@ export default function Dashboard() {
     console.log('🔍 Dashboard Component:', { user, loading })
 
     useEffect(() => {
+        const controller = new AbortController()
         console.log('🚀 Dashboard: useEffect called')
-        fetchStats()
+        fetchStats(controller.signal)
+        
+        return () => {
+            console.log('🛑 Dashboard: cleaning up')
+            controller.abort()
+        }
     }, [])
 
-    const fetchStats = async () => {
+    const fetchStats = async (signal) => {
         try {
             console.log('📊 Dashboard: Fetching stats...')
             setLoading(true)
 
             const [productsRes, categoriesRes, salesRes] = await Promise.all([
-                supabase.from('products').select('*', { count: 'exact', head: true }),
-                supabase.from('categories').select('*', { count: 'exact', head: true }),
-                getSalesStats()
+                supabase.from('products').select('*', { count: 'exact', head: true }).abortSignal(signal),
+                supabase.from('categories').select('*', { count: 'exact', head: true }).abortSignal(signal),
+                getSalesStats(signal)
             ])
 
             const productsCount = productsRes.count
@@ -47,9 +53,16 @@ export default function Dashboard() {
                 sales: totalSales || 0
             })
         } catch (error) {
+            if (error.name === 'AbortError' || error.code === 20) {
+                console.log('🚫 Dashboard: Fetch aborted')
+                return
+            }
             console.error('❌ Dashboard: Error fetching stats:', error)
         } finally {
-            setLoading(false)
+            // Only set loading false if not aborted (to avoid state update on unmount)
+            if (!signal?.aborted) {
+                setLoading(false)
+            }
         }
     }
 

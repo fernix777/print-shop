@@ -58,7 +58,7 @@ export function CartProvider({ children }) {
                         selectedColor: options.selectedColor || '',
                         selectedCondition: options.selectedCondition || '',
                         selectedVariant: options.selectedVariant || null,
-                        price: options.finalPrice || product.base_price
+                        price: options.finalPrice || product.base_price || product.price || 0
                     }
                 ];
             }
