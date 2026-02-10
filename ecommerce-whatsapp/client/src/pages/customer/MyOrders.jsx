@@ -34,7 +34,12 @@ export default function MyOrders() {
                     *,
                     order_items:order_items(
                         *,
-                        product:products(id, name, slug, image_url)
+                        product:products(
+                            id, 
+                            name, 
+                            slug,
+                            product_images(image_url, is_primary)
+                        )
                     )
                 `)
                 .eq('user_id', user.id)
@@ -205,12 +210,16 @@ export default function MyOrders() {
                                     </div>
 
                                     <div className="order-items">
-                                        {selectedOrder.order_items?.map((item, index) => (
+                                        {selectedOrder.order_items?.map((item, index) => {
+                                            const imgUrl = item.product?.product_images?.find(img => img.is_primary)?.image_url || 
+                                                         item.product?.product_images?.[0]?.image_url;
+                                            
+                                            return (
                                             <div key={index} className="order-item">
-                                                {item.product?.image_url ? (
+                                                {imgUrl ? (
                                                     <img 
-                                                        src={item.product.image_url} 
-                                                        alt={item.product.name}
+                                                        src={imgUrl} 
+                                                        alt={item.product?.name || item.product_name}
                                                         className="item-image"
                                                     />
                                                 ) : (
@@ -218,11 +227,11 @@ export default function MyOrders() {
                                                 )}
                                                 <div className="item-details">
                                                     <Link 
-                                                        to={`/producto/${item.product?.slug}`}
+                                                        to={item.product?.slug ? `/producto/${item.product.slug}` : '#'}
                                                         className="item-name"
-                                                        onClick={() => setSelectedOrder(null)}
+                                                        onClick={(e) => !item.product?.slug && e.preventDefault() || setSelectedOrder(null)}
                                                     >
-                                                        {item.product?.name || item.name}
+                                                        {item.product?.name || item.product_name || item.name}
                                                     </Link>
                                                     <span className="item-quantity">Cantidad: {item.quantity}</span>
                                                 </div>
@@ -230,7 +239,8 @@ export default function MyOrders() {
                                                     ${parseFloat(item.price).toLocaleString('es-AR')}
                                                 </span>
                                             </div>
-                                        ))}
+                                            )
+                                        })}
                                     </div>
 
                                     <div className="order-summary-total">

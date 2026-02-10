@@ -134,17 +134,16 @@ export async function updateOrderStatus(id, status) {
 
 /**
  * Obtiene estadísticas de ventas
+ * @param {AbortSignal} [signal] - Señal de aborto opcional
  */
-export async function getSalesStats() {
+export async function getSalesStats(signal) {
     try {
         // Obtener total de ventas (suma de total de órdenes completadas)
-        // Nota: Supabase no tiene sum() directo fácil sin RPC, así que lo calculamos en cliente por ahora
-        // o usamos una query simple. Para muchos datos, mejor usar RPC.
-        
         const { data: orders, error } = await supabase
             .from('orders')
             .select('total')
             .eq('status', 'completed')
+            .abortSignal(signal)
 
         if (error) throw error
 
@@ -154,6 +153,7 @@ export async function getSalesStats() {
         const { count: ordersCount, error: countError } = await supabase
             .from('orders')
             .select('*', { count: 'exact', head: true })
+            .abortSignal(signal)
             
         if (countError) throw countError
 
@@ -163,6 +163,15 @@ export async function getSalesStats() {
             error: null 
         }
     } catch (error) {
+        // Ignorar errores de aborto
+        if (
+            error.code === 20 || 
+            error.name === 'AbortError' || 
+            error.message?.includes('AbortError') ||
+            error.message?.includes('aborted')
+        ) {
+            return { totalSales: 0, ordersCount: 0, error: null } // Return neutral data on abort
+        }
         console.error('Error fetching sales stats:', error)
         return { totalSales: 0, ordersCount: 0, error }
     }
