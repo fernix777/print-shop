@@ -1,18 +1,32 @@
 import { supabase } from '../config/supabase'
 
 /**
- * Get all customers (profiles)
+ * Get all customers (from auth.users via RPC)
  * Intended for Admin use
  */
 export async function getCustomers() {
     try {
-        const { data, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .order('created_at', { ascending: false })
+        console.log('🔄 Calling get_all_users_admin RPC...')
+        const { data, error } = await supabase.rpc('get_all_users_admin')
 
-        if (error) throw error
-        return { data, error: null }
+        if (error) {
+            console.error('❌ RPC Error:', error)
+            throw error
+        }
+        
+        console.log('✅ RPC Success. Users found:', data?.length)
+        
+        // Map data to match component expectations
+        const formattedData = data.map(user => ({
+            ...user,
+            full_name: user.full_name || 
+                       (user.raw_user_meta_data?.full_name) || 
+                       (user.raw_user_meta_data?.first_name ? `${user.raw_user_meta_data.first_name} ${user.raw_user_meta_data.last_name || ''}` : 'Sin Nombre'),
+            phone: user.phone || user.raw_user_meta_data?.phone || 'N/A',
+            city: user.city || user.raw_user_meta_data?.city || 'N/A'
+        }))
+
+        return { data: formattedData, error: null }
     } catch (error) {
         console.error('Error fetching customers:', error)
         return { data: null, error }
@@ -24,14 +38,14 @@ export async function getCustomers() {
  */
 export async function getCustomerDetails(userId) {
     try {
-        // Get profile
+        // Get profile (might be null if user only exists in auth)
         const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', userId)
-            .single()
+            .maybeSingle() // Use maybeSingle to avoid error if not found
         
-        if (profileError) throw profileError
+        if (profileError) console.warn('Profile fetch warning:', profileError)
 
         // Get orders
         const { data: orders, error: ordersError } = await supabase
@@ -42,7 +56,7 @@ export async function getCustomerDetails(userId) {
 
         if (ordersError) throw ordersError
 
-        return { data: { ...profile, orders }, error: null }
+        return { data: { ...(profile || {}), orders }, error: null }
     } catch (error) {
         console.error('Error fetching customer details:', error)
         return { data: null, error }

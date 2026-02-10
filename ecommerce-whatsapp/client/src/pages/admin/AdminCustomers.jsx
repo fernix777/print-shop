@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../../config/supabase'
+import { getCustomers } from '../../services/customerService'
 import toast, { Toaster } from 'react-hot-toast'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './AdminCustomers.css'
@@ -18,16 +19,14 @@ export default function AdminCustomers() {
     const loadCustomers = async () => {
         setLoading(true)
         try {
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .order('created_at', { ascending: false })
+            const { data, error } = await getCustomers()
             
             if (error) throw error
+            
             setCustomers(data || [])
         } catch (error) {
             console.error('Error loading customers:', error)
-            toast.error('Error al cargar clientes')
+            toast.error(`Error: ${error.message || 'Al cargar clientes'}`)
         } finally {
             setLoading(false)
         }
