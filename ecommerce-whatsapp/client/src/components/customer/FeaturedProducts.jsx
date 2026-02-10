@@ -36,7 +36,8 @@ export default function FeaturedProducts() {
         addToCart({
             id: product.id,
             name: product.name,
-            price: product.price,
+            price: product.base_price,
+            base_price: product.base_price, // Added for CartContext compatibility
             image: primaryImage,
             stock: product.stock,
             variants: product.variants,
@@ -94,15 +95,9 @@ export default function FeaturedProducts() {
                                         <span className="featured-category">{product.category.name}</span>
                                     )}
                                     <div className="featured-footer">
-                                        {user ? (
-                                            <span className="featured-price">
-                                                ${!isNaN(parseFloat(product.price)) ? parseFloat(product.price).toLocaleString('es-AR') : '0.00'}
-                                            </span>
-                                        ) : (
-                                            <span className="featured-price login-required">
-                                                Ver precio
-                                            </span>
-                                        )}
+                                        <span className="featured-price">
+                                            ${!isNaN(parseFloat(product.base_price)) ? parseFloat(product.base_price).toLocaleString('es-AR') : '0.00'}
+                                        </span>
                                         {isAvailable && (
                                             <button 
                                                 className="featured-add-btn"
