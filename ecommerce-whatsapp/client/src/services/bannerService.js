@@ -54,13 +54,13 @@ export async function createBanner(bannerData, imageFile) {
             const filePath = `banners/${fileName}`
 
             const { error: uploadError } = await supabase.storage
-                .from('products') // Reusamos el bucket de productos
+                .from('banners') // Usamos bucket dedicado para banners
                 .upload(filePath, imageFile)
 
             if (uploadError) throw uploadError
 
             const { data: { publicUrl } } = supabase.storage
-                .from('products')
+                .from('banners')
                 .getPublicUrl(filePath)
 
             image_url = publicUrl
@@ -116,10 +116,13 @@ export async function deleteBanner(id, imageUrl) {
         // 2. Intentar eliminar imagen del storage si es nuestra
         if (imageUrl && imageUrl.includes('banners/')) {
             try {
-                const path = imageUrl.split('/products/')[1] // Asumiendo estructura de URL de supabase
-                if (path) {
+                // Extraer path relativo: si url es ".../banners/archivo.jpg", queremos "archivo.jpg"
+                // O si es ".../storage/v1/object/public/banners/archivo.jpg"
+                const pathParts = imageUrl.split('/banners/')
+                if (pathParts.length > 1) {
+                    const path = pathParts[1]
                     await supabase.storage
-                        .from('products')
+                        .from('banners')
                         .remove([path])
                 }
             } catch (storageError) {
