@@ -25,17 +25,14 @@ export default function Register() {
             setLoading(true);
 
             // Verificar si el correo ya está registrado
-            const { data: existingUsers, error: checkError } = await supabase
-                .from('profiles')
-                .select('email')
-                .eq('email', email.toLowerCase())
-                .maybeSingle();
+            const { data: emailExists, error: checkError } = await supabase
+                .rpc('check_email_exists', { email_input: email.toLowerCase() });
 
             if (checkError) {
                 console.warn('Error al verificar correo existente:', checkError);
             }
 
-            if (existingUsers) {
+            if (emailExists) {
                 throw new Error('Este correo electrónico ya está registrado. Por favor inicia sesión o usa otro correo.');
             }
 
@@ -68,7 +65,14 @@ export default function Register() {
 
         } catch (error) {
             console.error('Error al registrarse:', error);
-            setError(error.message || 'Error al crear la cuenta. Intenta de nuevo.');
+            let errorMessage = error.message || 'Error al crear la cuenta. Intenta de nuevo.';
+            
+            // Traducir errores comunes
+            if (errorMessage.includes('User already registered') || errorMessage.includes('already registered')) {
+                errorMessage = 'Este correo electrónico ya está registrado. Por favor inicia sesión.';
+            }
+            
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
