@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../config/supabase';
-import { trackCompleteRegistration } from '../../services/facebookService';
+// Tracking de Facebook removido
 import './Auth.css';
 
 export default function Register() {
@@ -54,11 +54,7 @@ export default function Register() {
 
             // Si el registro requiere confirmación por correo
             if (authData.user) {
-                // Rastrear en Facebook
-                trackCompleteRegistration({
-                    email: authData.user.email,
-                    user_id: authData.user.id
-                });
+                // Sin tracking de Facebook
 
                 navigate('/registro-exitoso', { state: { email } });
             }

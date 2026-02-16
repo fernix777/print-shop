@@ -18,7 +18,7 @@ export default function RegistrationSuccess() {
                 
                 <h2>¡Registro Exitoso!</h2>
                 <p className="success-message">
-                    Gracias por registrarte en Magnolia Novedades. Sigue estos pasos para activar tu cuenta:
+                    Gracias por registrarte en Print Shop. Sigue estos pasos para activar tu cuenta:
                 </p>
                 
                 <div className="steps-container">
@@ -37,7 +37,7 @@ export default function RegistrationSuccess() {
                             <p>Revisa tu bandeja de entrada o la carpeta de spam.</p>
                             <div className="email-tip">
                                 <FaEnvelope className="email-icon" />
-                                <span>Asunto: "Confirma tu correo electrónico - Magnolia Novedades"</span>
+                                <span>Asunto: "Confirma tu correo electrónico - Print Shop"</span>
                             </div>
                         </div>
                     </div>

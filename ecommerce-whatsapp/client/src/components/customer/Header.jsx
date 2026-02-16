@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import Cart from './Cart';
+import logo from '../../assets/images/print-shop-logo.png';
 import './Header.css';
 
 export default function Header() {
@@ -35,8 +36,11 @@ export default function Header() {
             <div className="header-container">
                 {/* Logo */}
                 <Link to="/" className="header-logo">
-                    <img src="/logo.jpg" alt="Magnolia Novedades" />
-                    <span>Magnolia</span>
+                    <img src={logo} alt="Print Shop" />
+                    <div className="logo-text">
+                        <span className="logo-bold">PRINT</span>
+                        <span className="logo-light">SHOP</span>
+                    </div>
                 </Link>
 
                 {/* Navegación Desktop */}

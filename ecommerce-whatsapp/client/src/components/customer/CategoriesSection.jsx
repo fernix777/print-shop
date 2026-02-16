@@ -70,41 +70,6 @@ export default function CategoriesSection() {
                                     )} */}
                                 </div>
                             </Link>
-                            
-                            {/* Productos destacados de la categoría */}
-                            {categoryProducts[category.id] && categoryProducts[category.id].length > 0 && (
-                                <div className="category-products">
-                                    <div className="category-products-grid">
-                                        {categoryProducts[category.id].map(product => (
-                                            <Link
-                                                key={product.id}
-                                                to={`/producto/${product.slug}`}
-                                                className="category-product-item"
-                                            >
-                                                {product.image_url && (
-                                                    <div className="category-product-image">
-                                                        <img src={product.image_url} alt={product.name} />
-                                                    </div>
-                                                )}
-                                                <div className="category-product-info">
-                                                    <span className="category-product-name">{product.name}</span>
-                                                    {product.price && (
-                                                        user ? (
-                                                            <span className="category-product-price">
-                                                                ${!isNaN(parseFloat(product.price)) ? parseFloat(product.price).toLocaleString('es-AR') : '0.00'}
-                                                            </span>
-                                                        ) : (
-                                                            <span className="category-product-price login-required">
-                                                                Ver precio
-                                                            </span>
-                                                        )
-                                                    )}
-                                                </div>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     ))}
                 </div>

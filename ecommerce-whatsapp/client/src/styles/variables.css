@@ -3,108 +3,123 @@
    ========================================== */
 
 :root {
-  /* Colores Principales - Paleta MAGNOLIA (Rosa/Magenta) */
-  --primary: #E91E8C;
-  /* Magenta principal - del logo */
-  --primary-light: #FF6BB5;
-  /* Rosa claro */
-  --primary-dark: #C41570;
-  /* Magenta oscuro */
+  /* Colores Principales - Paleta Professional Print Shop (Modern Blue/Indigo) */
+  --primary: #2563EB;      /* Blue 600 - Profesional y confiable */
+  --primary-light: #60A5FA; /* Blue 400 */
+  --primary-dark: #1E40AF;  /* Blue 800 */
 
-  --secondary: #F8B4D9;
-  /* Rosa pastel - suave */
-  --accent: #FF4DA6;
-  /* Rosa vibrante - premium */
-  --accent-2: #D946A6;
-  /* Magenta medio */
+  --secondary: #6366F1;    /* Indigo 500 - Toque creativo */
+  --accent: #8B5CF6;       /* Violet 500 - Premium */
+  --accent-2: #7C3AED;     /* Violet 600 */
 
   /* Neutros */
   --white: #FFFFFF;
-  --off-white: #FFF5FB;
-  /* Blanco con tinte rosa */
-  --light-gray: #F5E6F0;
-  /* Gris rosado muy claro */
-  --gray: #C4A5B8;
-  /* Gris rosado medio */
-  --dark-gray: #6B4E5E;
-  /* Gris rosado oscuro */
-  --black: #2D1B26;
-  /* Negro con tinte púrpura */
+  --off-white: #F8FAFC;    /* Slate 50 - Fondo limpio */
+  --light-gray: #F1F5F9;   /* Slate 100 - Bordes y divisiones */
+  --gray: #94A3B8;         /* Slate 400 - Texto secundario */
+  --dark-gray: #475569;    /* Slate 600 - Texto cuerpo */
+  --black: #0F172A;        /* Slate 900 - Títulos y texto fuerte */
 
   /* Semánticos */
-  --success: #7AC97A;
-  --error: #E74C3C;
-  --warning: #F39C12;
-  --info: #9B59B6;
+  --success: #10B981;      /* Emerald 500 */
+  --error: #EF4444;        /* Red 500 */
+  --warning: #F59E0B;      /* Amber 500 */
+  --info: #3B82F6;         /* Blue 500 */
 
   /* Tipografía */
-  --font-primary: 'Playfair Display', serif;
-  --font-secondary: 'Montserrat', sans-serif;
+  --font-primary: 'Inter', 'Montserrat', sans-serif;
+    --font-secondary: 'Inter', 'Montserrat', sans-serif;
 
-  /* Tamaños de fuente */
-  --text-xs: 0.75rem;
-  /* 12px */
-  --text-sm: 0.875rem;
-  /* 14px */
-  --text-base: 1rem;
-  /* 16px */
-  --text-lg: 1.125rem;
-  /* 18px */
-  --text-xl: 1.25rem;
-  /* 20px */
-  --text-2xl: 1.5rem;
-  /* 24px */
-  --text-3xl: 1.875rem;
-  /* 30px */
-  --text-4xl: 2.25rem;
-  /* 36px */
-  --text-5xl: 3rem;
-  /* 48px */
+    /* Logo Colors */
+    --logo-bold: #0F172A;
+    --logo-light: #2563EB;
 
-  /* Espaciado */
-  --spacing-xs: 0.5rem;
-  /* 8px */
-  --spacing-sm: 1rem;
-  /* 16px */
-  --spacing-md: 1.5rem;
-  /* 24px */
-  --spacing-lg: 2.5rem;
-  /* 40px */
-  --spacing-xl: 4rem;
-  /* 64px */
-  --spacing-2xl: 6rem;
-  /* 96px */
+    /* Tamaños de fuente */
+    --text-xs: 0.75rem;
+    /* 12px */
+    --text-sm: 0.875rem;
+    /* 14px */
+    --text-base: 1rem;
+    /* 16px */
+    --text-lg: 1.125rem;
+    /* 18px */
+    --text-xl: 1.25rem;
+    /* 20px */
+    --text-2xl: 1.5rem;
+    /* 24px */
+    --text-3xl: 1.875rem;
+    /* 30px */
+    --text-4xl: 2.25rem;
+    /* 36px */
+    --text-5xl: 3rem;
+    /* 48px */
 
-  /* Sombras suaves */
-  --shadow-sm: 0 2px 8px rgba(44, 41, 38, 0.08);
-  --shadow-md: 0 4px 16px rgba(44, 41, 38, 0.12);
-  --shadow-lg: 0 8px 32px rgba(44, 41, 38, 0.16);
-  --shadow-xl: 0 12px 48px rgba(44, 41, 38, 0.20);
+    /* Espaciado */
+    --spacing-xs: 0.5rem;
+    /* 8px */
+    --spacing-sm: 1rem;
+    /* 16px */
+    --spacing-md: 1.5rem;
+    /* 24px */
+    --spacing-lg: 2.5rem;
+    /* 40px */
+    --spacing-xl: 4rem;
+    /* 64px */
+    --spacing-2xl: 6rem;
+    /* 96px */
 
-  /* Transiciones */
-  --transition-fast: 0.2s ease;
-  --transition-normal: 0.3s ease;
-  --transition-slow: 0.5s ease;
+    /* Sombras suaves */
+    --shadow-sm: 0 2px 8px rgba(44, 41, 38, 0.08);
+    --shadow-md: 0 4px 16px rgba(44, 41, 38, 0.12);
+    --shadow-lg: 0 8px 32px rgba(44, 41, 38, 0.16);
+    --shadow-xl: 0 12px 48px rgba(44, 41, 38, 0.20);
 
-  /* Border radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-full: 9999px;
+    /* Transiciones */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
 
-  /* Breakpoints (para uso en JS) */
-  --breakpoint-mobile: 640px;
-  --breakpoint-tablet: 1024px;
-  --breakpoint-desktop: 1280px;
+    /* Border radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
 
-  /* Z-index layers */
-  --z-base: 1;
-  --z-dropdown: 100;
-  --z-sticky: 200;
-  --z-fixed: 300;
-  --z-modal-backdrop: 400;
-  --z-modal: 500;
-  --z-popover: 600;
-  --z-tooltip: 700;
+    /* Breakpoints (para uso en JS) */
+    --breakpoint-mobile: 640px;
+    --breakpoint-tablet: 1024px;
+    --breakpoint-desktop: 1280px;
+
+    /* Z-index layers */
+    --z-base: 1;
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-fixed: 300;
+    --z-modal-backdrop: 400;
+    --z-modal: 500;
+    --z-popover: 600;
+    --z-tooltip: 700;
+}
+
+/* Logo Utility Class */
+.logo-text {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-family: var(--font-primary);
+    line-height: 1;
+}
+
+.logo-bold {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--black);
+    letter-spacing: -0.02em;
+}
+
+.logo-light {
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--primary);
 }

@@ -1,9 +1,8 @@
 import { useState, useEffect, useContext } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
+import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../config/supabase'
 import { AuthContext } from '../../context/AuthContext'
-import { trackSearch } from '../../services/facebookService'
-import { trackSearch as trackPixelSearch } from '../../utils/facebookPixel'
+// Tracking de Facebook removido
 import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
@@ -14,6 +13,7 @@ export default function SearchPage() {
     const [searchParams] = useSearchParams()
     const query = searchParams.get('q') || ''
     const { user } = useContext(AuthContext)
+    const navigate = useNavigate()
 
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
@@ -31,15 +31,7 @@ export default function SearchPage() {
     }, [query, filters])
 
     useEffect(() => {
-        if (query && !loading) {
-            // Rastrear búsqueda
-            trackSearch(query, products.length, {
-                email: user?.email,
-                user_id: user?.id
-            });
-            // Rastrear en Facebook Pixel
-            trackPixelSearch(query);
-        }
+        // Sin tracking de Facebook
     }, [query, products.length, loading, user]);
 
     const searchProducts = async () => {
@@ -67,19 +59,19 @@ export default function SearchPage() {
 
             // Filtro por precio
             if (filters.minPrice) {
-                queryBuilder = queryBuilder.gte('base_price', parseFloat(filters.minPrice))
+                queryBuilder = queryBuilder.gte('price', parseFloat(filters.minPrice))
             }
             if (filters.maxPrice) {
-                queryBuilder = queryBuilder.lte('base_price', parseFloat(filters.maxPrice))
+                queryBuilder = queryBuilder.lte('price', parseFloat(filters.maxPrice))
             }
 
             // Ordenamiento
             switch (filters.sortBy) {
                 case 'price-asc':
-                    queryBuilder = queryBuilder.order('base_price', { ascending: true })
+                    queryBuilder = queryBuilder.order('price', { ascending: true })
                     break
                 case 'price-desc':
-                    queryBuilder = queryBuilder.order('base_price', { ascending: false })
+                    queryBuilder = queryBuilder.order('price', { ascending: false })
                     break
                 default:
                     queryBuilder = queryBuilder.order('name', { ascending: true })
@@ -224,11 +216,16 @@ export default function SearchPage() {
                                             <div className="product-footer">
                                                 {user ? (
                                                     <span className="product-price">
-                                                        {formatPrice(product.base_price)}
+                                                        {formatPrice(product.base_price ?? product.price)}
                                                     </span>
                                                 ) : (
-                                                    <span className="login-to-see">
-                                                        <Link to="/login">Inicia sesión</Link> para ver precios
+                                                    <span
+                                                        className="login-to-see"
+                                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate('/login') }}
+                                                        role="button"
+                                                        tabIndex={0}
+                                                    >
+                                                        Inicia sesión
                                                     </span>
                                                 )}
                                                 <span className="product-stock">

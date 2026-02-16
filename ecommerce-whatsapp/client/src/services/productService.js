@@ -1,5 +1,5 @@
 import { supabase } from '../config/supabase'
-import { uploadImage, deleteImage, extractPathFromUrl, uploadMultipleImages } from './uploadService'
+import { deleteImage, extractPathFromUrl, uploadMultipleImagesViaBackend } from './uploadService'
 
 /**
  * Servicio para gestión de productos
@@ -118,6 +118,12 @@ export async function createProduct(productData, imageFiles = []) {
 
         // Separar variantes y categorías de los datos del producto
         const { variants, categories: productCategories, ...productFields } = productData
+        
+        // Compatibilidad: si no existe base_price en DB, usar 'price'
+        if (productFields.base_price !== undefined && productFields.base_price !== null) {
+            productFields.price = Number(productFields.base_price)
+            delete productFields.base_price
+        }
 
         // Crear producto
         const { data: product, error: productError } = await supabase
@@ -170,9 +176,8 @@ export async function createProduct(productData, imageFiles = []) {
 
         // Subir imágenes si hay
         if (imageFiles.length > 0) {
-            const uploadResults = await uploadMultipleImages(
+            const uploadResults = await uploadMultipleImagesViaBackend(
                 imageFiles,
-                'product-images',
                 `products/${product.id}`
             )
 
@@ -213,6 +218,12 @@ export async function updateProduct(id, productData) {
     try {
         // Separar variantes y categorías de los datos del producto
         const { variants, categories: productCategories, ...productFields } = productData
+        
+        // Compatibilidad: si no existe base_price en DB, usar 'price'
+        if (productFields.base_price !== undefined && productFields.base_price !== null) {
+            productFields.price = Number(productFields.base_price)
+            delete productFields.base_price
+        }
 
         const { data, error } = await supabase
             .from('products')
@@ -348,9 +359,8 @@ export async function addProductImages(productId, imageFiles) {
             : 0
 
         // Subir imágenes
-        const uploadResults = await uploadMultipleImages(
+        const uploadResults = await uploadMultipleImagesViaBackend(
             imageFiles,
-            'product-images',
             `products/${productId}`
         )
 

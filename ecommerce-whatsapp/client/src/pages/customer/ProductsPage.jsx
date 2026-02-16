@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { getAllProducts } from '../../services/storeService'
 import { AuthContext } from '../../context/AuthContext'
 import Header from '../../components/customer/Header'
@@ -12,6 +12,7 @@ export default function ProductsPage() {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const { user } = useContext(AuthContext)
+    const navigate = useNavigate()
 
     useEffect(() => {
         loadProducts()
@@ -102,10 +103,15 @@ export default function ProductsPage() {
                                         )}
                                         <div className="product-footer">
                                             {user ? (
-                                                <span className="product-price">{formatPrice(product.base_price)}</span>
+                                                <span className="product-price">{formatPrice(product.base_price ?? product.price)}</span>
                                             ) : (
-                                                <span className="login-to-see">
-                                                    <Link to="/login">Inicia sesión</Link> para ver precios
+                                                <span
+                                                    className="login-to-see"
+                                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate('/login') }}
+                                                    role="button"
+                                                    tabIndex={0}
+                                                >
+                                                    Inicia sesión
                                                 </span>
                                             )}
                                             {product.stock > 0 ? (

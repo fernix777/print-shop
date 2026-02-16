@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
-import { trackContact } from '../../services/facebookService'
+// Tracking de Facebook removido
 import { useAuth } from '../../context/AuthContext'
 import './ContactPage.css'
 
@@ -31,17 +31,7 @@ export default function ContactPage() {
         e.preventDefault()
         setSending(true)
 
-        // Rastrear evento de contacto en Facebook
-        const userData = user ? {
-            email: user.email || formData.email,
-            user_id: user.id,
-            phone: user.phone || formData.phone
-        } : {
-            email: formData.email,
-            phone: formData.phone
-        }
-        
-        await trackContact(formData.message, userData)
+        // Sin tracking de Facebook
 
         // Construir mensaje de WhatsApp con los datos del formulario
         const phoneNumber = '543885171795'
@@ -96,7 +86,7 @@ export default function ContactPage() {
                         <div className="info-card">
                             <div className="info-icon">📍</div>
                             <h3>Ubicación</h3>
-                            <p>Av. Éxodo 841<br />San Salvador de Jujuy, Argentina</p>
+                            <p>San Salvador de Jujuy<br />Argentina</p>
                         </div>
 
                         <div className="info-card">
@@ -113,8 +103,8 @@ export default function ContactPage() {
                             <div className="info-icon">📧</div>
                             <h3>Email</h3>
                             <p>
-                                <a href="mailto:magnolianovedades56@gmail.com">
-                                    magnolianovedades56@gmail.com
+                                <a href="mailto:info@printshop.com.ar">
+                                    info@printshop.com.ar
                                 </a>
                             </p>
                         </div>
@@ -140,7 +130,7 @@ export default function ContactPage() {
                                     allowFullScreen=""
                                     loading="lazy"
                                     referrerPolicy="no-referrer-when-downgrade"
-                                    title="Ubicación de Magnolia Novedades"
+                                    title="Ubicación de Print Shop"
                                 ></iframe>
                             </div>
                         </div>

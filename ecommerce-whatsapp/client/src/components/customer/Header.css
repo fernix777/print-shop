@@ -47,8 +47,8 @@
 }
 
 .header-logo img {
-    height: 35px;
-    width: 35px;
+    height: 48px;
+    width: 48px;
     object-fit: contain;
     border-radius: var(--radius-sm);
 }

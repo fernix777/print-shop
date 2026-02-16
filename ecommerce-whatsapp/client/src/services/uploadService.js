@@ -109,6 +109,45 @@ export async function uploadMultipleImages(files, bucket, folder = '') {
 }
 
 /**
+ * Sube una imagen vía backend (service key) para evitar RLS
+ * @param {File} file
+ * @param {string} folder
+ * @returns {Promise<{url: string, path: string, error: null} | {url: null, path: null, error: Error}>}
+ */
+export async function uploadImageViaBackend(file, folder = '') {
+    try {
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append('folder', folder)
+
+        const serverBase = (import.meta.env?.VITE_SERVER_URL) || 'http://localhost:8080'
+        const res = await fetch(`${serverBase}/api/uploads/product-image`, {
+            method: 'POST',
+            body: formData
+        })
+
+        if (!res.ok) {
+            const text = await res.text()
+            throw new Error(text || 'Error subiendo imagen en backend')
+        }
+
+        const json = await res.json()
+        return { url: json.url, path: json.path, error: null }
+    } catch (error) {
+        console.error('Error uploading image via backend:', error)
+        return { url: null, path: null, error }
+    }
+}
+
+/**
+ * Sube múltiples imágenes vía backend
+ */
+export async function uploadMultipleImagesViaBackend(files, folder = '') {
+    const uploadPromises = files.map(file => uploadImageViaBackend(file, folder))
+    return Promise.all(uploadPromises)
+}
+
+/**
  * Extrae el path de una URL pública de Supabase
  * @param {string} url - URL pública de Supabase
  * @param {string} bucket - Nombre del bucket

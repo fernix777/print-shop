@@ -11,33 +11,27 @@ export default function HeroSection() {
 
     const defaultSlides = [
         {
-            image: todoOctubreBanner,
-            title: '¡Todo Octubre!',
-            subtitle: 'Descuentos especiales en toda la tienda',
+            image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1920&auto=format&fit=crop',
+            title: 'Remeras Personalizadas',
+            subtitle: 'Llevá tu diseño favorito a todos lados con la mejor calidad textil',
             link: '/productos'
         },
         {
-            image: '/brillo.png',
-            title: 'Magnolia Novedades',
-            subtitle: 'Decoración y regalos únicos para cada ocasión',
+            image: 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=1920&auto=format&fit=crop',
+            title: 'Tazas Sublimadas',
+            subtitle: 'El regalo perfecto para tus mañanas o para alguien especial',
             link: '/productos'
         },
         {
-            image: '/pic3.png',
-            title: 'Encuentra tu estilo',
-            subtitle: 'Las mejores tendencias en decoración del hogar',
-            link: '/categoria/decoracion'
+            image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=1920&auto=format&fit=crop',
+            title: 'Buzos y Hoodies',
+            subtitle: 'Comodidad y estilo personalizado para el invierno',
+            link: '/productos'
         },
         {
-            image: '/imagen1 (1).png',
-            title: 'Regalos especiales',
-            subtitle: 'Para cada momento importante de tu vida',
-            link: '/categoria/regalos'
-        },
-        {
-            image: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1920&q=80',
-            title: 'Nuevas colecciones',
-            subtitle: 'Descubre nuestros productos más recientes',
+            image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=1920&auto=format&fit=crop',
+            title: 'Gorras con Onda',
+            subtitle: 'Completá tu look con nuestras gorras personalizadas',
             link: '/productos'
         }
     ]
@@ -67,6 +61,10 @@ export default function HeroSection() {
     }
 
     const slides = banners.length > 0 ? banners : defaultSlides
+
+    const activeSlide = slides.length > 0
+        ? slides[Math.min(currentSlide, slides.length - 1)]
+        : null
 
     useEffect(() => {
         if (slides.length === 0) return
@@ -106,16 +104,18 @@ export default function HeroSection() {
 
             {/* Contenido */}
             <div className="hero-content" style={{ display: 'none' }}>
-                {slides[currentSlide].title && (
-                    <h1 className="hero-title">{slides[currentSlide].title}</h1>
+                {activeSlide?.title && (
+                    <h1 className="hero-title">{activeSlide.title}</h1>
                 )}
-                {slides[currentSlide].subtitle && (
-                    <p className="hero-subtitle">{slides[currentSlide].subtitle}</p>
+                {activeSlide?.subtitle && (
+                    <p className="hero-subtitle">{activeSlide.subtitle}</p>
                 )}
                 
-                <Link to={slides[currentSlide].link} className="hero-cta">
-                    Ver Catálogo
-                </Link>
+                {activeSlide?.link && (
+                    <Link to={activeSlide.link} className="hero-cta">
+                        Ver Catálogo
+                    </Link>
+                )}
             </div>
 
             {/* Indicadores */}

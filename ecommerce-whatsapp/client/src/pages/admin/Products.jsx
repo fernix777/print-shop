@@ -198,7 +198,7 @@ export default function Products() {
                                     )}
 
                                     <div className="product-meta">
-                                        <span className="product-price">{formatPrice(product.base_price)}</span>
+                                        <span className="product-price">{formatPrice(product.base_price ?? product.price)}</span>
                                         {product.category && (
                                             <span className="product-category">{product.category.name}</span>
                                         )}

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { FaTimes, FaMinus, FaPlus, FaWhatsapp, FaShoppingCart } from 'react-icons/fa';
-import { trackInitiateCheckout, trackPurchase } from '../../services/facebookService';
+// Tracking de Facebook removido
 import './Cart.css';
 
 export default function Cart({ onClose }) {
@@ -27,11 +27,7 @@ export default function Cart({ onClose }) {
             return;
         }
 
-        // Rastrear iniciación de checkout
-        trackInitiateCheckout(getCartTotal(), cart.length, {
-            email: user.email,
-            user_id: user.id
-        });
+        // Sin tracking de Facebook
 
         // Navegar a página de checkout
         navigate('/checkout');
@@ -72,23 +68,7 @@ export default function Cart({ onClose }) {
         // Abrir WhatsApp
         const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
-        // Rastrear la compra
-        const orderData = {
-            id: `ORDER_${Date.now()}`,
-            user: {
-                email: user.email,
-                user_id: user.id
-            },
-            total: getCartTotal(),
-            items: cart.map(item => ({
-                product_id: item.id,
-                product_name: item.name,
-                quantity: item.quantity,
-                price: item.price || 0
-            }))
-        };
-
-        trackPurchase(orderData);
+        // Sin tracking de Facebook
 
         window.open(url, '_blank');
 

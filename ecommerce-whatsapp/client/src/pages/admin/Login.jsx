@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import logo from '../../assets/images/print-shop-logo.png'
 import './Login.css'
 
 export default function Login() {
@@ -40,9 +41,13 @@ export default function Login() {
         <div className="login-container">
             <div className="login-card">
                 <div className="login-header">
-                    <img src="/logo.jpg" alt="Magnolia Novedades" className="login-logo" />
+                    <img src={logo} alt="Print Shop" className="login-logo" />
+                    <div className="logo-text">
+                        <span className="logo-bold">PRINT</span>
+                        <span className="logo-light">SHOP</span>
+                    </div>
                     <h1>Panel de Administración</h1>
-                    <p>Magnolia Novedades</p>
+                    <p>Print Shop</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="login-form">
@@ -59,7 +64,7 @@ export default function Login() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="admin@magnolia.com"
+                            placeholder="admin@printshop.com.ar"
                             required
                             disabled={loading}
                         />

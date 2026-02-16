@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import logo from '../../assets/images/print-shop-logo.png'
 import './Footer.css'
 
 export default function Footer() {
@@ -8,10 +9,13 @@ export default function Footer() {
                 {/* Columna 1: Logo y descripción */}
                 <div className="footer-column">
                     <div className="footer-logo">
-                        <img src="/logo.jpg" alt="Magnolia Novedades" />
-                        <h3>Magnolia Novedades</h3>
+                        <img src={logo} alt="Print Shop" />
+                        <div className="logo-text">
+                            <span className="logo-bold">PRINT</span>
+                            <span className="logo-light">SHOP</span>
+                        </div>
                     </div>
-                    <p>Decoración y regalos únicos para hacer de cada momento algo especial.</p>
+                    <p>Personalizamos tus ideas en remeras, tazas, buzos y gorras con la mejor calidad.</p>
                 </div>
 
                 {/* Columna 2: Links */}
@@ -29,9 +33,9 @@ export default function Footer() {
                 <div className="footer-column">
                     <h4>Contacto</h4>
                     <ul>
-                        <li>📧 magnolianovedades56@gmail.com</li>
+                        <li>📧 info@printshop.com.ar</li>
                         <li>📱 WhatsApp: +54 388 517-1795</li>
-                        <li>📍 Av. Éxodo 841, San Salvador de Jujuy, Argentina</li>
+                        <li>📍 San Salvador de Jujuy, Argentina</li>
                     </ul>
                 </div>
 
@@ -39,11 +43,8 @@ export default function Footer() {
                 <div className="footer-column">
                     <h4>Síguenos</h4>
                     <div className="social-links">
-                        <a href="https://www.instagram.com/magnolia_novedades/" target="_blank" rel="noopener noreferrer" className="social-link">
+                        <a href="https://www.instagram.com/printshopjujuy" target="_blank" rel="noopener noreferrer" className="social-link">
                             📷 Instagram
-                        </a>
-                        <a href="https://www.facebook.com/magnolianove" target="_blank" rel="noopener noreferrer" className="social-link">
-                            📘 Facebook
                         </a>
                         <a href="https://wa.me/543885171795" target="_blank" rel="noopener noreferrer" className="social-link">
                             💬 WhatsApp
@@ -53,7 +54,7 @@ export default function Footer() {
             </div>
 
             <div className="footer-bottom">
-                <p>&copy; {new Date().getFullYear()} Magnolia Novedades. Todos los derechos reservados.</p>
+                <p>&copy; {new Date().getFullYear()} Print Shop. Todos los derechos reservados.</p>
             </div>
         </footer>
     )

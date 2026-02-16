@@ -14,7 +14,10 @@ export default function Home() {
                 zIndex: 100
             }}>
                 <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <img src="/logo.jpg" alt="Magnolia Novedades" style={{ height: '60px', borderRadius: 'var(--radius-md)' }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--primary)' }}>PRINT</span>
+                        <span style={{ fontSize: '1.5rem', fontWeight: '400', color: 'var(--black)' }}>SHOP</span>
+                    </div>
                     <nav style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center' }}>
                         <a href="/" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: '600' }}>Inicio</a>
                         <a href="/productos" style={{ color: 'var(--dark-gray)', textDecoration: 'none', fontWeight: '500' }}>Productos</a>
@@ -40,7 +43,7 @@ export default function Home() {
                         color: 'var(--primary)',
                         marginBottom: '1rem'
                     }}>
-                        Bienvenido a Magnolia Novedades
+                        Bienvenido a Print Shop
                     </h1>
                     <p style={{
                         fontSize: 'var(--text-xl)',
@@ -48,7 +51,7 @@ export default function Home() {
                         maxWidth: '600px',
                         margin: '0 auto'
                     }}>
-                        Tu tienda de accesorios para el hogar y decoración
+                        Personalizamos tus ideas en remeras, tazas, buzos y gorras con la mejor calidad.
                     </p>
                 </div>
             </div>
@@ -62,7 +65,7 @@ export default function Home() {
             }}>
                 <div className="container" style={{ textAlign: 'center' }}>
                     <p style={{ color: 'var(--gray)', fontSize: 'var(--text-sm)' }}>
-                        © 2026 Magnolia Novedades - Todos los derechos reservados
+                        © 2026 Print Shop - Impresión Personalizada Profesional
                     </p>
                 </div>
             </footer>

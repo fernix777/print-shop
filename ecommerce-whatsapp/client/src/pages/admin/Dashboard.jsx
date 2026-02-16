@@ -75,8 +75,11 @@ export default function Dashboard() {
         <div className="dashboard-container">
             <aside className="dashboard-sidebar">
                 <div className="sidebar-header">
-                    <img src="/logo.jpg" alt="Magnolia" className="sidebar-logo" />
-                    <h2>Magnolia Admin</h2>
+                    <div className="logo-text">
+                        <span className="logo-bold">PRINT</span>
+                        <span className="logo-light">SHOP</span>
+                    </div>
+                    <h2>Admin</h2>
                 </div>
 
                 <nav className="sidebar-nav">
@@ -114,7 +117,7 @@ export default function Dashboard() {
             <main className="dashboard-main">
                 <header className="dashboard-header">
                     <h1>Dashboard</h1>
-                    <p>Bienvenido al panel de administración de Magnolia Novedades</p>
+                    <p>Bienvenido al panel de administración de Print Shop</p>
                 </header>
 
                 <div className="dashboard-stats">

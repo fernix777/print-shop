@@ -3,8 +3,8 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 import { createOrder } from '../../services/orderService'
-import { trackInitiateCheckout, trackPurchase } from '../../services/facebookService'
-import { trackInitiateCheckout as trackPixelInitiateCheckout } from '../../utils/facebookPixel'
+import { createPaymentPreference } from '../../services/paymentService'
+// Tracking de Facebook removido
 import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
@@ -28,7 +28,7 @@ export default function CheckoutPage() {
         instructions: ''
     })
     
-    const [paymentMethod, setPaymentMethod] = useState('whatsapp')
+    const [paymentMethod, setPaymentMethod] = useState('mercadopago')
     const [processing, setProcessing] = useState(false)
     const [checkoutInitiated, setCheckoutInitiated] = useState(false)
 
@@ -46,9 +46,7 @@ export default function CheckoutPage() {
                 last_name: user.last_name
             } : null
             
-            trackInitiateCheckout(cartTotal, cartItemsCount, userData)
-            // Rastrear en Facebook Pixel
-            trackPixelInitiateCheckout(cartTotal)
+            // Sin tracking de Facebook
             setCheckoutInitiated(true)
         }
     }, [cart, user, cartTotal, cartItemsCount, checkoutInitiated])
@@ -125,10 +123,26 @@ export default function CheckoutPage() {
                     price: item.price || 0
                 }))
             }
-            trackPurchase(fbOrderData)
+            // Sin tracking de Facebook
+
+            // Si el método de pago es Mercado Pago
+            if (paymentMethod === 'mercadopago') {
+                try {
+                    const preference = await createPaymentPreference(cart, savedOrder.id)
+                    if (preference.init_point) {
+                        // Redirigir a Mercado Pago
+                        window.location.href = preference.init_point
+                        return // Detener el flujo aquí, el usuario vuelve vía back_urls
+                    }
+                } catch (err) {
+                    console.error('Error al iniciar Mercado Pago:', err)
+                    alert('Error al conectar con Mercado Pago. Intentando vía WhatsApp...')
+                    // Si falla MP, podemos caer en WhatsApp o mostrar error
+                }
+            }
 
             // Si el método de pago es WhatsApp, abrir el chat
-            if (paymentMethod === 'whatsapp') {
+            if (paymentMethod === 'whatsapp' || paymentMethod === 'mercadopago') {
                 const phoneNumber = '543885171795'
                 let message = '🛒 *PEDIDO DE COMPRA*\n\n'
                 message += `👤 *Cliente:* ${formData.firstName} ${formData.lastName}\n`
@@ -373,11 +387,27 @@ export default function CheckoutPage() {
                                 </div>
                             </div>
 
-                            {/* Método de pago - Solo WhatsApp */}
+                            {/* Método de pago */}
                             <div className="form-section payment-section">
                                 <h3>Método de Pago</h3>
                                 <div className="payment-options">
-                                    <label className="payment-option payment-whatsapp">
+                                    <label className={`payment-option ${paymentMethod === 'mercadopago' ? 'active' : ''}`}>
+                                        <input
+                                            type="radio"
+                                            name="paymentMethod"
+                                            value="mercadopago"
+                                            checked={paymentMethod === 'mercadopago'}
+                                            onChange={(e) => setPaymentMethod(e.target.value)}
+                                            disabled={processing}
+                                        />
+                                        <div className="payment-option-content">
+                                            <span className="payment-icon">💳</span>
+                                            <span className="payment-label">Mercado Pago</span>
+                                            <span className="payment-description">Tarjeta de crédito, débito o dinero en cuenta</span>
+                                        </div>
+                                    </label>
+
+                                    <label className={`payment-option ${paymentMethod === 'whatsapp' ? 'active' : ''}`}>
                                         <input
                                             type="radio"
                                             name="paymentMethod"

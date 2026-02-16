@@ -1,7 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { getProductById, createProduct, updateProduct } from '../../services/productService'
+import {
+    getProductById,
+    createProduct,
+    updateProduct,
+    addProductImages,
+    deleteProductImage,
+    updateImageOrders,
+    setPrimaryImage
+} from '../../services/productService'
 import { getCategories } from '../../services/categoryService'
 import ImageUploader from '../../components/admin/ImageUploader'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
@@ -27,17 +35,13 @@ export default function ProductForm() {
         stock: 0,
         active: true,
         featured: false,
-        units_per_box: 12,
-        boxes_per_bundle: 40,
-        price_box: '',
-        price_bundle: '',
         has_colors: true,
-        sale_types: ['unidad', 'paquete', 'bulto'],
         variants: [],
         categories: [] // [{ category_id, subcategory_id }]
     })
 
     const [images, setImages] = useState([])
+    const [originalImages, setOriginalImages] = useState([])
     const [newColor, setNewColor] = useState('') // Para agregar color personalizado
     const [errors, setErrors] = useState({})
 
@@ -93,25 +97,22 @@ export default function ProductForm() {
             stock: data.stock || 0,
             active: data.active ?? true,
             featured: data.featured ?? false,
-            units_per_box: data.units_per_box || 12,
-            boxes_per_bundle: data.boxes_per_bundle || 40,
-            price_box: data.price_box || '',
-            price_bundle: data.price_bundle || '',
             has_colors: data.has_colors ?? true,
-            sale_types: data.sale_types || ['unidad', 'paquete', 'bulto'],
             variants: variants,
             categories: productCategories
         })
 
         // Cargar imágenes existentes
         if (data.images) {
-            setImages(data.images.map(img => ({
+            const mapped = data.images.map(img => ({
                 id: img.id,
                 image_url: img.image_url,
                 preview: img.image_url,
                 is_primary: img.is_primary,
                 display_order: img.display_order
-            })))
+            }))
+            setImages(mapped)
+            setOriginalImages(mapped)
         }
 
         setLoading(false)
@@ -143,19 +144,7 @@ export default function ProductForm() {
         }
     }
 
-    const handleSaleTypeChange = (type) => {
-        setFormData(prev => {
-            const currentTypes = prev.sale_types || []
-            const newTypes = currentTypes.includes(type)
-                ? currentTypes.filter(t => t !== type)
-                : [...currentTypes, type]
-            return { ...prev, sale_types: newTypes }
-        })
-
-        if (errors.sale_types) {
-            setErrors(prev => ({ ...prev, sale_types: null }))
-        }
-    }
+    
 
     const handleAddCategory = () => {
         setFormData(prev => ({
@@ -246,20 +235,6 @@ export default function ProductForm() {
             newErrors.images = 'Agrega al menos una imagen'
         }
 
-        // Validar que al menos un tipo de venta esté seleccionado
-        if (!formData.sale_types || formData.sale_types.length === 0) {
-            newErrors.sale_types = 'Selecciona al menos un tipo de venta'
-        }
-
-        // Validar precios según tipos de venta seleccionados
-        if (formData.sale_types?.includes('paquete') && (!formData.price_box || Number(formData.price_box) <= 0)) {
-            newErrors.price_box = 'El precio por paquete es requerido'
-        }
-
-        if (formData.sale_types?.includes('bulto') && (!formData.price_bundle || Number(formData.price_bundle) <= 0)) {
-            newErrors.price_bundle = 'El precio por bulto es requerido'
-        }
-
         setErrors(newErrors)
         return Object.keys(newErrors).length === 0
     }
@@ -283,12 +258,7 @@ export default function ProductForm() {
                 category_id: formData.categories[0]?.category_id ? Number(formData.categories[0].category_id) : null,
                 subcategory_id: formData.categories[0]?.subcategory_id ? Number(formData.categories[0].subcategory_id) : null,
                 categories: formData.categories,
-                units_per_box: Number(formData.units_per_box),
-                boxes_per_bundle: Number(formData.boxes_per_bundle),
-                price_box: formData.price_box ? Number(formData.price_box) : null,
-                price_bundle: formData.price_bundle ? Number(formData.price_bundle) : null,
                 has_colors: formData.has_colors,
-                sale_types: formData.sale_types,
                 // Usar las variantes de formData
                 variants: formData.has_colors && formData.variants && formData.variants.length > 0
                     ? formData.variants.map(v => ({
@@ -312,11 +282,35 @@ export default function ProductForm() {
             let productId
 
             if (isEditing) {
-                // Actualizar producto
                 result = await updateProduct(id, productData)
-                productId = id
+                productId = Number(id)
+
+                const currentExistingImages = images.filter(img => img.id && !img.file)
+                const removedImageIds = originalImages
+                    .filter(orig => !currentExistingImages.some(curr => curr.id === orig.id))
+                    .map(img => img.id)
+
+                if (removedImageIds.length > 0) {
+                    await Promise.all(removedImageIds.map(imageId => deleteProductImage(imageId)))
+                }
+
+                if (currentExistingImages.length > 0) {
+                    const orderUpdates = currentExistingImages.map((img, index) => ({
+                        id: img.id,
+                        display_order: index
+                    }))
+                    await updateImageOrders(orderUpdates)
+
+                    const primaryImage = currentExistingImages.find(img => img.is_primary) || currentExistingImages[0]
+                    if (primaryImage?.id) {
+                        await setPrimaryImage(productId, primaryImage.id)
+                    }
+                }
+
+                if (newImageFiles.length > 0) {
+                    await addProductImages(productId, newImageFiles)
+                }
             } else {
-                // Crear producto con imágenes
                 result = await createProduct(productData, newImageFiles)
                 productId = result.data?.id
             }
@@ -431,68 +425,7 @@ export default function ProductForm() {
                         </div>
                     </div>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="units_per_box">Unidades por Paquete</label>
-                            <input
-                                id="units_per_box"
-                                name="units_per_box"
-                                type="number"
-                                min="1"
-                                value={formData.units_per_box}
-                                onChange={handleChange}
-                                disabled={saving}
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="boxes_per_bundle">Paquetes por Bulto</label>
-                            <input
-                                id="boxes_per_bundle"
-                                name="boxes_per_bundle"
-                                type="number"
-                                min="1"
-                                value={formData.boxes_per_bundle}
-                                onChange={handleChange}
-                                disabled={saving}
-                            />
-                        </div>
-                    </div>
-
-                    {/* Precios Explícitos - Condicionales */}
-                    {formData.sale_types?.includes('paquete') && (
-                        <div className="form-group">
-                            <label htmlFor="price_box">Precio por Paquete ({formData.units_per_box} u) *</label>
-                            <input
-                                id="price_box"
-                                name="price_box"
-                                type="number"
-                                step="0.01"
-                                value={formData.price_box}
-                                onChange={handleChange}
-                                disabled={saving}
-                                className={errors.price_box ? 'error' : ''}
-                            />
-                            {errors.price_box && <span className="error-text">{errors.price_box}</span>}
-                        </div>
-                    )}
-
-                    {formData.sale_types?.includes('bulto') && (
-                        <div className="form-group">
-                            <label htmlFor="price_bundle">Precio por Bulto ({Number(formData.units_per_box || 12) * Number(formData.boxes_per_bundle || 40)} u) *</label>
-                            <input
-                                id="price_bundle"
-                                name="price_bundle"
-                                type="number"
-                                step="0.01"
-                                value={formData.price_bundle}
-                                onChange={handleChange}
-                                disabled={saving}
-                                className={errors.price_bundle ? 'error' : ''}
-                            />
-                            {errors.price_bundle && <span className="error-text">{errors.price_bundle}</span>}
-                        </div>
-                    )}
+                    
                 </section>
 
                 {/* Categorización */}
@@ -656,42 +589,7 @@ export default function ProductForm() {
                         </div>
                     )}
 
-                    <div className="form-group">
-                        <label>Tipos de venta disponibles *</label>
-                        <div className="form-checkboxes">
-                            <label className="checkbox-label">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.sale_types?.includes('unidad')}
-                                    onChange={() => handleSaleTypeChange('unidad')}
-                                    disabled={saving}
-                                />
-                                <span>Venta por Unidad</span>
-                            </label>
-
-                            <label className="checkbox-label">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.sale_types?.includes('paquete')}
-                                    onChange={() => handleSaleTypeChange('paquete')}
-                                    disabled={saving}
-                                    id="sale_type_paquete"
-                                />
-                                <span>Venta por Paquete ({formData.units_per_box} unidades)</span>
-                            </label>
-
-                            <label className="checkbox-label">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.sale_types?.includes('bulto')}
-                                    onChange={() => handleSaleTypeChange('bulto')}
-                                    disabled={saving}
-                                />
-                                <span>Venta por Bulto ({formData.boxes_per_bundle} paquetes)</span>
-                            </label>
-                        </div>
-                        {errors.sale_types && <span className="error-text">{errors.sale_types}</span>}
-                    </div>
+                    
                 </section>
 
                 {/* Configuración General */}

@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { trackPurchase } from '../../services/facebookService'
-import { trackPurchase as trackPixelPurchase } from '../../utils/facebookPixel'
+// Tracking de Facebook removido
 import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
@@ -18,19 +17,24 @@ export default function OrderConfirmation() {
     const [purchaseTracked, setPurchaseTracked] = useState(false)
 
     useEffect(() => {
+        // Obtener parámetros de la URL (por si volvemos de Mercado Pago)
+        const params = new URLSearchParams(location.search)
+        const paymentStatus = params.get('status')
+        const paymentId = params.get('payment_id')
+
         // Obtener datos de la orden del location state o localStorage
         const orderFromState = location.state?.order
         const orderIdFromState = location.state?.orderId
         
         if (orderFromState) {
-            setOrder(orderFromState)
+            setOrder({ ...orderFromState, paymentStatus })
             setOrderId(orderIdFromState)
         } else {
-            // Intentar obtener de localStorage si volvemos a la página
+            // Intentar obtener de localStorage si volvemos a la página (desde Mercado Pago)
             const lastOrder = localStorage.getItem('lastOrder')
             if (lastOrder) {
                 const parsedOrder = JSON.parse(lastOrder)
-                setOrder(parsedOrder)
+                setOrder({ ...parsedOrder, paymentStatus, paymentId })
                 setOrderId(parsedOrder.order_id)
             } else {
                 // Si no hay orden, redirigir al inicio
@@ -65,9 +69,7 @@ export default function OrderConfirmation() {
                 }))
             }
 
-            trackPurchase(purchaseData)
-            // Rastrear en Facebook Pixel
-            trackPixelPurchase(order.total, 'ARS', orderId || order.order_id)
+            // Sin tracking de Facebook
             setPurchaseTracked(true)
 
             // Limpiar localStorage
@@ -122,11 +124,23 @@ export default function OrderConfirmation() {
             
             <main className="container">
                 <div className="confirmation-container">
-                    {/* Mensaje de éxito */}
+                    {/* Mensaje de éxito o estado de pago */}
                     <div className="success-section">
-                        <div className="success-icon">✅</div>
-                        <h1>¡Compra Confirmada!</h1>
-                        <p>Tu orden ha sido registrada con éxito</p>
+                        <div className="success-icon">
+                            {order.paymentStatus === 'failure' ? '❌' : '✅'}
+                        </div>
+                        <h1>
+                            {order.paymentStatus === 'success' && '¡Pago Aprobado!'}
+                            {order.paymentStatus === 'pending' && '¡Pago Pendiente!'}
+                            {order.paymentStatus === 'failure' && 'Pago Fallido'}
+                            {!order.paymentStatus && '¡Pedido Recibido!'}
+                        </h1>
+                        <p>
+                            {order.paymentStatus === 'success' && 'Tu pago ha sido procesado correctamente.'}
+                            {order.paymentStatus === 'pending' && 'Tu pago está siendo procesado por Mercado Pago.'}
+                            {order.paymentStatus === 'failure' && 'Hubo un problema al procesar tu pago. Por favor, contáctanos.'}
+                            {!order.paymentStatus && 'Tu orden ha sido registrada con éxito.'}
+                        </p>
                     </div>
 
                     {/* Número de orden */}
@@ -181,6 +195,7 @@ export default function OrderConfirmation() {
                             <div className="detail-row">
                                 <span className="label">Opción Seleccionada:</span>
                                 <span className="value">
+                                    {order.paymentMethod === 'mercadopago' && 'Mercado Pago'}
                                     {order.paymentMethod === 'whatsapp' && 'Coordinar por WhatsApp'}
                                     {order.paymentMethod === 'transfer' && 'Transferencia Bancaria'}
                                     {order.paymentMethod === 'cash' && 'Efectivo en Sucursal'}
@@ -232,10 +247,10 @@ export default function OrderConfirmation() {
                                 <strong>Contacto:</strong> Nos comunicaremos por WhatsApp o teléfono para confirmar detalles de envío
                             </li>
                             <li>
-                                <strong>Preparación:</strong> Prepararemos tu pedido en 24-48 horas
+                                <strong>Preparación:</strong> Iniciaremos la impresión de tus productos (2-4 días hábiles)
                             </li>
                             <li>
-                                <strong>Envío:</strong> Recibirás información de seguimiento de tu envío
+                                <strong>Envío:</strong> Te notificaremos cuando tu pedido esté listo para retiro o envío
                             </li>
                         </ol>
                     </div>

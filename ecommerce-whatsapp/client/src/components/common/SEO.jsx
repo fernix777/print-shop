@@ -13,15 +13,15 @@ import PropTypes from 'prop-types'
  * @param {Object} props.structuredData - Additional structured data
  */
 export default function SEO({
-    title = 'Magnolia Novedades - Decoración y Regalos Únicos',
-    description = 'Descubre decoración única y regalos especiales en Magnolia Novedades. Ubicados en San Salvador de Jujuy, ofrecemos productos de calidad para hacer de cada momento algo especial.',
-    keywords = 'decoración, regalos, novedades, San Salvador de Jujuy, Jujuy, Argentina',
-    image = 'https://www.magnolia-n.com/logo.jpg',
-    url = 'https://www.magnolia-n.com/',
+    title = 'Print Shop - Remeras y Tazas Personalizadas',
+    description = 'Personaliza tus remeras, tazas, buzos y gorras en Print Shop. Calidad profesional en impresión textil y sublimación en Jujuy, Argentina.',
+    keywords = 'remeras personalizadas, tazas impresas, buzos personalizados, gorras impresas, impresión textil, Jujuy, Argentina',
+    image = 'https://www.printshop.com.ar/logo.jpg',
+    url = 'https://www.printshop.com.ar/',
     type = 'website',
     structuredData = null
 }) {
-    const fullTitle = title.includes('Magnolia') ? title : `${title} | Magnolia Novedades`
+    const fullTitle = title.includes('Print Shop') ? title : `${title} | Print Shop`
 
     return (
         <Helmet>
@@ -39,7 +39,7 @@ export default function SEO({
             <meta property="og:image" content={image} />
             <meta property="og:url" content={url} />
             <meta property="og:type" content={type} />
-            <meta property="og:site_name" content="Magnolia Novedades" />
+            <meta property="og:site_name" content="Print Shop" />
 
             {/* Twitter Card */}
             <meta name="twitter:card" content="summary_large_image" />

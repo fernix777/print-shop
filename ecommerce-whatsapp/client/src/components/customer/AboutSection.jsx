@@ -28,14 +28,13 @@ export default function AboutSection() {
                         </div>
                         <h3>Nuestra Historia</h3>
                         <p>
-                            Magnolia Novedades nació con la misión de ofrecer productos de calidad y un servicio
-                            excepcional a nuestros clientes. Con años de experiencia en el mercado, nos hemos
-                            consolidado como una tienda de confianza, comprometida con la satisfacción de cada
-                            persona que nos elige.
+                            Print Shop nació con la misión de transformar tus ideas en productos tangibles de alta calidad.
+                            Especializados en impresión personalizada, nos dedicamos a plasmar diseños únicos en remeras, 
+                            tazas, buzos y gorras.
                         </p>
                         <p>
-                            Nuestra pasión por la innovación y la atención al detalle nos impulsa a seguir creciendo
-                            y mejorando día a día, siempre pensando en brindarte la mejor experiencia de compra.
+                            Utilizamos las mejores técnicas de sublimación y estampado para garantizar durabilidad y 
+                            colores vibrantes en cada pieza que creamos para vos.
                         </p>
                     </div>
 

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { trackAddToCart } from '../services/facebookTracking';
+// Tracking de Facebook removido
 import { useAuth } from './AuthContext';
 
 export const CartContext = createContext();
@@ -30,8 +30,7 @@ export function CartProvider({ children }) {
             return;
         }
 
-        // Rastrear evento AddToCart (Pixel + CAPI)
-        trackAddToCart(product, quantity);
+        // Sin tracking de Facebook
 
         setCart(prevCart => {
             // Verificar si el producto ya está en el carrito

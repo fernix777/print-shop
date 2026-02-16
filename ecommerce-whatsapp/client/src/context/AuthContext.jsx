@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '../config/supabase'
-import { setupEnhancedMatching, clearEnhancedMatching, getUserDataForMatching } from '../utils/enhancedMatching'
 
 export const AuthContext = createContext({})
 
@@ -13,20 +12,7 @@ export const AuthProvider = ({ children }) => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             const user = session?.user ?? null;
             setUser(user);
-            
-            // Configurar Enhanced Matching si hay usuario
-            if (user) {
-                console.log('👤 AuthContext: User loaded', { 
-                    email: user.email, 
-                    role: user.user_metadata?.role,
-                    metadata: user.user_metadata 
-                });
-                const matchingData = getUserDataForMatching(user.user_metadata);
-                if (matchingData) {
-                    setupEnhancedMatching(matchingData);
-                }
-            }
-            
+
             setLoading(false);
         })
 
@@ -35,16 +21,6 @@ export const AuthProvider = ({ children }) => {
             (event, session) => {
                 const currentUser = session?.user ?? null;
                 setUser(currentUser);
-                
-                // Configurar Enhanced Matching según el evento
-                if (event === 'SIGNED_IN' || (event === 'INITIAL_SESSION' && currentUser)) {
-                    const matchingData = getUserDataForMatching(currentUser.user_metadata);
-                    if (matchingData) {
-                        setupEnhancedMatching(matchingData);
-                    }
-                } else if (event === 'SIGNED_OUT') {
-                    clearEnhancedMatching();
-                }
             }
         )
 
@@ -68,15 +44,30 @@ export const AuthProvider = ({ children }) => {
 
     const signOut = async () => {
         try {
-            const { error } = await supabase.auth.signOut()
+            // Evitar petición de red que puede abortarse en navegación
+            const { error } = await supabase.auth.signOut({ scope: 'local' })
             if (error) throw error
+            
+            // Limpieza local inmediata
+            setUser(null)
+            try {
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
+                        localStorage.removeItem(key)
+                    }
+                })
+            } catch (e) {}
+            
+            // Intento no bloqueante de cierre global (revocar refresh tokens)
+            setTimeout(() => {
+                supabase.auth.signOut({ scope: 'global' }).catch(() => {})
+            }, 0)
+            
             return { error: null }
         } catch (error) {
             console.warn('Error logging out:', error)
             // Force local state cleanup even if network request fails
             setUser(null)
-            clearEnhancedMatching()
-            
             // Manually clear Supabase local storage token to prevent persistence
             try {
                 Object.keys(localStorage).forEach(key => {

@@ -5,7 +5,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 // Importar rutas
-import facebookRoutes from './routes/facebook.js';
+import paymentRoutes from './routes/payments.js';
+import uploadsRoutes from './routes/uploads.js';
 
 // Configuración
 dotenv.config();
@@ -33,8 +34,9 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Registrar rutas de Facebook
-app.use('/api/facebook', facebookRoutes);
+// Registrar rutas
+app.use('/api/payments', paymentRoutes);
+app.use('/api/uploads', uploadsRoutes);
 
 // Importar rutas (se agregarán después)
 // import authRoutes from './routes/authRoutes.js';

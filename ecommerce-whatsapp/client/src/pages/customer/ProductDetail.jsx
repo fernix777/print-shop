@@ -7,8 +7,7 @@ import WhatsAppButton from '../../components/customer/WhatsAppButton'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import { AuthContext } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
-import { trackViewContent, trackAddToCart } from '../../services/facebookService'
-import { trackViewContent as trackPixelViewContent, trackAddToCart as trackPixelAddToCart } from '../../utils/facebookPixel'
+// Tracking de Facebook removido
 import './ProductDetail.css'
 
 export default function ProductDetail() {
@@ -21,7 +20,7 @@ export default function ProductDetail() {
     const [selectedImage, setSelectedImage] = useState(0)
     const [selectedVariant, setSelectedVariant] = useState(null)
     const [quantity, setQuantity] = useState(1)
-    const [purchaseType, setPurchaseType] = useState('') // 'unidad', 'paquete' o 'bulto'
+    const [purchaseType, setPurchaseType] = useState('unidad') // solo unidad
     const [selectedColor, setSelectedColor] = useState('')
     const [showNotification, setShowNotification] = useState(false)
 
@@ -75,17 +74,7 @@ export default function ProductDetail() {
     }
 
     useEffect(() => {
-        if (product) {
-            // Rastrear visualización del producto
-            const currentUser = user ? {
-                email: user.email,
-                user_id: user.id
-            } : null;
-
-            trackViewContent(product, currentUser);
-            // Rastrear en Facebook Pixel
-            trackPixelViewContent(product.name, product.base_price);
-        }
+        // Sin tracking de Facebook
     }, [product, user]);
 
     const formatPrice = (price) => {
@@ -142,10 +131,7 @@ export default function ProductDetail() {
             return
         }
 
-        if (!purchaseType) {
-            alert('Por favor selecciona el tipo de venta')
-            return
-        }
+        
 
         // Solo validar color si el producto tiene opciones de color
         if (product.has_colors && !selectedColor) {
@@ -163,14 +149,7 @@ export default function ProductDetail() {
             finalPrice
         })
 
-        // Rastrear evento AddToCart en Facebook
-        const currentUser = user ? {
-            email: user.email,
-            user_id: user.id
-        } : null;
-        trackAddToCart(product, quantity, currentUser);
-        // Rastrear en Facebook Pixel
-        trackPixelAddToCart(product.name, finalPrice);
+        // Sin tracking de Facebook
 
         // Mostrar notificación
         setShowNotification(true)
@@ -181,21 +160,8 @@ export default function ProductDetail() {
     }
 
     const getPriceByType = () => {
-        let basePrice = product.base_price
-
-        // Ajustar según el tipo de venta
-        switch (purchaseType) {
-            case 'unidad':
-                return basePrice // Precio base por unidad
-            case 'paquete':
-                // Usar precio explícito si existe, sino calcular
-                return product.price_box ? Number(product.price_box) : basePrice * (product.units_per_box || 12)
-            case 'bulto':
-                // Usar precio explícito si existe, sino calcular
-                return product.price_bundle ? Number(product.price_bundle) : basePrice * (product.units_per_box || 12) * (product.boxes_per_bundle || 40)
-            default:
-                return basePrice
-        }
+        const basePrice = product.base_price ?? product.price
+        return basePrice
     }
 
     const getFinalPrice = () => {
@@ -309,38 +275,7 @@ export default function ProductDetail() {
                             </div>
                         )}
 
-                        {/* Información de paquete y bulto */}
-                        <div className="package-info">
-                            <div className="info-item">
-                                <i className="fas fa-box"></i>
-                                <span>{product.units_per_box || 12} unidades por paquete</span>
-                            </div>
-                            <div className="info-item">
-                                <i className="fas fa-pallet"></i>
-                                <span>{product.boxes_per_bundle || 40} paquetes por bulto</span>
-                            </div>
-                        </div>
-
-                        {/* Selector de Tipo de Venta */}
-                        <div className="form-group">
-                            <label>Tipo de Venta</label>
-                            <select
-                                className="form-control"
-                                value={purchaseType}
-                                onChange={(e) => setPurchaseType(e.target.value)}
-                            >
-                                <option value="">Elige una opción</option>
-                                {product.sale_types?.includes('unidad') && (
-                                    <option value="unidad">Unidad</option>
-                                )}
-                                {product.sale_types?.includes('paquete') && (
-                                    <option value="paquete">Paquete ({product.units_per_box || 12} unidades)</option>
-                                )}
-                                {product.sale_types?.includes('bulto') && (
-                                    <option value="bulto">Bulto ({product.boxes_per_bundle || 40} paquetes)</option>
-                                )}
-                            </select>
-                        </div>
+                        
 
                         {/* Selector de variante - Solo si el producto tiene variantes */}
                         {product.has_colors && product.variants && product.variants.length > 0 && (
@@ -370,7 +305,7 @@ export default function ProductDetail() {
                         <div className="purchase-actions">
                             <div className="quantity-wrapper">
                                 <div className="product-quantity">
-                                    <h3>Cantidad de {purchaseType === 'paquete' ? 'paquetes' : purchaseType === 'bulto' ? 'bultos' : 'unidades'}</h3>
+                                    <h3>Cantidad de unidades</h3>
                                     <div className="quantity-selector">
                                         <button
                                             onClick={(e) => {
@@ -409,7 +344,7 @@ export default function ProductDetail() {
                             <button
                                 onClick={handleAddToCart}
                                 className="btn btn-primary btn-large add-to-cart-btn"
-                                disabled={product.stock <= 0 || !purchaseType || (product.has_colors && !selectedColor) || !user}
+                                disabled={product.stock <= 0 || (product.has_colors && !selectedColor) || !user}
                             >
                                 {product.stock <= 0 ? (
                                     <>❌ No Disponible</>
