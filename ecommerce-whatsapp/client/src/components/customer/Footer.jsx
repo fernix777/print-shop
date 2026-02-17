@@ -40,10 +40,26 @@ export default function Footer() {
                     <div className="footer-payments">
                         <p className="footer-payments-title">Aceptamos todas las formas de pago</p>
                         <div className="footer-payment-logos">
-                            <span className="payment-logo visa">Visa</span>
-                            <span className="payment-logo mastercard">Mastercard</span>
-                            <span className="payment-logo amex">Amex</span>
-                            <span className="payment-logo mercado-pago">Mercado Pago</span>
+                            <img
+                                src="/assets/payments/visa.png"
+                                alt="Visa"
+                                className="payment-logo-img"
+                            />
+                            <img
+                                src="/assets/payments/mastercard.png"
+                                alt="Mastercard"
+                                className="payment-logo-img"
+                            />
+                            <img
+                                src="/assets/payments/amex.png"
+                                alt="American Express"
+                                className="payment-logo-img"
+                            />
+                            <img
+                                src="/assets/payments/mercado-pago.png"
+                                alt="Mercado Pago"
+                                className="payment-logo-img"
+                            />
                         </div>
                     </div>
                 </div>

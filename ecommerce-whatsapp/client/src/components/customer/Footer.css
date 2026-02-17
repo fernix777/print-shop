@@ -179,30 +179,17 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+    align-items: center;
 }
 
-.payment-logo {
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-    font-size: 0.7rem;
-    font-weight: 600;
-    background-color: rgba(255, 255, 255, 0.12);
-}
-
-.payment-logo.visa {
-    background-color: #1a1f71;
-}
-
-.payment-logo.mastercard {
-    background: linear-gradient(90deg, #ff5f00 0%, #eb001b 50%, #f79e1b 100%);
-}
-
-.payment-logo.amex {
-    background-color: #2e77bb;
-}
-
-.payment-logo.mercado-pago {
-    background-color: #00a6e0;
+.payment-logo-img {
+    height: 24px;
+    width: 48px;
+    object-fit: contain;
+    border-radius: 4px;
+    background-color: var(--white);
+    padding: 2px 4px;
+    display: block;
 }
 
 .footer-bottom {
