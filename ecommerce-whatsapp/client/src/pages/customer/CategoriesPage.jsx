@@ -5,6 +5,7 @@ import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
+import SEO from '../../components/common/SEO'
 import './CategoriesPage.css'
 
 export default function CategoriesPage() {
@@ -39,6 +40,19 @@ export default function CategoriesPage() {
 
     return (
         <div className="categories-page">
+            <SEO
+                title="Categorías | Print Shop AR"
+                description="Explora nuestras categorías de productos personalizados: remeras, tazas, gorras, cuadros y más."
+                keywords="categorías, remeras, tazas, gorras, cuadros, printshop-ar"
+                url="https://printshop-ar.com/categorias"
+                type="website"
+                structuredData={{
+                    '@context': 'https://schema.org',
+                    '@type': 'CollectionPage',
+                    url: 'https://printshop-ar.com/categorias',
+                    name: 'Categorías de productos'
+                }}
+            />
             <Header />
 
             <main className="container">

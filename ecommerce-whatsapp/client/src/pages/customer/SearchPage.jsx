@@ -7,6 +7,7 @@ import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
+import SEO from '../../components/common/SEO'
 import './SearchPage.css'
 
 export default function SearchPage() {
@@ -120,6 +121,13 @@ export default function SearchPage() {
 
     return (
         <div className="search-page">
+            <SEO
+                title={`Buscar${query ? `: ${query}` : ''} | Print Shop AR`}
+                description="Resultados de búsqueda de productos personalizados en Print Shop AR."
+                keywords={`buscar, ${query || 'productos'}, printshop-ar`}
+                url={`https://printshop-ar.com/buscar${query ? `?q=${encodeURIComponent(query)}` : ''}`}
+                type="website"
+            />
             <Header />
 
             <main className="search-container">

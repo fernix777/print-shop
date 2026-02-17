@@ -1,48 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-  
-  <!-- Homepage -->
   <url>
-    <loc>https://www.magnolia-n.com/</loc>
-    <lastmod>2025-12-02</lastmod>
+    <loc>https://printshop-ar.com/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-  
-  <!-- Products Page -->
   <url>
-    <loc>https://www.magnolia-n.com/productos</loc>
-    <lastmod>2025-12-02</lastmod>
+    <loc>https://printshop-ar.com/productos</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
-  
-  <!-- Categories Page -->
   <url>
-    <loc>https://www.magnolia-n.com/categorias</loc>
-    <lastmod>2025-12-02</lastmod>
+    <loc>https://printshop-ar.com/categorias</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  
-  <!-- Contact Page -->
   <url>
-    <loc>https://www.magnolia-n.com/contacto</loc>
-    <lastmod>2025-12-02</lastmod>
+    <loc>https://printshop-ar.com/contacto</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
-  <!-- About Page (if exists) -->
   <url>
-    <loc>https://www.magnolia-n.com/nosotros</loc>
-    <lastmod>2025-12-02</lastmod>
+    <loc>https://printshop-ar.com/nosotros</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
-  <!-- Note: Individual product and category pages should be added dynamically -->
-  <!-- This is a static sitemap. For better SEO, consider implementing a dynamic sitemap generator -->
-  
 </urlset>

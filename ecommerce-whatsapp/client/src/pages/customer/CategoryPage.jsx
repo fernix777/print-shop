@@ -6,6 +6,7 @@ import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
+import SEO from '../../components/common/SEO'
 import './CategoryPage.css'
 
 export default function CategoryPage() {
@@ -63,6 +64,13 @@ export default function CategoryPage() {
 
     return (
         <div className="category-page">
+            <SEO
+                title={`${category?.name || 'Categoría'} | Print Shop AR`}
+                description={category?.description || 'Productos personalizados por categoría en Print Shop AR.'}
+                keywords={`${category?.name || 'categoría'}, productos personalizados, printshop-ar`}
+                url={`https://printshop-ar.com/categoria/${slug}`}
+                type="website"
+            />
             <Header />
 
             <main className="container">

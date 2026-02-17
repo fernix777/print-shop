@@ -6,6 +6,7 @@ import Header from '../../components/customer/Header'
 import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
+import SEO from '../../components/common/SEO'
 import './ProductsPage.css'
 
 export default function ProductsPage() {
@@ -55,6 +56,13 @@ export default function ProductsPage() {
 
     return (
         <div className="products-page">
+            <SEO
+                title="Todos los Productos | Print Shop AR"
+                description="Explora todos los productos personalizados: remeras, tazas, gorras, cuadros y más en Print Shop AR."
+                keywords="productos personalizados, remeras, tazas, gorras, cuadros, printshop-ar"
+                url="https://printshop-ar.com/productos"
+                type="website"
+            />
             <Header />
 
             <main className="container">

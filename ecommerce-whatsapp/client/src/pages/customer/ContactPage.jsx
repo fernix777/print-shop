@@ -5,6 +5,7 @@ import Footer from '../../components/customer/Footer'
 import WhatsAppButton from '../../components/customer/WhatsAppButton'
 // Tracking de Facebook removido
 import { useAuth } from '../../context/AuthContext'
+import SEO from '../../components/common/SEO'
 import './ContactPage.css'
 
 export default function ContactPage() {
@@ -66,6 +67,13 @@ export default function ContactPage() {
 
     return (
         <div className="contact-page">
+            <SEO
+                title="Contacto | Print Shop AR"
+                description="Contactate con Print Shop AR para consultas y pedidos de productos personalizados. Atención por WhatsApp y correo."
+                keywords="contacto, soporte, atención, printshop-ar"
+                url="https://printshop-ar.com/contacto"
+                type="website"
+            />
             <Header />
 
             <main className="container">
