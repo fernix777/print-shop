@@ -56,7 +56,7 @@ export default function Footer() {
                                 className="payment-logo-img"
                             />
                             <img
-                                src="/assets/payments/mercado-pago.png"
+                                src="/assets/payments/MP_RGB_HANDSHAKE_color_horizontal.png"
                                 alt="Mercado Pago"
                                 className="payment-logo-img"
                             />
