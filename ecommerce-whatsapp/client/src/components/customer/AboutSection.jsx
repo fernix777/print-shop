@@ -50,17 +50,13 @@ export default function AboutSection() {
                         <p>Hacemos llegar tus productos de forma rápida y segura:</p>
                         <ul className="shipping-list">
                             <li>
-                                <span className="shipping-icon"><FaStore /></span>
-                                <div>
-                                    <strong>Retiro en Tienda</strong>
-                                    <p>Sin costo - Retira en nuestro local</p>
-                                </div>
-                            </li>
-                            <li>
                                 <span className="shipping-icon"><FaMapLocationDot /></span>
                                 <div>
                                     <strong>Envío Nacional</strong>
-                                    <p>A todo el país mediante todos los expresos</p>
+                                    <p>
+                                        Trabajamos con Correo Argentino, con producción de la prenda entre 5 y 7 días
+                                        y envío a domicilio o sucursal en todo el país.
+                                    </p>
                                 </div>
                             </li>
                         </ul>

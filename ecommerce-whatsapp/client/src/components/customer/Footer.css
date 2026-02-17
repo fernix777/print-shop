@@ -165,6 +165,46 @@
     transform: translateX(4px);
 }
 
+.footer-payments {
+    margin-top: var(--spacing-md);
+}
+
+.footer-payments-title {
+    margin: 0 0 var(--spacing-xs) 0;
+    font-size: var(--text-sm);
+    font-weight: 500;
+}
+
+.footer-payment-logos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.payment-logo {
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.payment-logo.visa {
+    background-color: #1a1f71;
+}
+
+.payment-logo.mastercard {
+    background: linear-gradient(90deg, #ff5f00 0%, #eb001b 50%, #f79e1b 100%);
+}
+
+.payment-logo.amex {
+    background-color: #2e77bb;
+}
+
+.payment-logo.mercado-pago {
+    background-color: #00a6e0;
+}
+
 .footer-bottom {
     background-color: rgba(0, 0, 0, 0.2);
     padding: var(--spacing-md);

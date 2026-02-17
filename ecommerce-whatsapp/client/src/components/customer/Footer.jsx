@@ -37,6 +37,15 @@ export default function Footer() {
                         <li>📱 WhatsApp: +54 9 376 501-6293</li>
                         <li>📍 Posadas, Misiones, Argentina</li>
                     </ul>
+                    <div className="footer-payments">
+                        <p className="footer-payments-title">Aceptamos todas las formas de pago</p>
+                        <div className="footer-payment-logos">
+                            <span className="payment-logo visa">Visa</span>
+                            <span className="payment-logo mastercard">Mastercard</span>
+                            <span className="payment-logo amex">Amex</span>
+                            <span className="payment-logo mercado-pago">Mercado Pago</span>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Columna 4: Redes Sociales */}
