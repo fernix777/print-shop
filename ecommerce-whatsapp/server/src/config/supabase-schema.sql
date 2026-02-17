@@ -377,11 +377,11 @@ CREATE POLICY "Admin modify settings"
 
 -- Insertar configuración inicial
 INSERT INTO settings (key, value, type) VALUES
-  ('store_name', 'Magnolia Novedades', 'string'),
-  ('whatsapp_number', '+5491112345678', 'string'),
-  ('store_email', 'contacto@magnolia.com', 'string'),
-  ('store_address', 'Buenos Aires, Argentina', 'string'),
-  ('welcome_message', 'Bienvenido a Magnolia Novedades - Tu tienda de decoración y accesorios para el hogar', 'string'),
+  ('store_name', 'Print Shop', 'string'),
+  ('whatsapp_number', '+543885171795', 'string'),
+  ('store_email', 'info@printshop.com.ar', 'string'),
+  ('store_address', 'San Salvador de Jujuy, Jujuy, Argentina', 'string'),
+  ('welcome_message', 'Bienvenido a Print Shop - Remeras, tazas, buzos y gorras personalizadas', 'string'),
   ('currency', 'ARS', 'string'),
   ('tax_rate', '0', 'number')
 ON CONFLICT (key) DO NOTHING;

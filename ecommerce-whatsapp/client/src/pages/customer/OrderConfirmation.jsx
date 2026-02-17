@@ -94,7 +94,7 @@ export default function OrderConfirmation() {
     }
 
     const handleWhatsAppContact = () => {
-        const phoneNumber = '543885171795'
+        const phoneNumber = '5493765016293'
         let message = `🛍️ *CONFIRMACIÓN DE COMPRA*\n\n`
         message += `Número de Orden: ${orderId || order.order_id}\n`
         message += `Total: $${order.total.toLocaleString('es-AR')}\n\n`
@@ -275,7 +275,7 @@ export default function OrderConfirmation() {
                     <div className="additional-info">
                         <div className="info-card">
                             <h4>📞 Soporte</h4>
-                            <p>¿Preguntas? Contáctanos por WhatsApp al 📱 +54 388 517-1795</p>
+                            <p>¿Preguntas? Contáctanos por WhatsApp al 📱 +54 9 376 501-6293</p>
                         </div>
                         <div className="info-card">
                             <h4>🚚 Envío</h4>

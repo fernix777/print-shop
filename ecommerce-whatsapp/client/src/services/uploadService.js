@@ -112,13 +112,15 @@ export async function uploadMultipleImages(files, bucket, folder = '') {
  * Sube una imagen vía backend (service key) para evitar RLS
  * @param {File} file
  * @param {string} folder
+ * @param {string} bucket
  * @returns {Promise<{url: string, path: string, error: null} | {url: null, path: null, error: Error}>}
  */
-export async function uploadImageViaBackend(file, folder = '') {
+export async function uploadImageViaBackend(file, folder = '', bucket = 'product-images') {
     try {
         const formData = new FormData()
         formData.append('file', file)
         formData.append('folder', folder)
+        formData.append('bucket', bucket)
 
         const serverBase = (import.meta.env?.VITE_SERVER_URL) || 'http://localhost:8080'
         const res = await fetch(`${serverBase}/api/uploads/product-image`, {
@@ -142,8 +144,8 @@ export async function uploadImageViaBackend(file, folder = '') {
 /**
  * Sube múltiples imágenes vía backend
  */
-export async function uploadMultipleImagesViaBackend(files, folder = '') {
-    const uploadPromises = files.map(file => uploadImageViaBackend(file, folder))
+export async function uploadMultipleImagesViaBackend(files, folder = '', bucket = 'product-images') {
+    const uploadPromises = files.map(file => uploadImageViaBackend(file, folder, bucket))
     return Promise.all(uploadPromises)
 }
 

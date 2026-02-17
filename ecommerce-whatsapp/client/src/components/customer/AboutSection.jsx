@@ -24,18 +24,21 @@ export default function AboutSection() {
                     {/* Historia de la Empresa */}
                     <div className="about-card history-card">
                         <div className="card-icon">
-                            <FaBookOpen />
+                            <FaShieldHalved />
                         </div>
                         <h3>Nuestra Historia</h3>
-                        <p>
-                            Print Shop nació con la misión de transformar tus ideas en productos tangibles de alta calidad.
-                            Especializados en impresión personalizada, nos dedicamos a plasmar diseños únicos en remeras, 
-                            tazas, buzos y gorras.
-                        </p>
-                        <p>
-                            Utilizamos las mejores técnicas de sublimación y estampado para garantizar durabilidad y 
-                            colores vibrantes en cada pieza que creamos para vos.
-                        </p>
+                        <span className="history-subtitle">Impresión personalizada con calidad y detalle</span>
+                        <div className="history-body">
+                            <p>
+                                Print Shop nació con la misión de transformar tus ideas en productos tangibles de alta calidad.
+                                Especializados en impresión personalizada, nos dedicamos a plasmar diseños únicos en remeras,
+                                tazas, buzos y gorras.
+                            </p>
+                            <p>
+                                Utilizamos las mejores técnicas de sublimación y estampado para garantizar durabilidad y
+                                colores vibrantes en cada pieza que creamos para vos.
+                            </p>
+                        </div>
                     </div>
 
                     {/* Métodos de Envío */}

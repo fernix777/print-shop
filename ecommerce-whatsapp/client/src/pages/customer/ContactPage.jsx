@@ -34,7 +34,7 @@ export default function ContactPage() {
         // Sin tracking de Facebook
 
         // Construir mensaje de WhatsApp con los datos del formulario
-        const phoneNumber = '543885171795'
+        const phoneNumber = '5493765016293'
         let message = `📧 *MENSAJE DE CONTACTO*\n\n`
         message += `👤 *Nombre:* ${formData.name}\n`
         message += `📧 *Email:* ${formData.email}\n`
@@ -93,8 +93,8 @@ export default function ContactPage() {
                             <div className="info-icon">📱</div>
                             <h3>Teléfono</h3>
                             <p>
-                                <a href="https://wa.me/543885171795" target="_blank" rel="noopener noreferrer">
-                                    +54 388 517-1795
+                                <a href="https://wa.me/5493765016293" target="_blank" rel="noopener noreferrer">
+                                    +54 9 376 501-6293
                                 </a>
                             </p>
                         </div>

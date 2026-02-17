@@ -12,6 +12,25 @@
     padding: 0;
 }
 
+.header-promo-bar {
+    width: 100%;
+    background-color: #111111;
+    color: #ffffff;
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.01em;
+}
+
+.header-promo-bar span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .header-container {
     max-width: 1280px;
     margin: 0 auto;

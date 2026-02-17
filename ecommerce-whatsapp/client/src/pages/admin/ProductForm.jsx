@@ -250,9 +250,11 @@ export default function ProductForm() {
         setSaving(true)
 
         try {
+            const normalizedBasePrice = Math.round(Number(formData.base_price) * 100) / 100
+
             const productData = {
                 ...formData,
-                base_price: Number(formData.base_price),
+                base_price: normalizedBasePrice,
                 stock: Number(formData.stock),
                 // Asignar primera categoría como principal para compatibilidad
                 category_id: formData.categories[0]?.category_id ? Number(formData.categories[0].category_id) : null,

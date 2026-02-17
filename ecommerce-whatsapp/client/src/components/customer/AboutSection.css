@@ -215,6 +215,37 @@
     font-size: 1.05rem;
 }
 
+.history-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.history-title-block h3 {
+    margin: 0;
+    text-align: left;
+}
+
+.history-subtitle {
+    display: block;
+    color: #666;
+    font-size: 0.95rem;
+    text-align: center;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+.history-header .card-icon {
+    margin: 0;
+}
+
+.history-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 10px;
+}
 /* Values Section */
 .values-section {
     display: grid;
@@ -330,6 +361,10 @@
 
     .about-card h3 {
         font-size: 1.5rem;
+    }
+
+    .history-body {
+        grid-template-columns: 1fr;
     }
 
     .payment-list li,

@@ -13,11 +13,11 @@ import PropTypes from 'prop-types'
  * @param {Object} props.structuredData - Additional structured data
  */
 export default function SEO({
-    title = 'Print Shop - Remeras y Tazas Personalizadas',
-    description = 'Personaliza tus remeras, tazas, buzos y gorras en Print Shop. Calidad profesional en impresión textil y sublimación en Jujuy, Argentina.',
-    keywords = 'remeras personalizadas, tazas impresas, buzos personalizados, gorras impresas, impresión textil, Jujuy, Argentina',
-    image = 'https://www.printshop.com.ar/logo.jpg',
-    url = 'https://www.printshop.com.ar/',
+    title = 'Print Shop AR - Remeras Personalizadas, Tazas, Gorras y Cuadros',
+    description = 'Print Shop AR, tienda online de remeras personalizadas de Franco Colapinto, remeras de bandas de rock, frases cristianas y populares, tazas, gorras, house bags y cuadros art deco personalizados. Envíos a todo Argentina.',
+    keywords = 'printshop-ar, remeras personalizadas franco colapinto, remeras de bandas de rock, remeras cristianas, remeras frases populares, tazas personalizadas, gorras personalizadas, house bag personalizada, cuadros personalizados art deco, regalos personalizados Argentina',
+    image = 'https://printshop-ar.com/logo.jpg',
+    url = 'https://printshop-ar.com/',
     type = 'website',
     structuredData = null
 }) {

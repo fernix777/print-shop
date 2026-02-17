@@ -178,7 +178,8 @@ export async function createProduct(productData, imageFiles = []) {
         if (imageFiles.length > 0) {
             const uploadResults = await uploadMultipleImagesViaBackend(
                 imageFiles,
-                `products/${product.id}`
+                `products/${product.id}`,
+                'product-images'
             )
 
             // Crear registros de imágenes

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getActiveBanners } from '../../services/bannerService'
 import './HeroSection.css'
-import todoOctubreBanner from '../../assets/images/hero/todo_octubre.png'
 
 export default function HeroSection() {
     const [currentSlide, setCurrentSlide] = useState(0)

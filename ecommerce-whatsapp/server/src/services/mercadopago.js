@@ -24,13 +24,17 @@ export const createPreference = async (orderData) => {
 
         const preference = new Preference(client);
         
-        const items = orderData.items.map(item => ({
-            id: item.id,
-            title: item.name,
-            unit_price: Number(item.price),
-            quantity: Number(item.quantity),
-            currency_id: 'ARS'
-        }));
+        const items = orderData.items.map(item => {
+            const unitPrice = Math.round(Number(item.price) * 100) / 100;
+
+            return {
+                id: item.id,
+                title: item.name,
+                unit_price: unitPrice,
+                quantity: Number(item.quantity),
+                currency_id: 'ARS'
+            };
+        });
 
         const body = {
             items,
@@ -39,11 +43,12 @@ export const createPreference = async (orderData) => {
                 failure: `${CLIENT_URL}/checkout?status=failure`,
                 pending: `${CLIENT_URL}/order-confirmation?status=pending`,
             },
-            auto_return: 'approved',
             external_reference: orderData.orderId.toString(),
             statement_descriptor: 'TIENDA IMPRESION',
             notification_url: `${SERVER_URL}/api/payments/webhook`,
         };
+
+        console.log('Creating Mercado Pago preference with body:', JSON.stringify(body, null, 2));
 
         const response = await preference.create({ body });
         return response;

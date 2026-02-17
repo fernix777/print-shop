@@ -16,6 +16,7 @@ router.post('/product-image', upload.single('file'), async (req, res) => {
     }
 
     const folder = req.body.folder || '';
+    const bucket = req.body.bucket || 'product-images';
     const timestamp = Date.now();
     const random = Math.random().toString(36).slice(2, 12);
     const ext = (req.file.originalname.split('.').pop() || 'png').toLowerCase();
@@ -23,7 +24,7 @@ router.post('/product-image', upload.single('file'), async (req, res) => {
     const filePath = folder ? `${folder}/${fileName}` : fileName;
 
     const { error: uploadError } = await supabase.storage
-      .from('product-images')
+      .from(bucket)
       .upload(filePath, req.file.buffer, {
         contentType: req.file.mimetype,
         cacheControl: '3600',
@@ -35,7 +36,7 @@ router.post('/product-image', upload.single('file'), async (req, res) => {
     }
 
     const { data: publicData } = await supabase.storage
-      .from('product-images')
+      .from(bucket)
       .getPublicUrl(filePath);
 
     return res.json({

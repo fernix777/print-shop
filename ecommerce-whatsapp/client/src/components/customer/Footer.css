@@ -5,6 +5,82 @@
     margin-top: var(--spacing-xl);
 }
 
+.footer-membership-banner {
+    max-width: 1400px;
+    margin: 0 auto var(--spacing-xl);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent 60%),
+        linear-gradient(90deg, #111111 0%, #222222 50%, #111111 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-membership-content {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.footer-membership-text {
+    max-width: 600px;
+}
+
+.footer-membership-image {
+    flex: 1;
+    height: 220px;
+    border-radius: var(--radius-md);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    margin-left: var(--spacing-lg);
+}
+
+.membership-title {
+    font-size: 2rem;
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.membership-description {
+    margin: 0 0 var(--spacing-md) 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.membership-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.membership-primary {
+    background-color: #ffffff;
+    color: #111111;
+    border-color: #ffffff;
+}
+
+.membership-primary:hover {
+    background-color: #f5f5f5;
+    color: #000000;
+}
+
+.membership-secondary {
+    color: #ffffff;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.membership-secondary:hover {
+    opacity: 0.9;
+}
+
 .footer-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -97,6 +173,17 @@
 }
 
 @media (max-width: 1024px) {
+    .footer-membership-content {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .footer-membership-image {
+        width: 100%;
+        margin-left: 0;
+        margin-top: var(--spacing-md);
+    }
+
     .footer-container {
         grid-template-columns: repeat(2, 1fr);
     }

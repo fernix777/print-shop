@@ -9,6 +9,7 @@ import { AuthContext } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 // Tracking de Facebook removido
 import './ProductDetail.css'
+import SEO from '../../components/common/SEO'
 
 export default function ProductDetail() {
     const { slug } = useParams()
@@ -202,11 +203,55 @@ export default function ProductDetail() {
     const images = product.images || []
     const variants = product.variants || []
 
+    const canonicalUrl = `https://printshop-ar.com/producto/${product.slug}`
+    const primaryImage = images[selectedImage]?.image_url || images[0]?.image_url || 'https://printshop-ar.com/logo.jpg'
+    const seoDescription =
+        product.seo_description ||
+        (product.description
+            ? `${product.name} personalizado en Print Shop AR. ${product.description.substring(0, 140)}`
+            : `${product.name} personalizado en Print Shop AR. Remeras personalizadas de Franco Colapinto, bandas de rock, frases cristianas y populares, tazas, gorras, house bags y cuadros art deco personalizados.`)
+
     return (
         <div className="product-detail-page">
             <Header />
 
             <main className="container">
+                <SEO
+                    title={`${product.name} - Producto Personalizado`}
+                    description={seoDescription}
+                    keywords={[
+                        product.name,
+                        product.category?.name,
+                        'printshop-ar',
+                        'remeras personalizadas',
+                        'regalos personalizados',
+                        'tazas personalizadas',
+                        'gorras personalizadas'
+                    ]
+                        .filter(Boolean)
+                        .join(', ')}
+                    url={canonicalUrl}
+                    image={primaryImage}
+                    type="product"
+                    structuredData={{
+                        '@context': 'https://schema.org',
+                        '@type': 'Product',
+                        name: product.name,
+                        description: seoDescription,
+                        image: images.map(img => img.image_url),
+                        sku: product.id,
+                        category: product.category?.name,
+                        url: canonicalUrl,
+                        offers: {
+                            '@type': 'Offer',
+                            availability:
+                                product.stock > 0
+                                    ? 'https://schema.org/InStock'
+                                    : 'https://schema.org/OutOfStock',
+                            priceCurrency: 'ARS'
+                        }
+                    }}
+                />
                 <div className="breadcrumb">
                     <Link to="/">Inicio</Link>
                     {product.category && (

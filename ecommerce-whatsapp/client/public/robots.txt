@@ -21,4 +21,4 @@ Allow: /contacto
 Allow: /nosotros
 
 # Sitemap location
-Sitemap: https://www.magnolia-n.com/sitemap.xml
+Sitemap: https://printshop-ar.com/sitemap.xml

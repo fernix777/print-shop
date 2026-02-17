@@ -1,5 +1,5 @@
 import { supabase } from '../config/supabase'
-import { uploadImage, deleteImage, extractPathFromUrl } from './uploadService'
+import { uploadImageViaBackend, deleteImage, extractPathFromUrl } from './uploadService'
 
 /**
  * Servicio para gestión de categorías
@@ -67,7 +67,7 @@ export async function createCategory(categoryData, imageFile = null) {
 
         // Subir imagen si se proporcionó
         if (imageFile) {
-            const uploadResult = await uploadImage(imageFile, 'category-images', 'categories')
+            const uploadResult = await uploadImageViaBackend(imageFile, 'categories', 'category-images')
             if (uploadResult.error) throw uploadResult.error
             imageUrl = uploadResult.url
         }
@@ -124,7 +124,7 @@ export async function updateCategory(id, categoryData, imageFile = null) {
             }
 
             // Subir nueva imagen
-            const uploadResult = await uploadImage(imageFile, 'category-images', 'categories')
+            const uploadResult = await uploadImageViaBackend(imageFile, 'categories', 'category-images')
             if (uploadResult.error) throw uploadResult.error
             imageUrl = uploadResult.url
         }

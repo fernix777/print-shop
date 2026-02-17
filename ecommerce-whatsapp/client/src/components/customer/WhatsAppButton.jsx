@@ -1,7 +1,7 @@
 import './WhatsAppButton.css'
 
 export default function WhatsAppButton() {
-    const phoneNumber = '543885171795'
+    const phoneNumber = '5493765016293'
     const message = '¡Hola! Me interesa conocer más sobre sus productos.'
 
     const handleClick = () => {

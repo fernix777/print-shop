@@ -258,7 +258,7 @@ export default function MyOrders() {
                                 <div className="modal-footer">
                                     {selectedOrder.status === 'pending' && (
                                         <a 
-                                            href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '5491112345678'}?text=Hola,%20quiero%20confirmar%20mi%20pedido%20#${selectedOrder.id.slice(-8).toUpperCase()}`}
+                                            href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '5493765016293'}?text=Hola,%20quiero%20confirmar%20mi%20pedido%20#${selectedOrder.id.slice(-8).toUpperCase()}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="btn btn-whatsapp"
