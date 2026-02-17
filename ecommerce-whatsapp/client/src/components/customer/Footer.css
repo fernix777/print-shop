@@ -103,6 +103,11 @@
     margin-bottom: var(--spacing-md);
 }
 
+.store-footer .logo-light {
+    color: var(--white);
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.45);
+}
+
 .footer-logo img {
     height: 50px;
     width: 50px;
