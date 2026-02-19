@@ -41,16 +41,16 @@ export default function CategoriesPage() {
     return (
         <div className="categories-page">
             <SEO
-                title="Categorías | Print Shop AR"
-                description="Explora nuestras categorías de productos personalizados: remeras, tazas, gorras, cuadros y más."
-                keywords="categorías, remeras, tazas, gorras, cuadros, printshop-ar"
+                title="Categorías de productos personalizados | Print Shop AR"
+                description="Explora nuestras categorías de productos personalizados: remeras, tazas, gorras, cuadros y regalos personalizados, con envíos a todo el país."
+                keywords="categorías, remeras personalizadas, tazas personalizadas, gorras personalizadas, cuadros personalizados, regalos personalizados, printshop-ar"
                 url="https://printshop-ar.com/categorias"
                 type="website"
                 structuredData={{
                     '@context': 'https://schema.org',
                     '@type': 'CollectionPage',
                     url: 'https://printshop-ar.com/categorias',
-                    name: 'Categorías de productos'
+                    name: 'Categorías de productos personalizados'
                 }}
             />
             <Header />
@@ -63,8 +63,8 @@ export default function CategoriesPage() {
                 </div>
 
                 <div className="page-header">
-                    <h1>Nuestras Categorías</h1>
-                    <p>Explora nuestras colecciones organizadas</p>
+                    <h1>Nuestras categorías de impresión personalizada</h1>
+                    <p>Encontrá remeras, tazas, gorras, cuadros y otros productos personalizados agrupados por tipo de producto.</p>
                 </div>
 
                 {categories.length === 0 ? (

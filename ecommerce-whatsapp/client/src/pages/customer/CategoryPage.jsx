@@ -66,8 +66,8 @@ export default function CategoryPage() {
         <div className="category-page">
             <SEO
                 title={`${category?.name || 'Categoría'} | Print Shop AR`}
-                description={category?.description || 'Productos personalizados por categoría en Print Shop AR.'}
-                keywords={`${category?.name || 'categoría'}, productos personalizados, printshop-ar`}
+                description={category?.description || 'Productos personalizados por categoría con envíos a todo el país desde Argentina.'}
+                keywords={`${category?.name || 'categoría'}, productos personalizados, remeras personalizadas, tazas personalizadas, gorras personalizadas, cuadros personalizados, printshop-ar`}
                 url={`https://printshop-ar.com/categoria/${slug}`}
                 type="website"
             />
@@ -85,6 +85,9 @@ export default function CategoryPage() {
                     {category?.description && (
                         <p>{category.description}</p>
                     )}
+                    <p>
+                        Productos personalizados pensados para regalos, empresas y eventos, con envíos a todo el país a través de Correo Argentino.
+                    </p>
                 </div>
 
                 {products.length === 0 ? (

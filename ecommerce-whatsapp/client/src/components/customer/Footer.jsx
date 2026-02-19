@@ -33,7 +33,7 @@ export default function Footer() {
                 <div className="footer-column">
                     <h4>Contacto</h4>
                     <ul>
-                        <li>📧 info@printshop.com.ar</li>
+                        <li>📧 printshopar.1983@gmail.com</li>
                         <li>📱 WhatsApp: +54 9 376 501-6293</li>
                         <li>📍 Posadas, Misiones, Argentina</li>
                     </ul>
@@ -68,8 +68,11 @@ export default function Footer() {
                 <div className="footer-column">
                     <h4>Síguenos</h4>
                     <div className="social-links">
-                        <a href="https://www.instagram.com/printshopjujuy" target="_blank" rel="noopener noreferrer" className="social-link">
+                        <a href="https://www.instagram.com/printshopar.1983/" target="_blank" rel="noopener noreferrer" className="social-link">
                             📷 Instagram
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=61588152163435" target="_blank" rel="noopener noreferrer" className="social-link">
+                            👍 Facebook
                         </a>
                         <a href="https://wa.me/5493765016293" target="_blank" rel="noopener noreferrer" className="social-link">
                             +5493765016293

@@ -16,7 +16,7 @@ async function upsertSettings() {
   const rows = [
     { key: 'store_name', value: 'Print Shop', type: 'string' },
     { key: 'whatsapp_number', value: '+5491112345678', type: 'string' },
-    { key: 'store_email', value: 'info@printshop.com.ar', type: 'string' },
+    { key: 'store_email', value: 'printshopar.1983@gmail.com', type: 'string' },
     { key: 'store_address', value: 'Buenos Aires, Argentina', type: 'string' },
     { key: 'currency', value: 'ARS', type: 'string' },
     { key: 'tax_rate', value: '0', type: 'number' }

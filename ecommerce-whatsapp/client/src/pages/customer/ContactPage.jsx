@@ -85,7 +85,7 @@ export default function ContactPage() {
 
                 <div className="contact-header">
                     <h1>Contactanos</h1>
-                    <p>Estamos aquí para ayudarte. Envíanos un mensaje y te responderemos a la brevedad.</p>
+                    <p>Escribinos para pedidos de remeras, tazas, gorras, cuadros y productos personalizados para tu marca, evento o regalo.</p>
                 </div>
 
                 <div className="contact-content">
@@ -94,7 +94,7 @@ export default function ContactPage() {
                         <div className="info-card">
                             <div className="info-icon">📍</div>
                             <h3>Ubicación</h3>
-                            <p>San Salvador de Jujuy<br />Argentina</p>
+                            <p>Argentina<br />Envíos a todo el país</p>
                         </div>
 
                         <div className="info-card">
@@ -111,8 +111,8 @@ export default function ContactPage() {
                             <div className="info-icon">📧</div>
                             <h3>Email</h3>
                             <p>
-                                <a href="mailto:info@printshop.com.ar">
-                                    info@printshop.com.ar
+                                <a href="mailto:printshopar.1983@gmail.com">
+                                    printshopar.1983@gmail.com
                                 </a>
                             </p>
                         </div>

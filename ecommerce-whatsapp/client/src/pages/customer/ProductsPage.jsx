@@ -57,9 +57,9 @@ export default function ProductsPage() {
     return (
         <div className="products-page">
             <SEO
-                title="Todos los Productos | Print Shop AR"
-                description="Explora todos los productos personalizados: remeras, tazas, gorras, cuadros y más en Print Shop AR."
-                keywords="productos personalizados, remeras, tazas, gorras, cuadros, printshop-ar"
+                title="Productos personalizados | Print Shop AR"
+                description="Explora todos los productos personalizados: remeras, tazas, gorras, cuadros y regalos corporativos, con envíos a todo el país desde Argentina."
+                keywords="productos personalizados, remeras personalizadas, tazas personalizadas, gorras personalizadas, cuadros personalizados, regalos corporativos, printshop-ar"
                 url="https://printshop-ar.com/productos"
                 type="website"
             />
@@ -73,8 +73,8 @@ export default function ProductsPage() {
                 </div>
 
                 <div className="page-header">
-                    <h1>Todos los Productos</h1>
-                    <p>Descubre nuestra colección completa</p>
+                    <h1>Productos personalizados Print Shop AR</h1>
+                    <p>Remeras, tazas, gorras, cuadros y más, listos para personalizar y enviar a cualquier punto del país.</p>
                 </div>
 
                 {products.length === 0 ? (

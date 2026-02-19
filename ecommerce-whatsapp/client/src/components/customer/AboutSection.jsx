@@ -21,7 +21,6 @@ export default function AboutSection() {
                 </div>
 
                 <div className="about-content">
-                    {/* Historia de la Empresa */}
                     <div className="about-card history-card">
                         <div className="card-icon">
                             <FaShieldHalved />
@@ -41,7 +40,40 @@ export default function AboutSection() {
                         </div>
                     </div>
 
-                    {/* Métodos de Envío */}
+                    <div className="about-card steps-card">
+                        <div className="card-icon">
+                            <FaBookOpen />
+                        </div>
+                        <h3>Cómo funciona</h3>
+                        <p>Hacemos simple el proceso para que puedas personalizar tus productos sin complicaciones.</p>
+                        <ul className="steps-list">
+                            <li>
+                                <span className="shipping-icon"><FaWhatsapp /></span>
+                                <div>
+                                    <strong>1. Nos contás tu idea: elegís el producto y nos escribís por WhatsApp o formulario.</strong>
+                                </div>
+                            </li>
+                            <li>
+                                <span className="shipping-icon"><FaCircleCheck /></span>
+                                <div>
+                                    <strong>2. Boceto y presupuesto: te enviamos propuesta visual y precio final antes de producir.</strong>
+                                </div>
+                            </li>
+                            <li>
+                                <span className="shipping-icon"><FaStore /></span>
+                                <div>
+                                    <strong>3. Producción personalizada: fabricamos tus remeras, tazas, gorras o cuadros en 5 a 7 días.</strong>
+                                </div>
+                            </li>
+                            <li>
+                                <span className="shipping-icon"><FaMapLocationDot /></span>
+                                <div>
+                                    <strong>4. Envío a todo el país: despachamos por Correo Argentino a domicilio o sucursal en Argentina.</strong>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
                     <div className="about-card shipping-card">
                         <div className="card-icon">
                             <FaTruckFast />

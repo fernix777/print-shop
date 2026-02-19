@@ -64,7 +64,7 @@ export default function Login() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="admin@printshop.com.ar"
+                            placeholder="printshopar.1983@gmail.com"
                             required
                             disabled={loading}
                         />

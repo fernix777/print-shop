@@ -29,13 +29,10 @@ export default function Home() {
                 </div>
             </header>
 
-            {/* Hero Section (Banners) */}
             <HeroSection />
 
-            {/* Featured Products */}
             <FeaturedProducts />
 
-            {/* Welcome Section */}
             <div className="container" style={{ padding: '4rem 0' }}>
                 <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
                     <h1 style={{
@@ -43,7 +40,7 @@ export default function Home() {
                         color: 'var(--primary)',
                         marginBottom: '1rem'
                     }}>
-                        Bienvenido a Print Shop
+                        Remeras y regalos personalizados en Argentina
                     </h1>
                     <p style={{
                         fontSize: 'var(--text-xl)',
@@ -51,7 +48,8 @@ export default function Home() {
                         maxWidth: '600px',
                         margin: '0 auto'
                     }}>
-                        Personalizamos tus ideas en remeras, tazas, buzos y gorras con la mejor calidad.
+                        En Print Shop AR personalizamos remeras, tazas, buzos, gorras y cuadros para empresas,
+                        eventos y uso personal, con envíos a todo el país a través de Correo Argentino.
                     </p>
                 </div>
             </div>

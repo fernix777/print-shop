@@ -379,7 +379,7 @@ CREATE POLICY "Admin modify settings"
 INSERT INTO settings (key, value, type) VALUES
   ('store_name', 'Print Shop', 'string'),
   ('whatsapp_number', '+543885171795', 'string'),
-  ('store_email', 'info@printshop.com.ar', 'string'),
+  ('store_email', 'printshopar.1983@gmail.com', 'string'),
   ('store_address', 'San Salvador de Jujuy, Jujuy, Argentina', 'string'),
   ('welcome_message', 'Bienvenido a Print Shop - Remeras, tazas, buzos y gorras personalizadas', 'string'),
   ('currency', 'ARS', 'string'),
