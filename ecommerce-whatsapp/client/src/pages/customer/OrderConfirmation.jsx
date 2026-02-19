@@ -69,7 +69,18 @@ export default function OrderConfirmation() {
                 }))
             }
 
-            // Sin tracking de Facebook
+            if (typeof window !== 'undefined' && window.fbq) {
+                window.fbq('track', 'Purchase', {
+                    value: order.total,
+                    currency: 'ARS',
+                    contents: order.items.map(item => ({
+                        id: item.id,
+                        quantity: item.quantity,
+                        item_price: item.price
+                    })),
+                    content_type: 'product'
+                });
+            }
             setPurchaseTracked(true)
 
             // Limpiar localStorage

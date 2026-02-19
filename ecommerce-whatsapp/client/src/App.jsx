@@ -41,10 +41,12 @@ function PageViewTracker() {
     const location = useLocation();
     
     useEffect(() => {
-        // Sin tracking de Facebook
+        if (typeof window !== 'undefined' && window.fbq) {
+            window.fbq('track', 'PageView');
+        }
     }, [location]);
     
-    return null; // No renderiza nada, solo tracking
+    return null;
 }
 
 // Componente para redirigir usuarios autenticados

@@ -148,12 +148,33 @@ export default function CheckoutPage() {
                     price: item.price || 0
                 }))
             }
-            // Sin tracking de Facebook
+            if (typeof window !== 'undefined' && window.fbq) {
+                window.fbq('track', 'InitiateCheckout', {
+                    value: orderTotal,
+                    currency: 'ARS',
+                    contents: cart.map(item => ({
+                        id: item.id,
+                        quantity: item.quantity,
+                        item_price: item.price || 0
+                    })),
+                    content_type: 'product'
+                });
+            }
 
             // Si el método de pago es Mercado Pago
             if (paymentMethod === 'mercadopago') {
                 try {
-                    const preference = await createPaymentPreference(cart, savedOrder.id)
+                    const itemsForMercadoPago = [
+                        ...cart,
+                        {
+                            id: 'shipping',
+                            name: selectedShipping.label,
+                            price: selectedShipping.price,
+                            quantity: 1
+                        }
+                    ]
+
+                    const preference = await createPaymentPreference(itemsForMercadoPago, savedOrder.id)
                     if (preference.init_point) {
                         // Redirigir a Mercado Pago
                         window.location.href = preference.init_point
