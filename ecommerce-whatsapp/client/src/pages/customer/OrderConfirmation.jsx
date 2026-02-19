@@ -93,6 +93,18 @@ export default function OrderConfirmation() {
         )
     }
 
+    const shippingLabel =
+        order.customer?.shippingLabel ||
+        (order.customer?.shippingMethod === 'caba_moto'
+            ? 'Envíos a CABA por motomandados'
+            : order.customer?.shippingMethod === 'correo_sucursal'
+            ? 'Envío a sucursal Correo Argentino'
+            : order.customer?.shippingMethod === 'correo_domicilio'
+            ? 'Envío a domicilio'
+            : '')
+
+    const shippingCost = order.customer?.shippingCost || 0
+
     const handleWhatsAppContact = () => {
         const phoneNumber = '5493765016293'
         let message = `🛍️ *CONFIRMACIÓN DE COMPRA*\n\n`
@@ -106,7 +118,15 @@ export default function OrderConfirmation() {
         order.items.forEach(item => {
             message += `• ${item.name} x${item.quantity} = $${(item.price * item.quantity).toLocaleString('es-AR')}\n`
         })
-        
+
+        if (shippingLabel) {
+            message += `\n🚚 Envío: ${shippingLabel}`
+            if (shippingCost) {
+                message += ` - $${shippingCost.toLocaleString('es-AR')}`
+            }
+            message += '\n'
+        }
+
         message += `\n📍 Dirección: ${order.customer.address}, ${order.customer.city}, ${order.customer.state}\n`
         message += `Código Postal: ${order.customer.zipCode}\n`
         
@@ -196,9 +216,26 @@ export default function OrderConfirmation() {
                                 <span className="label">Opción Seleccionada:</span>
                                 <span className="value">
                                     {order.paymentMethod === 'mercadopago' && 'Mercado Pago'}
-                                    {order.paymentMethod === 'whatsapp' && 'Coordinar por WhatsApp'}
                                     {order.paymentMethod === 'transfer' && 'Transferencia Bancaria'}
                                     {order.paymentMethod === 'cash' && 'Efectivo en Sucursal'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="details-section">
+                            <h3>Envío</h3>
+                            <div className="detail-row">
+                                <span className="label">Opción:</span>
+                                <span className="value">
+                                    {shippingLabel || 'A coordinar'}
+                                </span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="label">Costo:</span>
+                                <span className="value">
+                                    {shippingCost
+                                        ? `$${shippingCost.toLocaleString('es-AR')}`
+                                        : 'A coordinar'}
                                 </span>
                             </div>
                         </div>

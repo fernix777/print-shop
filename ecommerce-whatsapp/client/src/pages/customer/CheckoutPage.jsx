@@ -29,11 +29,21 @@ export default function CheckoutPage() {
     })
     
     const [paymentMethod, setPaymentMethod] = useState('mercadopago')
+    const [shippingMethod, setShippingMethod] = useState('')
     const [processing, setProcessing] = useState(false)
     const [checkoutInitiated, setCheckoutInitiated] = useState(false)
 
     const cartTotal = getCartTotal()
     const cartItemsCount = getCartCount()
+
+    const shippingOptions = {
+        caba_moto: { label: 'Envío a CABA (motomandados)', price: 5900 },
+        correo_sucursal: { label: 'Envío a sucursal Correo Argentino', price: 5000 },
+        correo_domicilio: { label: 'Envío a domicilio Correo Argentino', price: 7900 }
+    }
+
+    const shippingCost = shippingMethod ? shippingOptions[shippingMethod].price : 0
+    const orderTotal = cartTotal + shippingCost
 
     // Rastrear InitiateCheckout cuando el componente se monta
     useEffect(() => {
@@ -82,11 +92,26 @@ export default function CheckoutPage() {
         setProcessing(true)
 
         try {
+            if (!shippingMethod) {
+                alert('Por favor elegí un método de envío.')
+                setProcessing(false)
+                return
+            }
+
+            const selectedShipping = shippingOptions[shippingMethod]
+
+            const customerWithShipping = {
+                ...formData,
+                shippingMethod,
+                shippingLabel: selectedShipping.label,
+                shippingCost: selectedShipping.price
+            }
+
             // Preparar datos de la orden
             const orderPayload = {
-                customer: formData,
+                customer: customerWithShipping,
                 items: cart,
-                total: cartTotal,
+                total: orderTotal,
                 paymentMethod,
                 user_id: user?.id
             }
@@ -115,7 +140,7 @@ export default function CheckoutPage() {
                     email: user?.email,
                     user_id: user?.id
                 },
-                total: cartTotal,
+                total: orderTotal,
                 items: cart.map(item => ({
                     product_id: item.id,
                     product_name: item.name,
@@ -141,8 +166,8 @@ export default function CheckoutPage() {
                 }
             }
 
-            // Si el método de pago es WhatsApp, abrir el chat
-            if (paymentMethod === 'whatsapp' || paymentMethod === 'mercadopago') {
+            // Enviar resumen por WhatsApp
+            if (paymentMethod === 'mercadopago') {
                 const phoneNumber = '543885171795'
                 let message = '🛒 *PEDIDO DE COMPRA*\n\n'
                 message += `👤 *Cliente:* ${formData.firstName} ${formData.lastName}\n`
@@ -163,8 +188,9 @@ export default function CheckoutPage() {
                     message += `   - Precio unitario: ${price.toLocaleString('es-AR')}\n`
                     message += `   - Subtotal: ${(price * item.quantity).toLocaleString('es-AR')}\n`
                 })
-                
-                message += `\n💰 *Total a pagar: ${cartTotal.toLocaleString('es-AR')}*\n\n`
+
+                message += `\n🚚 *Envío:* ${selectedShipping.label} - $${selectedShipping.price.toLocaleString('es-AR')}\n`
+                message += `\n💰 *Total a pagar: ${orderTotal.toLocaleString('es-AR')}*\n\n`
                 message += `ID de Orden: ${orderId}\n`
                 message += '¡Hola! Quisiera confirmar este pedido.'
 
@@ -228,11 +254,15 @@ export default function CheckoutPage() {
                             </div>
                             <div className="total-row">
                                 <span>Envío:</span>
-                                <span>A confirmar</span>
+                                <span>
+                                    {shippingMethod
+                                        ? `$${shippingCost.toLocaleString('es-AR')}`
+                                        : 'Selecciona un método de envío'}
+                                </span>
                             </div>
                             <div className="total-row final">
                                 <span>Total:</span>
-                                <span>${cartTotal.toLocaleString('es-AR')}</span>
+                                <span>${orderTotal.toLocaleString('es-AR')}</span>
                             </div>
                         </div>
                     </div>
@@ -387,42 +417,79 @@ export default function CheckoutPage() {
                                 </div>
                             </div>
 
-                            {/* Método de pago */}
-                            <div className="form-section payment-section">
-                                <h3>Método de Pago</h3>
+                            <div className="form-section">
+                                <h3>Método de Envío</h3>
                                 <div className="payment-options">
-                                    <label className={`payment-option ${paymentMethod === 'mercadopago' ? 'active' : ''}`}>
+                                    <label className={`payment-option ${shippingMethod === 'caba_moto' ? 'active' : ''}`}>
                                         <input
                                             type="radio"
-                                            name="paymentMethod"
-                                            value="mercadopago"
-                                            checked={paymentMethod === 'mercadopago'}
-                                            onChange={(e) => setPaymentMethod(e.target.value)}
+                                            name="shippingMethod"
+                                            value="caba_moto"
+                                            checked={shippingMethod === 'caba_moto'}
+                                            onChange={(e) => setShippingMethod(e.target.value)}
                                             disabled={processing}
                                         />
                                         <div className="payment-option-content">
-                                            <span className="payment-icon">💳</span>
-                                            <span className="payment-label">Mercado Pago</span>
-                                            <span className="payment-description">Tarjeta de crédito, débito o dinero en cuenta</span>
+                                            <span className="payment-icon">🏍️</span>
+                                            <span className="payment-label">Envíos a CABA por motomandados</span>
+                                            <span className="payment-description">$5.900</span>
                                         </div>
                                     </label>
 
-                                    <label className={`payment-option ${paymentMethod === 'whatsapp' ? 'active' : ''}`}>
+                                    <label className={`payment-option ${shippingMethod === 'correo_sucursal' ? 'active' : ''}`}>
                                         <input
                                             type="radio"
-                                            name="paymentMethod"
-                                            value="whatsapp"
-                                            checked={paymentMethod === 'whatsapp'}
-                                            onChange={(e) => setPaymentMethod(e.target.value)}
+                                            name="shippingMethod"
+                                            value="correo_sucursal"
+                                            checked={shippingMethod === 'correo_sucursal'}
+                                            onChange={(e) => setShippingMethod(e.target.value)}
                                             disabled={processing}
                                         />
                                         <div className="payment-option-content">
-                                            <span className="payment-icon">💬</span>
-                                            <span className="payment-label">Coordinar por WhatsApp</span>
-                                            <span className="payment-description">Te contactaremos para confirmar tu pedido y acordar el pago</span>
+                                            <span className="payment-icon">📦</span>
+                                            <span className="payment-label">Envío a sucursal Correo Argentino</span>
+                                            <span className="payment-description">$5.000</span>
+                                        </div>
+                                    </label>
+
+                                    <label className={`payment-option ${shippingMethod === 'correo_domicilio' ? 'active' : ''}`}>
+                                        <input
+                                            type="radio"
+                                            name="shippingMethod"
+                                            value="correo_domicilio"
+                                            checked={shippingMethod === 'correo_domicilio'}
+                                            onChange={(e) => setShippingMethod(e.target.value)}
+                                            disabled={processing}
+                                        />
+                                        <div className="payment-option-content">
+                                            <span className="payment-icon">🏠</span>
+                                            <span className="payment-label">Envío a domicilio</span>
+                                            <span className="payment-description">$7.900</span>
                                         </div>
                                     </label>
                                 </div>
+                            </div>
+
+                            {/* Método de pago */}
+                            <div className="form-section payment-section">
+                                <h3>Método de Pago</h3>
+                        <div className="payment-options">
+                            <label className={`payment-option ${paymentMethod === 'mercadopago' ? 'active' : ''}`}>
+                                <input
+                                    type="radio"
+                                    name="paymentMethod"
+                                    value="mercadopago"
+                                    checked={paymentMethod === 'mercadopago'}
+                                    onChange={(e) => setPaymentMethod(e.target.value)}
+                                    disabled={processing}
+                                />
+                                <div className="payment-option-content">
+                                    <span className="payment-icon">💳</span>
+                                    <span className="payment-label">Mercado Pago</span>
+                                    <span className="payment-description">Tarjeta de crédito, débito o dinero en cuenta</span>
+                                </div>
+                            </label>
+                        </div>
                             </div>
 
                             <button

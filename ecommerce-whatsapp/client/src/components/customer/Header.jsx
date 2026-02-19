@@ -34,7 +34,7 @@ export default function Header() {
     return (
         <header className="store-header">
             <div className="header-promo-bar">
-                <span>¡Envío gratis para miembros + 9 cuotas sin interés! 🔥</span>
+                <span>10% de descuento en pago por transferencia bancaria</span>
             </div>
             <div className="header-container">
                 {/* Logo */}
